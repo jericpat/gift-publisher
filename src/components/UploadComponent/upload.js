@@ -207,7 +207,7 @@ export class ResourceEditor extends React.Component {
           }}
         >
           <div className="upload-header">
-            <h2 className="upload-header__title">Datapub Extend</h2>
+            <h2 className="upload-header__title">Provide your data file</h2>
           </div>
 
           <Upload
