@@ -1,17 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+// import App from './App';
+import { ResourceEditor } from "./components/UploadComponent/upload";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const element = document.getElementById("ResourceEditor");
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+if (element) {
+  const config = {
+    datasetId: element.getAttribute("data-dataset-id"),
+    api: element.getAttribute("data-api"),
+    lfs: element.getAttribute("data-lfs"),
+    authToken: element.getAttribute("data-auth-token"),
+    organizationId: element.getAttribute("data-organization-id"),
+    resourceId: element.getAttribute("data-resource-id"),
+  };
+
+  ReactDOM.render(
+    <React.StrictMode>
+      <ResourceEditor
+        config={config}
+        resource={element.getAttribute("data-resource")}
+      />
+    </React.StrictMode>,
+    element
+  );
+}
