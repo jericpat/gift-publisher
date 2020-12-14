@@ -111,6 +111,7 @@ code {
 }
 
 .upload-edit-area {
+  margin-top: -300px;
   grid-area: editArea;
 }
 
