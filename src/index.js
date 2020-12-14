@@ -1,10 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-// import App from './App';
-import { ResourceEditor } from "./components/UploadComponent/upload";
+import App from "./App";
 
+// Automatically mount the app if an element with id='ResourceEditor' exists
 const element = document.getElementById("ResourceEditor");
-
 if (element) {
   const config = {
     datasetId: element.getAttribute("data-dataset-id"),
@@ -17,10 +16,7 @@ if (element) {
 
   ReactDOM.render(
     <React.StrictMode>
-      <ResourceEditor
-        config={config}
-        resource={element.getAttribute("data-resource")}
-      />
+      <App config={config} resource={element.getAttribute("data-resource")} />
     </React.StrictMode>,
     element
   );
