@@ -26,6 +26,8 @@ export class ResourceEditor extends React.Component {
       },
       client: null,
       isResourceEdit: false,
+      currentStep: 1,
+      dataset: {},
     };
     this.metadataHandler = this.metadataHandler.bind(this);
   }
@@ -87,16 +89,7 @@ export class ResourceEditor extends React.Component {
 
   handleSubmitMetadata = async () => {
     const { resource, client } = this.state;
-
     await this.createResource(resource);
-
-    // Change state of dataset to active if draft atm
-    // this relates to how CKAN v2 has a phased dataset creation. See e.g.
-    // https://github.com/ckan/ckan/blob/master/ckan/controllers/package.py#L917
-
-    // only need to do this test if in resource create mode if editing a
-    // resource this is unnecessary
-    // TODO: update this in future to check for edit mode
     const isResourceCreate = true;
     if (isResourceCreate) {
       const datasetMetadata = await client.action("package_show", {
@@ -249,6 +242,19 @@ export class ResourceEditor extends React.Component {
     });
   };
 
+  nextScreen = () => {
+    let newStep = this.state.currentStep + 1;
+    this.setState({ currentStep: newStep });
+  };
+
+  prevScreen = () => {
+    let newStep = this.state.currentStep - 1;
+    this.setState({ currentStep: newStep });
+  };
+
+  handleUpload = () => {
+    alert("Uploaded Successfully");
+  };
   render() {
     const { success, loading } = this.state.ui;
 
@@ -266,56 +272,67 @@ export class ResourceEditor extends React.Component {
         >
           <div className="upload-header">
             <h1 className="upload-header__title">Provide your data file</h1>
-            <h2 className="upload-header__title">Supported formats: csv, xlsx, xls</h2>
+            <h2 className="upload-header__title">
+              Supported formats: csv, xlsx, xls
+            </h2>
           </div>
 
-          <Upload
-            client={this.state.client}
-            resource={this.state.resource}
-            metadataHandler={this.metadataHandler}
-            datasetId={this.state.datasetId}
-            handleUploadStatus={this.handleUploadStatus}
-            onChangeResourceId={this.onChangeResourceId}
-          />
+          {this.state.currentStep == 1 && (
+            <Upload
+              client={this.state.client}
+              resource={this.state.resource}
+              metadataHandler={this.metadataHandler}
+              datasetId={this.state.datasetId}
+              handleUploadStatus={this.handleUploadStatus}
+              onChangeResourceId={this.onChangeResourceId}
+            />
+          )}
 
           <div className="upload-edit-area">
             {/* TODO: ADD TABLE PREVIEW COMPONENT */}
-            {this.state.resource.schema && (
+            {this.state.resource.schema && this.state.currentStep == 2 && (
               <TableSchema
                 schema={this.state.resource.schema}
                 data={this.state.resource.sample || []}
               />
             )}
 
-            <Metadata
-              metadata={this.state.resource}
-              handleChange={this.handleChangeMetadata}
-            />
-            {/* <div className="app-form-grid app-divider">
-              <SelectSchema
-                resources={this.state.resources}
-                onSchemaSelected={this.onSchemaSelected}
+            {this.state.currentStep == 3 && (
+              <Metadata
+                metadata={this.state.resource}
+                handleChange={this.handleChangeMetadata}
               />
-            </div> */}
-
-            {!this.state.isResourceEdit ? (
-              <button disabled={!success || loading} className="btn">
-                Save and Publish
-              </button>
-            ) : (
-              <div className="resource-edit-actions">
-                <button
-                  type="button"
-                  className="btn btn-delete"
-                  onClick={this.deleteResource}
-                >
-                  Delete
-                </button>
-                <button className="btn">Update</button>
-              </div>
             )}
           </div>
         </form>
+        <div className="resource-edit-actions">
+          {this.state.currentStep == 1 ? (
+            <button disabled={!success || loading} className="btn">
+              Back
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-delete"
+              onClick={this.prevScreen}
+            >
+              Back
+            </button>
+          )}
+          {this.state.currentStep == 3 && !this.state.isResourceEdit && (
+            <button className="btn" onClick={this.handleUpload}>
+              Save and Publish
+            </button>
+          )}
+
+          {this.state.currentStep == 3 ? (
+           ""
+          ) : (
+            <button className="btn" onClick={this.nextScreen}>
+              Next
+            </button>
+          )}
+        </div>
       </div>
     );
   }
