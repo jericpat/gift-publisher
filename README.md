@@ -1,5 +1,6 @@
 # GIFT DATA PUBLISHING APP
 
+A data publishing app for GIFT. View the live site [here](https://datopian.github.io/gift-publisher)
 # For Developers
 
 ### `yarn start`
