@@ -4,7 +4,7 @@ import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
 import { v4 as uuidv4 } from "uuid";
 import { TableSchema } from "datapub";
 import Upload from "./components/Upload";
-import SelectSchema from "./components/SelectSchema";
+import CustomTable from "./components/tablePreview";
 import Metadata from "./components/Metadata";
 import "./App.css";
 import { removeHyphen } from "./utils";
@@ -258,7 +258,6 @@ export class ResourceEditor extends React.Component {
   };
   render() {
     const { success, loading } = this.state.ui;
-
     return (
       <div className="App">
         <img src={ReactLogo} width='50%'/>
@@ -272,38 +271,66 @@ export class ResourceEditor extends React.Component {
             return this.handleSubmitMetadata();
           }}
         >
-          <div className="upload-header">
-            <h1 className="upload-header__title">Provide your data file</h1>
-            <h2 className="upload-header__title">
-              Supported formats: csv, xlsx, xls
-            </h2>
-          </div>
-
           {this.state.currentStep == 1 && (
-            <Upload
-              client={this.state.client}
-              resource={this.state.resource}
-              metadataHandler={this.metadataHandler}
-              datasetId={this.state.datasetId}
-              handleUploadStatus={this.handleUploadStatus}
-              onChangeResourceId={this.onChangeResourceId}
-            />
+            <>
+              <div className="upload-header">
+                <h1 className="upload-header__title_h1">Provide your data file</h1>
+                <h2 className="upload-header__title_h2">
+                  Supported formats: csv, xlsx, xls
+                </h2>
+              </div>
+
+              <Upload
+                client={this.state.client}
+                resource={this.state.resource}
+                metadataHandler={this.metadataHandler}
+                datasetId={this.state.datasetId}
+                handleUploadStatus={this.handleUploadStatus}
+                onChangeResourceId={this.onChangeResourceId}
+              />
+            </>
           )}
 
           <div className="upload-edit-area">
-            {/* TODO: ADD TABLE PREVIEW COMPONENT */}
             {this.state.resource.schema && this.state.currentStep == 2 && (
-              <TableSchema
-                schema={this.state.resource.schema}
-                data={this.state.resource.sample || []}
-              />
+              <>
+                <div className="upload-header">
+                  <h1 className="upload-header__title_h1">
+                    Preview of your dataset
+                  </h1>
+                </div>
+                <CustomTable
+                  columns={this.state.resource.columns}
+                  data={this.state.resource.sample}
+                />
+              </>
+            )}
+            {this.state.resource.schema && this.state.currentStep == 3 && (
+              <>
+                <div className="upload-header">
+                  <h1 className="upload-header__title_h1">
+                    Describe your dataset
+                  </h1>
+                </div>
+                <TableSchema
+                  schema={this.state.resource.schema}
+                  data={this.state.resource.sample || []}
+                />
+              </>
             )}
 
-            {this.state.currentStep == 3 && (
-              <Metadata
-                metadata={this.state.resource}
-                handleChange={this.handleChangeMetadata}
-              />
+            {this.state.currentStep == 4 && (
+              <>
+                <div className="upload-header">
+                  <h1 className="upload-header__title_h1">
+                    Provide Metadata
+                  </h1>
+                </div>
+                <Metadata
+                  metadata={this.state.resource}
+                  handleChange={this.handleChangeMetadata}
+                />
+              </>
             )}
           </div>
         </form>
@@ -321,14 +348,14 @@ export class ResourceEditor extends React.Component {
               Back
             </button>
           )}
-          {this.state.currentStep == 3 && !this.state.isResourceEdit && (
+          {this.state.currentStep == 4 && !this.state.isResourceEdit && (
             <button className="btn" onClick={this.handleUpload}>
               Save and Publish
             </button>
           )}
 
-          {this.state.currentStep == 3 ? (
-           ""
+          {this.state.currentStep == 4 ? (
+            ""
           ) : (
             <button className="btn" onClick={this.nextScreen}>
               Next

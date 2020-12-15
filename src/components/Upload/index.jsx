@@ -3,6 +3,7 @@ import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
 import { onFormatBytes } from "../../utils";
 import { Choose } from "datapub";
+import toArray from "stream-to-array";
 
 class Upload extends React.Component {
   constructor(props) {
@@ -40,7 +41,34 @@ class Upload extends React.Component {
       const hash = await file.hash("sha256", (progress) => {
         self.onHashProgress(progress);
       });
+
+      //get sample
+      let sample_stream = await file.rows({ size: 460 });
+      let sample_array = await toArray(sample_stream);
+
+      //get column names for table
+      const column_names = sample_array[0]; //first row is the column names
+      const columns = column_names.map((item) => {
+        return {
+          Header: item,
+          accessor: item,
+        };
+      });
+
+      //prepare sample for use in table preview component
+      let sample = []
+      sample_array.slice(1, 5).forEach((item) => {
+        let temp_obj = {}
+        item.forEach((field, i) => {
+          temp_obj[column_names[i]] = field
+        })
+        sample.push(temp_obj)
+      });
+
       this.props.metadataHandler(Object.assign(file.descriptor, { hash }));
+      this.props.metadataHandler(Object.assign(file.descriptor, { sample }));
+      this.props.metadataHandler(Object.assign(file.descriptor, { columns }));
+
     }
 
     this.setState({

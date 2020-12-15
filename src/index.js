@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import './assets/main.css'
 import App from "./App";
 
 // Automatically mount the app if an element with id='ResourceEditor' exists
