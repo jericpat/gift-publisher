@@ -26,3 +26,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: yarn  
     - run: yarn run test 
+    - name: Deploy
+        uses: crazy-max/ghaction-github-pages@v1
+        with:
+          target_branch: gh-pages
+          build_dir: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAGE_BUILD_TOKEN }}
