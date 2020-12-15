@@ -13,8 +13,7 @@
     "react-scripts": "4.0.1",
     "react-table": "^7.6.2",
     "stream-to-array": "^2.3.0",
-    "tailwind": "^4.0.0",
-    "tailwindcss": "^2.0.2"
+    "tailwind": "^4.0.0"
   },
   "scripts": {
     "start": "yarn run watch:css && react-scripts start",
@@ -49,6 +48,7 @@
     "postcss": "^8.2.1",
     "postcss-cli": "^8.3.1",
     "react-is": "^16.13.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "tailwindcss": "^2.0.2"
   }
 }
