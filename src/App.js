@@ -8,7 +8,7 @@ import SelectSchema from "./components/SelectSchema";
 import Metadata from "./components/Metadata";
 import "./App.css";
 import { removeHyphen } from "./utils";
-import {ReactComponent as ReactLogo} from './progressBar.svg';
+import ReactLogo from './progressBar.svg';
 
 export class ResourceEditor extends React.Component {
   constructor(props) {
@@ -261,7 +261,7 @@ export class ResourceEditor extends React.Component {
 
     return (
       <div className="App">
-        <ReactLogo />
+        <img src={ReactLogo} width='50%'/>
         <form
           className="upload-wrapper"
           onSubmit={(event) => {
