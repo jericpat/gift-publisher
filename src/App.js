@@ -8,13 +8,12 @@ import CustomTable from "./components/tablePreview";
 import Metadata from "./components/Metadata";
 import "./App.css";
 import { removeHyphen } from "./utils";
-import ReactLogo from './progressBar.svg';
+import ReactLogo from "./progressBar.svg";
 
 export class ResourceEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      resources: [],
       datasetId: this.props.config.datasetId,
       resourceId: "",
       resource: this.props.resource || {},
@@ -28,7 +27,34 @@ export class ResourceEditor extends React.Component {
       client: null,
       isResourceEdit: false,
       currentStep: 1,
-      dataset: {},
+      datapackage: {
+        name: "",
+        title: "",
+        profile: "",
+        licenses: [],
+        sources: [],
+        resources: [
+          {
+            id: "",
+            name: "",
+            path: "",
+            title: "",
+            description: "",
+            format: "",
+            mediatype: "",
+            encoding: "",
+            bytes: 0,
+            hash: "",
+            schema: "",
+            sources: "",
+            licences: "",
+          },
+        ],
+        revision: undefined,
+        created: "",
+        keywords: [],
+        contributors: [],
+      },
     };
     this.metadataHandler = this.metadataHandler.bind(this);
   }
@@ -68,12 +94,30 @@ export class ResourceEditor extends React.Component {
   }
 
   metadataHandler(resource) {
+    let datapackage = this.mapResourceToDatapackageResource(resource);
     this.setState({
       resource: {
         ...resource,
         title: resource.name,
       },
+      datapackage: datapackage
     });
+  }
+
+  mapResourceToDatapackageResource(fileResource) {
+    let datapackage = { ...this.state.datapackage };
+    let resource = { ...datapackage["resources"][0] };
+
+    resource["bytes"] = fileResource.size;
+    resource["hash"] = fileResource.hash;
+    resource["format"] = fileResource.format;
+    resource["schema"] = fileResource.schema;
+    resource["encoding"] = fileResource.encoding;
+    resource["mediatype"] = fileResource.type;
+    resource["name"] = fileResource.name;
+
+    datapackage["resources"][0] = resource;
+    return datapackage;
   }
 
   handleChangeMetadata = (event) => {
@@ -256,25 +300,19 @@ export class ResourceEditor extends React.Component {
   handleUpload = () => {
     alert("Uploaded Successfully");
   };
+
   render() {
     const { success, loading } = this.state.ui;
     return (
       <div className="App">
-        <img src={ReactLogo} width='50%' className='Img'/>
-        <form
-          className="upload-wrapper"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (this.state.isResourceEdit) {
-              return this.createResource(this.state.resource);
-            }
-            return this.handleSubmitMetadata();
-          }}
-        >
+        <img src={ReactLogo} width="50%" className="Img" />
+        <form className="upload-wrapper">
           {this.state.currentStep == 1 && (
             <>
               <div className="upload-header">
-                <h1 className="upload-header__title_h1">Provide your data file</h1>
+                <h1 className="upload-header__title_h1">
+                  Provide your data file
+                </h1>
                 <h2 className="upload-header__title_h2">
                   Supported formats: csv, xlsx, xls
                 </h2>
@@ -322,9 +360,7 @@ export class ResourceEditor extends React.Component {
             {this.state.currentStep == 4 && (
               <>
                 <div className="upload-header">
-                  <h1 className="upload-header__title_h1">
-                    Provide Metadata
-                  </h1>
+                  <h1 className="upload-header__title_h1">Provide Metadata</h1>
                 </div>
                 <Metadata
                   metadata={this.state.resource}

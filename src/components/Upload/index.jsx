@@ -65,9 +65,7 @@ class Upload extends React.Component {
         sample.push(temp_obj)
       });
 
-      this.props.metadataHandler(Object.assign(file.descriptor, { hash }));
-      this.props.metadataHandler(Object.assign(file.descriptor, { sample }));
-      this.props.metadataHandler(Object.assign(file.descriptor, { columns }));
+      this.props.metadataHandler(Object.assign(file.descriptor, { hash, sample, columns }));
 
     }
 
