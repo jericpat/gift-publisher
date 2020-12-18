@@ -260,7 +260,7 @@ export class ResourceEditor extends React.Component {
     const { success, loading } = this.state.ui;
     return (
       <div className="App">
-        <img src={ReactLogo} width='50%'/>
+        <img src={ReactLogo} width='50%' className='Img'/>
         <form
           className="upload-wrapper"
           onSubmit={(event) => {
