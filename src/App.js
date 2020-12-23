@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
-import { v4 as uuidv4 } from "uuid";
 import { TableSchema } from "datapub";
 import Upload from "./components/Upload";
 import CustomTable from "./components/tablePreview";
@@ -69,28 +68,6 @@ export class ResourceEditor extends React.Component {
       datasetId,
       resourceId,
     } = config;
-
-    // const client = new Client(
-    //   `${authToken}`,
-    //   `${organizationId}`,
-    //   `${datasetId}`,
-    //   `${api}`,
-    //   `${lfs}`
-    // );
-
-    // // get dataset
-    // const { result } = await client.action("package_show", {
-    //   id: datasetId,
-    // });
-
-    // const resources = result.resources || [];
-
-    // this.setState({ client, resources });
-
-    // //Check if the user is editing resource
-    // if (resourceId) {
-    //   this.setResource(resourceId);
-    // }
   }
 
   metadataHandler(resource) {
@@ -100,7 +77,7 @@ export class ResourceEditor extends React.Component {
         ...resource,
         title: resource.name,
       },
-      datapackage: datapackage
+      datapackage: datapackage,
     });
   }
 
@@ -124,11 +101,20 @@ export class ResourceEditor extends React.Component {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    let resourceCopy = this.state.resource;
+    let resourceCopy = { ...this.state.resource };
+    let datapackageCopy = { ...this.state.datapackage };
+
+    if (["format", "encoding"].includes(name)) {
+      //changes shopuld be made to datapackage resource
+      datapackageCopy.resources[0][name] = value;
+    } else {
+      datapackageCopy[name] = value;
+    }
     resourceCopy[name] = value;
 
     this.setState({
       resource: resourceCopy,
+      datapackage: datapackageCopy,
     });
   };
 
