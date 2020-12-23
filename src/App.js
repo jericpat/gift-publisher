@@ -304,19 +304,19 @@ export class ResourceEditor extends React.Component {
                 </h2>
               </div>
 
-              <Upload
-                client={this.state.client}
-                resource={this.state.resource}
-                metadataHandler={this.metadataHandler}
-                datasetId={this.state.datasetId}
-                handleUploadStatus={this.handleUploadStatus}
-                onChangeResourceId={this.onChangeResourceId}
-              />
+                <Upload
+                  client={this.state.client}
+                  resource={this.state.resource}
+                  metadataHandler={this.metadataHandler}
+                  datasetId={this.state.datasetId}
+                  handleUploadStatus={this.handleUploadStatus}
+                  onChangeResourceId={this.onChangeResourceId}
+                />
             </>
           )}
 
           <div className="upload-edit-area">
-            {this.state.resource.schema && this.state.currentStep == 2 && (
+            {this.state.resource.sample && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -357,7 +357,7 @@ export class ResourceEditor extends React.Component {
           </div>
         </form>
         <div className="resource-edit-actions">
-          {this.state.currentStep == 1 ? (
+          {/* {this.state.currentStep == 1 ? (
             <button disabled={!success || loading} className="btn">
               Back
             </button>
@@ -369,16 +369,14 @@ export class ResourceEditor extends React.Component {
             >
               Back
             </button>
-          )}
+          )} */}
           {this.state.currentStep == 4 && !this.state.isResourceEdit && (
             <button className="btn" onClick={this.handleUpload}>
               Save and Publish
             </button>
           )}
 
-          {this.state.currentStep == 4 ? (
-            ""
-          ) : (
+          {this.state.currentStep == 3 && (
             <button className="btn" onClick={this.nextScreen}>
               Next
             </button>
