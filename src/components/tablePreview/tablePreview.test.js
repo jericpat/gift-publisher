@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import TablePreview from ".";
+import TablePreview from "./index";
 
 describe("<TablePreview />", () => {
   it("render TablePreview without crashing", () => {
