@@ -1,10 +1,10 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import CustomTable from "./index";
+import TablePreview from ".";
 
-describe("<CustomTable />", () => {
-  it("render CustomTable without crashing", () => {
+describe("<TablePreview />", () => {
+  it("render TablePreview without crashing", () => {
     // const onSchemaSelected = jest.fn();
     const resources = [{ name: "sample.csv", id: "sample-id" }];
     const data = [
@@ -28,7 +28,7 @@ describe("<CustomTable />", () => {
       },
     ];
 
-    const wrapper = shallow(<CustomTable data={data} columns={columns} />);
+    const wrapper = shallow(<TablePreview data={data} columns={columns} />);
 
     expect(wrapper.contains("Tanner Linsley"))
     expect(wrapper.find("Table"))
