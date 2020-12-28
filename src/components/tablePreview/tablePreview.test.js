@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import CustomTable from ".";
+import CustomTable from "./index";
 
 describe("<CustomTable />", () => {
   it("render CustomTable without crashing", () => {
