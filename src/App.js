@@ -2,9 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
 import { v4 as uuidv4 } from "uuid";
-import { TableSchema } from "datapub";
 import Upload from "./components/Upload";
-import CustomTable from "./components/tablePreview";
+import TablePreview from "./components/TablePreview";
+import TableSchema from "./components/TableSchema";
+
 import Metadata from "./components/Metadata";
 import "./App.css";
 import { removeHyphen } from "./utils";
@@ -299,7 +300,7 @@ export class ResourceEditor extends React.Component {
                     Preview of your dataset
                   </h1>
                 </div>
-                <CustomTable
+                <TablePreview
                   columns={this.state.resource.columns}
                   data={this.state.resource.sample}
                 />
