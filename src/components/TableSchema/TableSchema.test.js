@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import TableSchema from "./index";
+import TableSchema from ".";
 
 describe("<TableSchema />", () => {
   const onChange = jest.fn(() => "https://www.datopian.com");
