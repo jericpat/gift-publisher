@@ -176,7 +176,7 @@ code {
 
 .resource-edit-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 .app-form-field {
   margin-bottom: 20px;

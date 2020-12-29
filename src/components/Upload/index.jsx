@@ -65,9 +65,7 @@ class Upload extends React.Component {
         sample.push(temp_obj)
       });
 
-      this.props.metadataHandler(Object.assign(file.descriptor, { hash }));
-      this.props.metadataHandler(Object.assign(file.descriptor, { sample }));
-      this.props.metadataHandler(Object.assign(file.descriptor, { columns }));
+      this.props.metadataHandler(Object.assign(file.descriptor, { hash, sample, columns }));
 
     }
 
@@ -139,20 +137,23 @@ class Upload extends React.Component {
     //       fileExists: ! response,
     //       loaded: 100
     //     });
-    //     this.props.handleUploadStatus({
-    //       loading: false,
-    //       success: true,
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.error("Upload failed with error: " + error);
-    //     this.setState({ error: true, loading: false });
-    //     this.props.handleUploadStatus({
-    //       loading: false,
-    //       success: false,
-    //       error: true,
-    //     });
+
+    //Temporarily set upload success to true so table preview can show in demo
+    this.props.handleUploadStatus({
+      loading: false,
+      success: true,
+    });
+    
+    // })
+    // .catch((error) => {
+    //   console.error("Upload failed with error: " + error);
+    //   this.setState({ error: true, loading: false });
+    //   this.props.handleUploadStatus({
+    //     loading: false,
+    //     success: false,
+    //     error: true,
     //   });
+    // });
   };
 
   render() {

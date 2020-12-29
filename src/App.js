@@ -21,7 +21,7 @@ export class ResourceEditor extends React.Component {
       resource: this.props.resource || {},
       ui: {
         fileOrLink: "",
-        uploadComplete: undefined,
+        uploadComplete: false,
         success: false,
         error: false,
         loading: false,
@@ -272,7 +272,7 @@ export class ResourceEditor extends React.Component {
             return this.handleSubmitMetadata();
           }}
         >
-          {this.state.currentStep == 1 && (
+          {!this.state.ui.success && (
             <>
               <div className="upload-header">
                 <h1 className="upload-header__title_h1">Provide your data file</h1>
@@ -293,7 +293,7 @@ export class ResourceEditor extends React.Component {
           )}
 
           <div className="upload-edit-area">
-            {this.state.resource.schema && this.state.currentStep == 2 && (
+            {this.state.ui.success && this.state.currentStep == 1 && ( 
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -306,7 +306,7 @@ export class ResourceEditor extends React.Component {
                 />
               </>
             )}
-            {this.state.resource.schema && this.state.currentStep == 3 && (
+            {this.state.resource.schema && this.state.currentStep == 2 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -320,7 +320,7 @@ export class ResourceEditor extends React.Component {
               </>
             )}
 
-            {this.state.currentStep == 4 && (
+            {this.state.currentStep == 3 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -336,28 +336,13 @@ export class ResourceEditor extends React.Component {
           </div>
         </form>
         <div className="resource-edit-actions">
-          {this.state.currentStep == 1 ? (
-            <button disabled={!success || loading} className="btn">
-              Back
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-delete"
-              onClick={this.prevScreen}
-            >
-              Back
-            </button>
-          )}
-          {this.state.currentStep == 4 && !this.state.isResourceEdit && (
+          {this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && (
             <button className="btn" onClick={this.handleUpload}>
               Save and Publish
             </button>
           )}
 
-          {this.state.currentStep == 4 ? (
-            ""
-          ) : (
+          {this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && (
             <button className="btn" onClick={this.nextScreen}>
               Next
             </button>
