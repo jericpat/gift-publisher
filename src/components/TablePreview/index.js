@@ -6,7 +6,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 
-const CustomTable = ({ columns, data }) => {
+const TablePreview = ({ columns, data }) => {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
@@ -47,4 +47,4 @@ const CustomTable = ({ columns, data }) => {
   );
 };
 
-export default CustomTable;
+export default TablePreview;

@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
-import { TableSchema } from "datapub";
+import { v4 as uuidv4 } from "uuid";
 import Upload from "./components/Upload";
-import CustomTable from "./components/tablePreview";
+import TablePreview from "./components/TablePreview";
+import TableSchema from "./components/TableSchema";
+
 import Metadata from "./components/Metadata";
 import "./App.css";
 import { removeHyphen } from "./utils";
@@ -18,7 +20,7 @@ export class ResourceEditor extends React.Component {
       resource: this.props.resource || {},
       ui: {
         fileOrLink: "",
-        uploadComplete: undefined,
+        uploadComplete: false,
         success: false,
         error: false,
         loading: false,
@@ -291,9 +293,18 @@ export class ResourceEditor extends React.Component {
     const { success, loading } = this.state.ui;
     return (
       <div className="App">
-        <img src={ReactLogo} width="50%" className="Img" />
-        <form className="upload-wrapper">
-          {this.state.currentStep == 1 && (
+        <img src={ReactLogo} width='50%' className='Img'/>
+        <form
+          className="upload-wrapper"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (this.state.isResourceEdit) {
+              return this.createResource(this.state.resource);
+            }
+            return this.handleSubmitMetadata();
+          }}
+        >
+          {!this.state.ui.success && (
             <>
               <div className="upload-header">
                 <h1 className="upload-header__title_h1">
@@ -316,20 +327,20 @@ export class ResourceEditor extends React.Component {
           )}
 
           <div className="upload-edit-area">
-            {this.state.resource.sample && (
+            {this.state.ui.success && this.state.currentStep == 1 && ( 
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
                     Preview of your dataset
                   </h1>
                 </div>
-                <CustomTable
+                <TablePreview
                   columns={this.state.resource.columns}
                   data={this.state.resource.sample}
                 />
               </>
             )}
-            {this.state.resource.schema && this.state.currentStep == 3 && (
+            {this.state.resource.schema && this.state.currentStep == 2 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -343,7 +354,7 @@ export class ResourceEditor extends React.Component {
               </>
             )}
 
-            {this.state.currentStep == 4 && (
+            {this.state.currentStep == 3 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">Provide Metadata</h1>
@@ -357,26 +368,13 @@ export class ResourceEditor extends React.Component {
           </div>
         </form>
         <div className="resource-edit-actions">
-          {/* {this.state.currentStep == 1 ? (
-            <button disabled={!success || loading} className="btn">
-              Back
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-delete"
-              onClick={this.prevScreen}
-            >
-              Back
-            </button>
-          )} */}
-          {this.state.currentStep == 4 && !this.state.isResourceEdit && (
+          {this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && (
             <button className="btn" onClick={this.handleUpload}>
               Save and Publish
             </button>
           )}
 
-          {this.state.currentStep == 3 && (
+          {this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && (
             <button className="btn" onClick={this.nextScreen}>
               Next
             </button>
