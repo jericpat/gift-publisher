@@ -1,4 +1,6 @@
 import React from "react";
+import * as OSTypes from "os-types/src/index";
+import fileDownload from "js-file-download"
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
 import { v4 as uuidv4 } from "uuid";
@@ -29,16 +31,19 @@ export class ResourceEditor extends React.Component {
       isResourceEdit: false,
       currentStep: 1,
       datapackage: {
+        "@context":
+          "http://schemas.frictionlessdata.io/fiscal-data-package.jsonld",
+        author: "",
+        bytes: undefined,
+        description: "",
+        model: {},
         name: "",
-        title: "",
-        profile: "",
-        licenses: [],
-        sources: [],
+        profile: "data-package",
         resources: [
           {
-            id: "",
             name: "",
-            path: "",
+            count_of_rows: "",
+            dialect: {},
             title: "",
             description: "",
             format: "",
@@ -46,15 +51,11 @@ export class ResourceEditor extends React.Component {
             encoding: "",
             bytes: 0,
             hash: "",
-            schema: "",
-            sources: "",
-            licences: "",
+            schema: {},
           },
         ],
         revision: undefined,
-        created: "",
-        keywords: [],
-        contributors: [],
+        title: "",
       },
     };
     this.metadataHandler = this.metadataHandler.bind(this);
@@ -94,8 +95,12 @@ export class ResourceEditor extends React.Component {
     resource["encoding"] = fileResource.encoding;
     resource["mediatype"] = fileResource.type;
     resource["name"] = fileResource.name;
+    resource["dialect"] = fileResource.dialect;
 
     datapackage["resources"][0] = resource;
+    datapackage["title"] = fileResource.name;
+    datapackage["name"] = fileResource.name;
+
     return datapackage;
   }
 
@@ -138,6 +143,25 @@ export class ResourceEditor extends React.Component {
 
     // Redirect to dataset page
     return (window.location.href = `/dataset/${this.state.datasetId}`);
+  };
+
+  downloadDatapackage = async () => {
+    let datapackage = { ...this.state.datapackage };
+    let resource = { ...datapackage.resources[0] };
+    resource.schema.fields.forEach((f) => {
+      f.type = f.columnType;
+      delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
+    });
+    let fdp = new OSTypes().fieldsToModel(resource["schema"]["fields"]);
+    resource.schema = fdp.schema;
+    datapackage.model = fdp.model;
+    datapackage.resources[0] = resource;
+
+    this.setState({
+      datapackage: datapackage,
+    });
+
+    fileDownload(JSON.stringify(datapackage), "datapackage.json")
   };
 
   createResource = async (resource) => {
@@ -276,7 +300,11 @@ export class ResourceEditor extends React.Component {
   };
 
   nextScreen = () => {
-    let newStep = this.state.currentStep + 1;
+    let currentStep = this.state.currentStep
+    if (currentStep == 2){
+      //TODO: check if all rich type has been added
+    }
+    let newStep = currentStep + 1;
     this.setState({ currentStep: newStep });
   };
 
@@ -293,7 +321,7 @@ export class ResourceEditor extends React.Component {
     const { success, loading } = this.state.ui;
     return (
       <div className="App">
-        <img src={ReactLogo} width='50%' className='Img'/>
+        <img src={ReactLogo} width="50%" className="Img" />
         <form
           className="upload-wrapper"
           onSubmit={(event) => {
@@ -315,19 +343,19 @@ export class ResourceEditor extends React.Component {
                 </h2>
               </div>
 
-                <Upload
-                  client={this.state.client}
-                  resource={this.state.resource}
-                  metadataHandler={this.metadataHandler}
-                  datasetId={this.state.datasetId}
-                  handleUploadStatus={this.handleUploadStatus}
-                  onChangeResourceId={this.onChangeResourceId}
-                />
+              <Upload
+                client={this.state.client}
+                resource={this.state.resource}
+                metadataHandler={this.metadataHandler}
+                datasetId={this.state.datasetId}
+                handleUploadStatus={this.handleUploadStatus}
+                onChangeResourceId={this.onChangeResourceId}
+              />
             </>
           )}
 
           <div className="upload-edit-area">
-            {this.state.ui.success && this.state.currentStep == 1 && ( 
+            {this.state.ui.success && this.state.currentStep == 1 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -368,17 +396,28 @@ export class ResourceEditor extends React.Component {
           </div>
         </form>
         <div className="resource-edit-actions">
-          {this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && (
-            <button className="btn" onClick={this.handleUpload}>
-              Save and Publish
-            </button>
-          )}
+          {this.state.currentStep == 3 &&
+            !this.state.isResourceEdit &&
+            this.state.ui.success && (
+              <button className="btn" onClick={this.handleUpload}>
+                Save and Publish
+              </button>
+            )}
+          {this.state.currentStep == 3 &&
+            !this.state.isResourceEdit &&
+            this.state.resource && (
+              <button className="btn" onClick={this.downloadDatapackage}>
+                Download Package
+              </button>
+            )}
 
-          {this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && (
-            <button className="btn" onClick={this.nextScreen}>
-              Next
-            </button>
-          )}
+          {this.state.ui.success &&
+            this.state.currentStep > 0 &&
+            this.state.currentStep < 3 && (
+              <button className="btn" onClick={this.nextScreen}>
+                Next
+              </button>
+            )}
         </div>
       </div>
     );
