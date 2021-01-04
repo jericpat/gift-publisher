@@ -3,7 +3,9 @@ import Select from 'react-select'
 import PropTypes from "prop-types";
 import { useTable } from "react-table";
 import types from "../../db/types.json";
-import columnTypes from "../../db/column_types.json";
+import osTypes from "../../db/os-types.json";
+import osTypesDesc from "../../db/os-type-descriptions.json";
+
 
 import "./TableSchema.css";
 
@@ -47,9 +49,10 @@ const TableSchema = (props) => {
   }, [props.schema]);
 
   //set column types search input box
-  const columnTypeOptions = columnTypes.ctypes.map((item) => {
-    let value = Object.keys(item)[0]
-    let label = value + " " + "➜" + " " + item[value].description
+  let ctypeKeys = Object.keys(osTypes)
+  const columnTypeOptions = ctypeKeys.map((key) => {
+    let value = key
+    let label = value + " " + "➜" + " " + osTypesDesc[key].description
     return { label, value }
   })
 

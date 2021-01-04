@@ -1,4 +1,6 @@
 import React from "react";
+import * as OSTypes from "os-types/src/index";
+import fileDownload from "js-file-download"
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
 import { v4 as uuidv4 } from "uuid";
@@ -9,13 +11,12 @@ import TableSchema from "./components/TableSchema";
 import Metadata from "./components/Metadata";
 import "./App.css";
 import { removeHyphen } from "./utils";
-import ReactLogo from './progressBar.svg';
+import ReactLogo from "./progressBar.svg";
 
 export class ResourceEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      resources: [],
       datasetId: this.props.config.datasetId,
       resourceId: "",
       resource: this.props.resource || {},
@@ -29,7 +30,33 @@ export class ResourceEditor extends React.Component {
       client: null,
       isResourceEdit: false,
       currentStep: 1,
-      dataset: {},
+      datapackage: {
+        "@context":
+          "http://schemas.frictionlessdata.io/fiscal-data-package.jsonld",
+        author: "",
+        bytes: undefined,
+        description: "",
+        model: {},
+        name: "",
+        profile: "data-package",
+        resources: [
+          {
+            name: "",
+            count_of_rows: "",
+            dialect: {},
+            title: "",
+            description: "",
+            format: "",
+            mediatype: "",
+            encoding: "",
+            bytes: 0,
+            hash: "",
+            schema: {},
+          },
+        ],
+        revision: undefined,
+        title: "",
+      },
     };
     this.metadataHandler = this.metadataHandler.bind(this);
   }
@@ -44,48 +71,57 @@ export class ResourceEditor extends React.Component {
       datasetId,
       resourceId,
     } = config;
-
-    // const client = new Client(
-    //   `${authToken}`,
-    //   `${organizationId}`,
-    //   `${datasetId}`,
-    //   `${api}`,
-    //   `${lfs}`
-    // );
-
-    // // get dataset
-    // const { result } = await client.action("package_show", {
-    //   id: datasetId,
-    // });
-
-    // const resources = result.resources || [];
-
-    // this.setState({ client, resources });
-
-    // //Check if the user is editing resource
-    // if (resourceId) {
-    //   this.setResource(resourceId);
-    // }
   }
 
   metadataHandler(resource) {
+    let datapackage = this.mapResourceToDatapackageResource(resource);
     this.setState({
       resource: {
         ...resource,
         title: resource.name,
       },
+      datapackage: datapackage,
     });
+  }
+
+  mapResourceToDatapackageResource(fileResource) {
+    let datapackage = { ...this.state.datapackage };
+    let resource = { ...datapackage["resources"][0] };
+
+    resource["bytes"] = fileResource.size;
+    resource["hash"] = fileResource.hash;
+    resource["format"] = fileResource.format;
+    resource["schema"] = fileResource.schema;
+    resource["encoding"] = fileResource.encoding;
+    resource["mediatype"] = fileResource.type;
+    resource["name"] = fileResource.name;
+    resource["dialect"] = fileResource.dialect;
+
+    datapackage["resources"][0] = resource;
+    datapackage["title"] = fileResource.name;
+    datapackage["name"] = fileResource.name;
+
+    return datapackage;
   }
 
   handleChangeMetadata = (event) => {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    let resourceCopy = this.state.resource;
+    let resourceCopy = { ...this.state.resource };
+    let datapackageCopy = { ...this.state.datapackage };
+
+    if (["format", "encoding"].includes(name)) {
+      //changes shopuld be made to datapackage resource
+      datapackageCopy.resources[0][name] = value;
+    } else {
+      datapackageCopy[name] = value;
+    }
     resourceCopy[name] = value;
 
     this.setState({
       resource: resourceCopy,
+      datapackage: datapackageCopy,
     });
   };
 
@@ -107,6 +143,25 @@ export class ResourceEditor extends React.Component {
 
     // Redirect to dataset page
     return (window.location.href = `/dataset/${this.state.datasetId}`);
+  };
+
+  downloadDatapackage = async () => {
+    let datapackage = { ...this.state.datapackage };
+    let resource = { ...datapackage.resources[0] };
+    resource.schema.fields.forEach((f) => {
+      f.type = f.columnType;
+      delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
+    });
+    let fdp = new OSTypes().fieldsToModel(resource["schema"]["fields"]);
+    resource.schema = fdp.schema;
+    datapackage.model = fdp.model;
+    datapackage.resources[0] = resource;
+
+    this.setState({
+      datapackage: datapackage,
+    });
+
+    fileDownload(JSON.stringify(datapackage), "datapackage.json")
   };
 
   createResource = async (resource) => {
@@ -245,7 +300,11 @@ export class ResourceEditor extends React.Component {
   };
 
   nextScreen = () => {
-    let newStep = this.state.currentStep + 1;
+    let currentStep = this.state.currentStep
+    if (currentStep == 2){
+      //TODO: check if all rich type has been added
+    }
+    let newStep = currentStep + 1;
     this.setState({ currentStep: newStep });
   };
 
@@ -257,11 +316,12 @@ export class ResourceEditor extends React.Component {
   handleUpload = () => {
     alert("Uploaded Successfully");
   };
+
   render() {
     const { success, loading } = this.state.ui;
     return (
       <div className="App">
-        <img src={ReactLogo} width='50%' className='Img'/>
+        <img src={ReactLogo} width="50%" className="Img" />
         <form
           className="upload-wrapper"
           onSubmit={(event) => {
@@ -275,7 +335,9 @@ export class ResourceEditor extends React.Component {
           {!this.state.ui.success && (
             <>
               <div className="upload-header">
-                <h1 className="upload-header__title_h1">Provide your data file</h1>
+                <h1 className="upload-header__title_h1">
+                  Provide your data file
+                </h1>
                 <h2 className="upload-header__title_h2">
                   Supported formats: csv, xlsx, xls
                 </h2>
@@ -293,7 +355,7 @@ export class ResourceEditor extends React.Component {
           )}
 
           <div className="upload-edit-area">
-            {this.state.ui.success && this.state.currentStep == 1 && ( 
+            {this.state.ui.success && this.state.currentStep == 1 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -323,9 +385,7 @@ export class ResourceEditor extends React.Component {
             {this.state.currentStep == 3 && (
               <>
                 <div className="upload-header">
-                  <h1 className="upload-header__title_h1">
-                    Provide Metadata
-                  </h1>
+                  <h1 className="upload-header__title_h1">Provide Metadata</h1>
                 </div>
                 <Metadata
                   metadata={this.state.resource}
@@ -336,17 +396,28 @@ export class ResourceEditor extends React.Component {
           </div>
         </form>
         <div className="resource-edit-actions">
-          {this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && (
-            <button className="btn" onClick={this.handleUpload}>
-              Save and Publish
-            </button>
-          )}
+          {this.state.currentStep == 3 &&
+            !this.state.isResourceEdit &&
+            this.state.ui.success && (
+              <button className="btn" onClick={this.handleUpload}>
+                Save and Publish
+              </button>
+            )}
+          {this.state.currentStep == 3 &&
+            !this.state.isResourceEdit &&
+            this.state.resource && (
+              <button className="btn" onClick={this.downloadDatapackage}>
+                Download Package
+              </button>
+            )}
 
-          {this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && (
-            <button className="btn" onClick={this.nextScreen}>
-              Next
-            </button>
-          )}
+          {this.state.ui.success &&
+            this.state.currentStep > 0 &&
+            this.state.currentStep < 3 && (
+              <button className="btn" onClick={this.nextScreen}>
+                Next
+              </button>
+            )}
         </div>
       </div>
     );
