@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 
-import "./ProgressBar.css";
-
+import style from './ProgressBar.module.css';
 const ProgressBar = (props) => {
   const [offset, setOffset] = useState(0);
   const circleRef = useRef(null);
@@ -28,9 +27,9 @@ const ProgressBar = (props) => {
 
   return (
     <>
-      <svg className="svg" width={size} height={size}>
+      <svg className={style.svg} width={size} height={size}>
         <circle
-          className="svg-circle-bg"
+          className={style["svg-circle-bg"]}
           stroke={circleOneStroke}
           cx={center}
           cy={center}
@@ -38,7 +37,7 @@ const ProgressBar = (props) => {
           strokeWidth={strokeWidth}
         />
         <circle
-          className="svg-circle"
+          className={style["svg-circle"]}
           ref={circleRef}
           stroke={circleTwoStroke}
           cx={center}
@@ -48,11 +47,11 @@ const ProgressBar = (props) => {
           strokeDasharray={circumference}
           strokeDashoffset={offset}
         />
-        <text x={`${center}`} y={`${center + 2}`} className="svg-circle-text">
+        <text x={`${center}`} y={`${center + 2}`} className={style["svg-circle-text"]}>
           {progress}%
         </text>
       </svg>
-      {timeRemaining > 0 &&  <span className="time-remaining">{timeRemaining > 60 ? `${Math.floor(timeRemaining /60)} minute${Math.floor(timeRemaining /60) > 1 ? 's' : ''}` : `${Math.floor(timeRemaining)} second${timeRemaining > 1 ? 's' : ''}`} left</span>}
+      {timeRemaining > 0 &&  <span className={style["time-remaining"]}>{timeRemaining > 60 ? `${Math.floor(timeRemaining /60)} minute${Math.floor(timeRemaining /60) > 1 ? 's' : ''}` : `${Math.floor(timeRemaining)} second${timeRemaining > 1 ? 's' : ''}`} left</span>}
     </>
   );
 };

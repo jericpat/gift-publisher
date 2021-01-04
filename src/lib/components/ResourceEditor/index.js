@@ -2,14 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
 import { v4 as uuidv4 } from "uuid";
-import Upload from "./components/Upload";
-import TablePreview from "./components/TablePreview";
-import TableSchema from "./components/TableSchema";
+import Upload from "../Upload";
+import TablePreview from "../TablePreview";
+import TableSchema from "../TableSchema";
 
-import Metadata from "./components/Metadata";
-import "./App.css";
-import { removeHyphen } from "./utils";
+import Metadata from "../Metadata";
+import { removeHyphen } from "../../utils";
 import ReactLogo from './progressBar.svg';
+
+import style from './index.module.css';
 
 export class ResourceEditor extends React.Component {
   constructor(props) {
@@ -260,10 +261,10 @@ export class ResourceEditor extends React.Component {
   render() {
     const { success, loading } = this.state.ui;
     return (
-      <div className="App">
-        <img src={ReactLogo} width='50%' className='Img'/>
+      <div className={style.App}>
+        <img src={ReactLogo} width='50%' className={style.Img}/>
         <form
-          className="upload-wrapper"
+          className={style["upload-wrapper"]}
           onSubmit={(event) => {
             event.preventDefault();
             if (this.state.isResourceEdit) {
@@ -274,9 +275,9 @@ export class ResourceEditor extends React.Component {
         >
           {!this.state.ui.success && (
             <>
-              <div className="upload-header">
-                <h1 className="upload-header__title_h1">Provide your data file</h1>
-                <h2 className="upload-header__title_h2">
+              <div className={style["upload-header"]}>
+                <h1 className={style["upload-header__title_h1"]}>Provide your data file</h1>
+                <h2 className={style["upload-header__title_h2"]}>
                   Supported formats: csv, xlsx, xls
                 </h2>
               </div>
@@ -292,11 +293,11 @@ export class ResourceEditor extends React.Component {
             </>
           )}
 
-          <div className="upload-edit-area">
+          <div className={style["upload-header__title_h2"]}>
             {this.state.ui.success && this.state.currentStep == 1 && ( 
               <>
-                <div className="upload-header">
-                  <h1 className="upload-header__title_h1">
+                <div className={style["upload-header"]}>
+                  <h1 className={style["upload-header__title_h1"]}>
                     Preview of your dataset
                   </h1>
                 </div>
@@ -308,8 +309,8 @@ export class ResourceEditor extends React.Component {
             )}
             {this.state.resource.schema && this.state.currentStep == 2 && (
               <>
-                <div className="upload-header">
-                  <h1 className="upload-header__title_h1">
+                <div className={style["upload-header"]}>
+                  <h1 className={style["upload-header__title_h1"]}>
                     Describe your dataset
                   </h1>
                 </div>
@@ -322,8 +323,8 @@ export class ResourceEditor extends React.Component {
 
             {this.state.currentStep == 3 && (
               <>
-                <div className="upload-header">
-                  <h1 className="upload-header__title_h1">
+                <div className={style["upload-header"]}>
+                  <h1 className={style["upload-header__title_h1"]}>
                     Provide Metadata
                   </h1>
                 </div>
@@ -335,15 +336,15 @@ export class ResourceEditor extends React.Component {
             )}
           </div>
         </form>
-        <div className="resource-edit-actions">
+        <div className={style["resource-edit-actions"]}>
           {this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && (
-            <button className="btn" onClick={this.handleUpload}>
+            <button className={style.btn} onClick={this.handleUpload}>
               Save and Publish
             </button>
           )}
 
           {this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && (
-            <button className="btn" onClick={this.nextScreen}>
+            <button className={style.btn} onClick={this.nextScreen}>
               Next
             </button>
           )}

@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import './assets/main.css'
-import App from "./App";
+// import App from "./App";
+import { ResourceEditor } from './lib'
 
 // Automatically mount the app if an element with id='ResourceEditor' exists
 const element = document.getElementById("ResourceEditor");
@@ -17,8 +18,10 @@ if (element) {
 
   ReactDOM.render(
     <React.StrictMode>
-      <App config={config} resource={element.getAttribute("data-resource")} />
+      <ResourceEditor config={config} resource={element.getAttribute("data-resource")} />
     </React.StrictMode>,
     element
   );
 }
+
+export { ResourceEditor } from './lib';

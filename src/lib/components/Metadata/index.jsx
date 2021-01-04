@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import style from './Metadata.module.css';
 
-import "./Metadata.css";
 import { encodeData, formatData } from "datapub";
 
 //TODO: add the custom fields as a props and render it in metadata component
@@ -18,14 +18,14 @@ const customFields = [
 const Metadata = ({ metadata, handleChange }) => {
   return (
     <>
-      <h3 className="metadata-name">{metadata.path}</h3>
-      <div className="metadata-form">
-        <div className="metadata-input">
-          <label className="metadata-label" htmlFor="title">
+      <h3 className={style["metadata-name"]}>{metadata.path}</h3>
+      <div className={style["metadata-form"]}>
+        <div className={style["metadata-input"]}>
+          <label className={style["metadata-label"]} htmlFor="title">
             Title
           </label>
           <input
-            className="metadata-input__input"
+            className={style["metadata-input__input"]}
             type="text"
             name="title"
             id="title"
@@ -33,12 +33,12 @@ const Metadata = ({ metadata, handleChange }) => {
             onChange={handleChange}
           />
         </div>
-        <div className="metadata-input">
-          <label className="metadata-label" htmlFor="description">
+        <div className={style["metadata-input"]}>
+          <label className={style["metadata-label"]} htmlFor="description">
             Description
           </label>
           <input
-            className="metadata-input__input"
+            className={style["metadata-input__input"]}
             type="text"
             name="description"
             id="description"
@@ -46,12 +46,12 @@ const Metadata = ({ metadata, handleChange }) => {
             onChange={handleChange}
           />
         </div>
-        <div className="metadata-input">
-          <label className="metadata-label" htmlFor="encoding">
+        <div className={style["metadata-input"]}>
+          <label className={style["metadata-label"]} htmlFor="encoding">
             Encoding
           </label>
           <select
-            className="metadata-input__input"
+            className={style["metadata-input__input"]}
             name="encoding"
             id="encoding"
             value={metadata.encoding || ""}
@@ -68,12 +68,12 @@ const Metadata = ({ metadata, handleChange }) => {
             ))}
           </select>
         </div>
-        <div className="metadata-input">
-          <label className="metadata-label" htmlFor="format">
+        <div className={style["metadata-input"]}>
+          <label className={style["metadata-label"]} htmlFor="format">
             Format
           </label>
           <select
-            className="metadata-input__input"
+            className={style["metadata-input__input"]}
             name="format"
             id="format"
             value={(metadata.format || "").toLowerCase()}
@@ -94,13 +94,13 @@ const Metadata = ({ metadata, handleChange }) => {
           customFields.map((item) => (
             <div
               key={`metadata-custom-${item.name}`}
-              className="metadata-input"
+              className={style["metadata-input"]}
             >
-              <label className="metadata-label" htmlFor="format">
+              <label className={style["metadata-label"]} htmlFor="format">
                 {item.label}
               </label>
               <select
-                className="metadata-input__input"
+                className={style["metadata-input__input"]}
                 name={item.name}
                 id={item.name}
                 value={metadata[item.name] || ""}

@@ -5,7 +5,7 @@ import { useTable } from "react-table";
 import types from "../../db/types.json";
 import columnTypes from "../../db/column_types.json";
 
-import "./TableSchema.css";
+import style from "./TableSchema.module.css";
 
 const TableSchema = (props) => {
   const [schema, setSchema] = useState(props.schema);
@@ -59,7 +59,7 @@ const TableSchema = (props) => {
       return schema.fields.map((item, index) => (
         <td key={`schema-type-field-${key}-${index}`}>
           <select
-            className="table-tbody-select"
+            className={style["table-tbody-select"]}
             value={item[key] || ""}
             onChange={(event) => handleChange(event, key, index)}
           >
@@ -107,7 +107,7 @@ const TableSchema = (props) => {
     return schema.fields.map((item, index) => (
       <td key={`schema-field-${key}-${index}`}>
         <input
-          className="table-tbody-input"
+          className={style["table-tbody-input"]}
           type="text"
           value={item[key]}
           onChange={(event) => handleChange(event, key, index)}
@@ -118,39 +118,39 @@ const TableSchema = (props) => {
 
   return (
     <>
-      <div className="table-container">
-        <table className="table-schema-help">
+      <div className={style["table-container"]}>
+        <table className={style["table-schema-help"]}>
           <tbody>
-            <tr className="table-tbody-help-tr">
-              <td className="table-tbody-help-td-empty"></td>
+            <tr className={style["table-tbody-help-tr"]}>
+              <td className={style["table-tbody-help-td-empty"]}></td>
             </tr>
-            <tr className="table-tbody-help-tr">
-              <td className="table-tbody-help-td">Title</td>
+            <tr className={style["table-tbody-help-tr"]}>
+              <td className={style["table-tbody-help-td"]}>Title</td>
             </tr>
-            <tr className="table-tbody-help-tr">
-              <td className="table-tbody-help-td">Description</td>
+            <tr className={style["table-tbody-help-tr"]}>
+              <td className={style["table-tbody-help-td"]}>Description</td>
             </tr>
-            <tr className="table-tbody-help-tr">
-              <td className="table-tbody-help-td">Type</td>
+            <tr className={style["table-tbody-help-tr"]}>
+              <td className={style["table-tbody-help-td"]}>Type</td>
             </tr>
-            <tr className="table-tbody-help-tr">
-              <td className="table-tbody-help-td">Format</td>
+            <tr className={style["table-tbody-help-tr"]}>
+              <td className={style["table-tbody-help-td"]}>Format</td>
             </tr>
-            <tr className="table-tbody-help-tr">
-              <td className="table-tbody-help-td">Rich Type</td>
+            <tr className={style["table-tbody-help-tr"]}>
+              <td className={style["table-tbody-help-td"]}>Rich Type</td>
             </tr>
           </tbody>
         </table>
-        <div className="table-schema-info_container">
-          <table className="table-schema-info_table" {...getTableProps()}>
+        <div className={style["table-schema-info_container"]}>
+          <table className={style["table-schema-info_table"]} {...getTableProps()}>
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr
-                  className="table-thead-tr"
+                  className={style["table-thead-tr"]}
                   {...headerGroup.getHeaderGroupProps()}
                 >
                   {headerGroup.headers.map((column) => (
-                    <th className="table-thead-th" {...column.getHeaderProps()}>
+                    <th className={style["table-thead-th"]} {...column.getHeaderProps()}>
                       {column.render("Header")}
                     </th>
                   ))}
@@ -158,10 +158,10 @@ const TableSchema = (props) => {
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              <tr className="table-tbody-tr-help">
+              <tr className={style["table-tbody-tr-help"]}>
                 {renderEditSchemaField("title")}
               </tr>
-              <tr className="table-tbody-tr-help">
+              <tr className={style["table-tbody-tr-help"]}>
                 {renderEditSchemaField("description")}
               </tr>
               <tr>{renderEditSchemaField("type")}</tr>
@@ -174,7 +174,7 @@ const TableSchema = (props) => {
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
                       return (
-                        <td {...cell.getCellProps()} className="table-tbody-td">
+                        <td {...cell.getCellProps()} className={style["table-tbody-td"]}>
                           {cell.render("Cell")}
                         </td>
                       );
