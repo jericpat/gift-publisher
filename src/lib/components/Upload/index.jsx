@@ -2,9 +2,8 @@ import React from "react";
 import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
 import { onFormatBytes } from "../../utils";
-import { Choose } from "datapub";
+import { Choose } from "datapub-nocss";
 import toArray from "stream-to-array";
-import style from './index.module.css';
 
 class Upload extends React.Component {
   constructor(props) {
@@ -168,19 +167,19 @@ class Upload extends React.Component {
       hashInProgress
     } = this.state;
     return (
-      <div className={style["upload-area"]}>
+      <div className="upload-area">
         <Choose
           onChangeHandler={this.onChangeHandler}
           onChangeUrl={(event) => console.log("Get url:", event.target.value)}
         />
-        <div className={style["upload-area__info"]}>
+        <div className="upload-area__info">
           {hashInProgress && (
             <>
-              <ul className={style["upload-list"]}>
-                <li className={style["list-item"]}>
-                  <div className={style["upload-list-item"]}>
+              <ul className="upload-list">
+                <li className="list-item">
+                  <div className="upload-list-item">
                     <div>
-                      <p className={style["upload-file-name"]}>Computing file hash...</p>
+                      <p className="upload-file-name">Computing file hash...</p>
                     </div>
                     <div>
                       <ProgressBar
@@ -197,15 +196,15 @@ class Upload extends React.Component {
             </>
           )}
         </div>
-        <div className={style["upload-area__info"]}>
+        <div className="upload-area__info">
           {selectedFile && (
             <>
-              <ul className={style["upload-area__info"]}>
-                <li className={style["upload-area__info"]}>
-                  <div className={style["upload-list-item"]}>
+              <ul className="upload-list">
+                <li className="list-item">
+                  <div className="upload-list-item">
                     <div>
-                      <p className={style["upload-file-name"]}>Uploading {selectedFile.name}</p>
-                      <p className={style["upload-file-size"]}>{formattedSize}</p>
+                      <p className="upload-file-name">Uploading {selectedFile.name}</p>
+                      <p className="upload-file-size">{formattedSize}</p>
                     </div>
                     <div>
                       <ProgressBar
@@ -220,7 +219,7 @@ class Upload extends React.Component {
                   </div>
                 </li>
               </ul>
-              <h2 className={style["upload-file-size"]}>
+              <h2 className="upload-message">
                 {success &&
                   !fileExists &&
                   !error &&
