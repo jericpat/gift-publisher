@@ -4,17 +4,6 @@ import PropTypes from "prop-types";
 import "./Metadata.css";
 import { encodeData, formatData } from "datapub";
 
-//TODO: add the custom fields as a props and render it in metadata component
-const customFields = [
-  {
-    label: "Access Restriction",
-    name: "restricted",
-    input_type: "select",
-    values: ['{"level": "public"}', '{"level": "private"}'],
-    options: ["Public", "Private"],
-  },
-];
-
 const Metadata = ({ metadata, handleChange }) => {
   return (
     <>
@@ -33,19 +22,7 @@ const Metadata = ({ metadata, handleChange }) => {
             onChange={handleChange}
           />
         </div>
-        <div className="metadata-input">
-          <label className="metadata-label" htmlFor="description">
-            Description
-          </label>
-          <input
-            className="metadata-input__input"
-            type="text"
-            name="description"
-            id="description"
-            value={metadata.description || ""}
-            onChange={handleChange}
-          />
-        </div>
+      
         <div className="metadata-input">
           <label className="metadata-label" htmlFor="encoding">
             Encoding
@@ -83,44 +60,25 @@ const Metadata = ({ metadata, handleChange }) => {
             <option value="" disabled>
               Select...
             </option>
-            {formatData.map((item) => (
-              <option key={`format-${item[0]}`} value={item[0].toLowerCase()}>
-                {item[0]}
-              </option>
-            ))}
+            <option value="csv">
+              CSV
+            </option>
           </select>
         </div>
-        {customFields &&
-          customFields.map((item) => (
-            <div
-              key={`metadata-custom-${item.name}`}
-              className="metadata-input"
-            >
-              <label className="metadata-label" htmlFor="format">
-                {item.label}
-              </label>
-              <select
-                className="metadata-input__input"
-                name={item.name}
-                id={item.name}
-                value={metadata[item.name] || ""}
-                onChange={handleChange}
-                required
-              >
-                <option value="" disabled>
-                  Select...
-                </option>
-                {item.options.map((option, index) => (
-                  <option
-                    key={`${item.name}-${index}`}
-                    value={item.values[index]}
-                  >
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
+        <div className="metadata-input">
+          <label className="metadata-label" htmlFor="description">
+            Description
+          </label>
+          <textarea
+            className="metadata-input__textarea"
+            type="text"
+            name="description"
+            id="description"
+            value={metadata.description || ""}
+            onChange={handleChange}
+            rows={4}
+          ></textarea>
+        </div>
       </div>
     </>
   );

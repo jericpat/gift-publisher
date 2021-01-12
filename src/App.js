@@ -30,6 +30,7 @@ export class ResourceEditor extends React.Component {
       client: null,
       isResourceEdit: false,
       currentStep: 1,
+      richTypeFilled: false,
       datapackage: {
         "@context":
           "http://schemas.frictionlessdata.io/fiscal-data-package.jsonld",
@@ -59,6 +60,7 @@ export class ResourceEditor extends React.Component {
       },
     };
     this.metadataHandler = this.metadataHandler.bind(this);
+    this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
   }
 
   async componentDidMount() {
@@ -102,6 +104,16 @@ export class ResourceEditor extends React.Component {
     datapackage["name"] = fileResource.name;
 
     return datapackage;
+  }
+
+  //set state of rich type field. If all rich type fields have been filled,
+  // then activate the next button in the Table Schema screen
+  handleRichTypeCount(unfilledRichTypes) {
+    if (unfilledRichTypes == 0) {
+      this.setState({
+        richTypeFilled: true,
+      });
+    }
   }
 
   handleChangeMetadata = (event) => {
@@ -161,7 +173,7 @@ export class ResourceEditor extends React.Component {
       datapackage: datapackage,
     });
 
-    fileDownload(JSON.stringify(datapackage), "datapackage.json")
+    fileDownload(JSON.stringify(datapackage), "datapackage.json");
   };
 
   createResource = async (resource) => {
@@ -300,8 +312,8 @@ export class ResourceEditor extends React.Component {
   };
 
   nextScreen = () => {
-    let currentStep = this.state.currentStep
-    if (currentStep == 2){
+    let currentStep = this.state.currentStep;
+    if (currentStep == 2) {
       //TODO: check if all rich type has been added
     }
     let newStep = currentStep + 1;
@@ -381,6 +393,7 @@ export class ResourceEditor extends React.Component {
                 <TableSchema
                   schema={this.state.resource.schema}
                   data={this.state.resource.sample || []}
+                  handleRichType={this.handleRichTypeCount}
                 />
               </>
             )}
@@ -403,7 +416,7 @@ export class ResourceEditor extends React.Component {
             !this.state.isResourceEdit &&
             this.state.ui.success && (
               <button className="btn" onClick={this.handleUpload}>
-                Save and Publish
+                Save
               </button>
             )}
           {this.state.currentStep == 3 &&
@@ -416,11 +429,26 @@ export class ResourceEditor extends React.Component {
 
           {this.state.ui.success &&
             this.state.currentStep > 0 &&
-            this.state.currentStep < 3 && (
+            this.state.currentStep < 3 &&
+            this.state.currentStep !== 2 && (
               <button className="btn" onClick={this.nextScreen}>
                 Next
               </button>
             )}
+
+          {this.state.currentStep == 2 ? (
+            this.state.richTypeFilled ? (
+              <button className="btn" onClick={this.nextScreen}>
+                Next
+              </button>
+            ) : (
+              <button disabled={true} className="btn">
+                Next
+              </button>
+            )
+          ) : (
+            ""
+          )}
         </div>
       </div>
     );
