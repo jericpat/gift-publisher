@@ -6,6 +6,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "ckan-client": "git+https://github.com/datopian/ckan-client-js.git#v0.4.2",
+    "giftless-client": "git+https://github.com/datopian/giftless-client-js.git",
     "datapub": "0.2.2",
     "frictionless-ckan-mapper-js": "^1.0.0",
     "js-file-download": "^0.4.12",
