@@ -1,4 +1,5 @@
 import React from "react";
+import { Client} from 'giftless-client';
 import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
 import { onFormatBytes } from "../../utils";
@@ -10,6 +11,7 @@ class Upload extends React.Component {
     super(props);
     this.state = {
       datasetId: props.datasetId,
+      organizationId: props.organizationId,
       selectedFile: null,
       fileSize: 0,
       formattedSize: "0 KB",
@@ -111,7 +113,7 @@ class Upload extends React.Component {
   onClickHandler = async () => {
     const start = new Date().getTime();
     const { selectedFile } = this.state;
-    const { client } = this.props;
+    const client = new Client("https://giftless-gift.herokuapp.com/")
 
     const resource = data.open(selectedFile);
 
@@ -127,6 +129,23 @@ class Upload extends React.Component {
       success: false,
     });
 
+    client.upload(resource, 
+                  "gift-data", 
+                  resource._descriptor.name, 
+                  this.onProgress)
+          .then((response) => {
+            this.setState({
+              success: true,
+              loading: false,
+              fileExists: !response,
+              loaded: 100
+            });
+
+            this.props.handleUploadStatus({
+              loading: false,
+              success: true,
+            });
+          }).catch(e => console.log(e));
     // Use client to upload file to the storage and track the progress
     // client
     //   .pushBlob(resource, this.onUploadProgress)
@@ -139,10 +158,10 @@ class Upload extends React.Component {
     //     });
 
     //Temporarily set upload success to true so table preview can show in demo
-    this.props.handleUploadStatus({
-      loading: false,
-      success: true,
-    });
+    // this.props.handleUploadStatus({
+    //   loading: false,
+    //   success: true,
+    // });
     
     // })
     // .catch((error) => {
