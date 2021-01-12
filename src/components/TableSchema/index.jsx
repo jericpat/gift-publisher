@@ -11,6 +11,8 @@ import "./TableSchema.css";
 
 const TableSchema = (props) => {
   const [schema, setSchema] = useState(props.schema);
+  const [unfilledRichTypes, setUnfilledRichTypes] = useState(props.schema.fields.length - 1);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const data = React.useMemo(() => [...props.data], [schema]);
 
@@ -30,7 +32,9 @@ const TableSchema = (props) => {
     prepareRow,
   } = useTable({ columns, data });
 
+
   const handleChange = (event, key, index) => {
+    setUnfilledRichTypes(unfilledRichTypes - 1)
     const newSchema = { ...schema };
     if (key == "columnType") {
       newSchema.fields[index][key] = event.value;
@@ -39,6 +43,8 @@ const TableSchema = (props) => {
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
+    props.handleRichType(unfilledRichTypes)
+
   };
 
 
@@ -58,6 +64,7 @@ const TableSchema = (props) => {
 
 
   const renderEditSchemaField = (key) => {
+
     if (key === "type") {
       return schema.fields.map((item, index) => (
         <td key={`schema-type-field-${key}-${index}`}>
@@ -196,6 +203,7 @@ const TableSchema = (props) => {
 TableSchema.propTypes = {
   schema: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
+  handleRichType: PropTypes.func.isRequired,
 };
 
 export default TableSchema;
