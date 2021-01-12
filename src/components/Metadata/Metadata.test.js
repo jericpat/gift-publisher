@@ -53,7 +53,6 @@ describe("<Metadata />", () => {
     expect(inputTitle.props().value).toEqual("sample");
     expect(inputFormat.props().value).toEqual("csv");
     expect(inputDescription.props().value).toEqual("Lorem ...");
-    expect(inputRestricted.props().value).toEqual("private");
     expect(inputEncoding.props().value).toEqual("utf-8");
   });
 });
