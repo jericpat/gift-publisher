@@ -1,6 +1,6 @@
 import React from "react";
 import TypeProcessor from "os-types/src/index";
-import fileDownload from "js-file-download"
+import fileDownload from "js-file-download";
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
 import { v4 as uuidv4 } from "uuid";
