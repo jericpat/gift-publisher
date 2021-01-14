@@ -5,14 +5,11 @@ describe("End2End test of publisher app", function () {
     const filename = "sample.csv";
 
     cy.get(".choose-btn").first().click();
-    cy.fixture(filename).then(function (fileContent) {
-      cy.get(".upload-area__drop__input").attachFile(
-        { fileContent, fileName: "sample.csv" },
-        {
-          subjectType: "drag-n-drop",
-        }
-      );
-    });
-    cy.contains("next");
+    cy.waitUntil(() => cy.get(".upload-area__drop__input").attachFile({ filePath: 'sample.csv', fileName: 'sample.csv' }));
+
+    cy.get('table').contains('th', 'LOCATION');
+    cy.get('.btn').click();
+    cy.contains('Describe your dataset')
+
   });
 });
