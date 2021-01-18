@@ -59,7 +59,12 @@ var TableSchema = function TableSchema(props) {
   var _useState = (0, _react.useState)(props.schema),
       _useState2 = _slicedToArray(_useState, 2),
       schema = _useState2[0],
-      setSchema = _useState2[1]; // eslint-disable-next-line react-hooks/exhaustive-deps
+      setSchema = _useState2[1];
+
+  var _useState3 = (0, _react.useState)(props.schema.fields.length - 1),
+      _useState4 = _slicedToArray(_useState3, 2),
+      unfilledRichTypes = _useState4[0],
+      setUnfilledRichTypes = _useState4[1]; // eslint-disable-next-line react-hooks/exhaustive-deps
 
 
   var data = _react.default.useMemo(function () {
@@ -88,6 +93,8 @@ var TableSchema = function TableSchema(props) {
       prepareRow = _useTable.prepareRow;
 
   var handleChange = function handleChange(event, key, index) {
+    setUnfilledRichTypes(unfilledRichTypes - 1);
+
     var newSchema = _objectSpread({}, schema);
 
     if (key == "columnType") {
@@ -97,6 +104,8 @@ var TableSchema = function TableSchema(props) {
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
+
+    props.handleRichType(unfilledRichTypes);
   }; //if the the user upload a new file, will update the state
   //and render with the new values
 
@@ -240,7 +249,8 @@ var TableSchema = function TableSchema(props) {
 
 TableSchema.propTypes = {
   schema: _propTypes.default.object.isRequired,
-  data: _propTypes.default.array.isRequired
+  data: _propTypes.default.array.isRequired,
+  handleRichType: _propTypes.default.func.isRequired
 };
 var _default = TableSchema;
 exports.default = _default;
