@@ -4,11 +4,11 @@ const execSync = require('child_process').execSync
 
 
 const fileToCopy = {
-  'Metadata': 'import "./Metadata.css";',
-  'ProgressBar': 'import "./ProgressBar.css";',
-  'TablePreview':  undefined,
-  'TableSchema': 'import "./TableSchema.css";',
-  'Upload': undefined
+  Metadata: 'import "./Metadata.css";',
+  ProgressBar: 'import "./ProgressBar.css";',
+  TablePreview:  undefined,
+  TableSchema: 'import "./TableSchema.css";',
+  Upload: undefined
 }
 
 
@@ -19,7 +19,7 @@ for(let keys in fileToCopy){
     )
     .toString()
     .split('\n');
-  if (typeof fileToCopy[keys] != 'undefined') {
+  if (typeof fileToCopy[keys]) {
     const index = fileContent.indexOf(fileToCopy[keys]);
 
     fileContent.splice(index, 1);
