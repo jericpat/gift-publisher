@@ -9,7 +9,7 @@ exports.default = exports.ResourceEditor = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var OSTypes = _interopRequireWildcard(require("os-types/src/index"));
+var _index = _interopRequireDefault(require("os-types/src/index"));
 
 var _jsFileDownload = _interopRequireDefault(require("js-file-download"));
 
@@ -28,10 +28,6 @@ var _TableSchema = _interopRequireDefault(require("../TableSchema"));
 var _Metadata = _interopRequireDefault(require("../Metadata"));
 
 var _utils = require("./utils");
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -161,7 +157,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
                 f.type = f.columnType;
                 delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
               });
-              fdp = new OSTypes().fieldsToModel(resource["schema"]["fields"]);
+              fdp = new _index.default().fieldsToModel(resource["schema"]["fields"]);
               resource.schema = fdp.schema;
               datapackage.model = fdp.model;
               datapackage.resources[0] = resource;
@@ -481,6 +477,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       client: null,
       isResourceEdit: false,
       currentStep: 1,
+      richTypeFilled: false,
       datapackage: {
         "@context": "http://schemas.frictionlessdata.io/fiscal-data-package.jsonld",
         author: "",
@@ -507,6 +504,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       }
     };
     _this.metadataHandler = _this.metadataHandler.bind(_assertThisInitialized(_this));
+    _this.handleRichTypeCount = _this.handleRichTypeCount.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -566,6 +564,17 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       datapackage["title"] = fileResource.name;
       datapackage["name"] = fileResource.name;
       return datapackage;
+    } //set state of rich type field. If all rich type fields have been filled,
+    // then activate the next button in the Table Schema screen
+
+  }, {
+    key: "handleRichTypeCount",
+    value: function handleRichTypeCount(unfilledRichTypes) {
+      if (unfilledRichTypes == 0) {
+        this.setState({
+          richTypeFilled: true
+        });
+      }
     }
   }, {
     key: "render",
@@ -600,7 +609,10 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
         metadataHandler: this.metadataHandler,
         datasetId: this.state.datasetId,
         handleUploadStatus: this.handleUploadStatus,
-        onChangeResourceId: this.onChangeResourceId
+        onChangeResourceId: this.onChangeResourceId,
+        organizationId: this.props.config.organizationId,
+        authToken: this.props.config.authToken,
+        lfs: this.props.config.lfs
       })), /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-edit-area"
       }, this.state.ui.success && this.state.currentStep == 1 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
@@ -616,7 +628,8 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
         className: "upload-header__title_h1"
       }, "Describe your dataset")), /*#__PURE__*/_react.default.createElement(_TableSchema.default, {
         schema: this.state.resource.schema,
-        data: this.state.resource.sample || []
+        data: this.state.resource.sample || [],
+        handleRichType: this.handleRichTypeCount
       })), this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
@@ -629,13 +642,19 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       }, this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.handleUpload
-      }, "Save and Publish"), this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
+      }, "Save"), this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.downloadDatapackage
-      }, "Download Package"), this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && /*#__PURE__*/_react.default.createElement("button", {
+      }, "Download Package"), this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && this.state.currentStep !== 2 && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.nextScreen
-      }, "Next")));
+      }, "Next"), this.state.currentStep == 2 ? this.state.richTypeFilled ? /*#__PURE__*/_react.default.createElement("button", {
+        className: "btn",
+        onClick: this.nextScreen
+      }, "Next") : /*#__PURE__*/_react.default.createElement("button", {
+        disabled: true,
+        className: "btn"
+      }, "Next") : ""));
     }
   }]);
 
@@ -652,9 +671,9 @@ ResourceEditor.defaultProps = {
   config: {
     authToken: "be270cae-1c77-4853-b8c1-30b6cf5e9878",
     api: "http://localhost:5000",
-    lfs: "http://localhost:5001",
+    lfs: "https://giftless-gift.herokuapp.com/",
     // Feel free to modify this
-    organizationId: "myorg",
+    organizationId: "gift-data",
     datasetId: "data-test-2"
   }
 };
