@@ -1,6 +1,7 @@
 # GIFT DATA PUBLISHING APP
 
 A data publishing app for GIFT. View the live site [here](https://datopian.github.io/gift-publisher)
+
 # For Developers
 
 ### `yarn start`
@@ -23,3 +24,14 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
+
+## Build Component Library
+
+To build the comoponents into libraries that can be imported into `gift-portal`, run the following
+
+```bash
+$ yarn build:lib
+```
+
+This commands builds the components without including the css import.
+**NOTE**: Dont ignore the `dist/` folder while pushing new update to github and always ensure that before pushing new update to github run `yarn build:lib`
