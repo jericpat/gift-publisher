@@ -9,6 +9,8 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
+var _giftlessClient = require("giftless-client");
+
 var data = _interopRequireWildcard(require("frictionless.js"));
 
 var _ProgressBar = _interopRequireDefault(require("../ProgressBar"));
@@ -200,14 +202,16 @@ var Upload = /*#__PURE__*/function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "onClickHandler", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var start, selectedFile, client, resource;
+      var start, selectedFile, _this$props, organizationId, lfs, client, resource;
+
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               start = new Date().getTime();
               selectedFile = _this.state.selectedFile;
-              client = _this.props.client;
+              _this$props = _this.props, organizationId = _this$props.organizationId, lfs = _this$props.lfs;
+              client = new _giftlessClient.Client(lfs);
               resource = data.open(selectedFile);
 
               _this.setState({
@@ -220,35 +224,36 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 loading: true,
                 error: false,
                 success: false
-              }); // Use client to upload file to the storage and track the progress
-              // client
-              //   .pushBlob(resource, this.onUploadProgress)
-              //   .then((response) => {
-              //     this.setState({
-              //       success: true,
-              //       loading: false,
-              //       fileExists: ! response,
-              //       loaded: 100
-              //     });
-              //Temporarily set upload success to true so table preview can show in demo
+              });
 
+              client.upload(resource, organizationId, _this.state.datasetId, _this.onProgress).then(function (response) {
+                _this.setState({
+                  success: true,
+                  loading: false,
+                  fileExists: !response,
+                  loaded: 100
+                });
 
-              _this.props.handleUploadStatus({
-                loading: false,
-                success: true
-              }); // })
-              // .catch((error) => {
-              //   console.error("Upload failed with error: " + error);
-              //   this.setState({ error: true, loading: false });
-              //   this.props.handleUploadStatus({
-              //     loading: false,
-              //     success: false,
-              //     error: true,
-              //   });
-              // });
+                _this.props.handleUploadStatus({
+                  loading: false,
+                  success: true
+                });
+              }).catch(function (error) {
+                console.error("Upload failed with error: " + error);
 
+                _this.setState({
+                  error: true,
+                  loading: false
+                });
 
-            case 7:
+                _this.props.handleUploadStatus({
+                  loading: false,
+                  success: false,
+                  error: true
+                });
+              });
+
+            case 8:
             case "end":
               return _context2.stop();
           }
@@ -258,6 +263,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
     _this.state = {
       datasetId: props.datasetId,
+      organizationId: props.organizationId,
       selectedFile: null,
       fileSize: 0,
       formattedSize: "0 KB",
