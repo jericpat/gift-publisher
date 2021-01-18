@@ -1,6 +1,6 @@
 import React from "react";
-import * as OSTypes from "os-types/src/index";
-import fileDownload from "js-file-download"
+import TypeProcessor from "os-types/src/index";
+import fileDownload from "js-file-download";
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
 import { v4 as uuidv4 } from "uuid";
@@ -30,6 +30,7 @@ export class ResourceEditor extends React.Component {
       client: null,
       isResourceEdit: false,
       currentStep: 1,
+      richTypeFilled: false,
       datapackage: {
         "@context":
           "http://schemas.frictionlessdata.io/fiscal-data-package.jsonld",
@@ -59,6 +60,7 @@ export class ResourceEditor extends React.Component {
       },
     };
     this.metadataHandler = this.metadataHandler.bind(this);
+    this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
   }
 
   async componentDidMount() {
@@ -102,6 +104,16 @@ export class ResourceEditor extends React.Component {
     datapackage["name"] = fileResource.name;
 
     return datapackage;
+  }
+
+  //set state of rich type field. If all rich type fields have been filled,
+  // then activate the next button in the Table Schema screen
+  handleRichTypeCount(unfilledRichTypes) {
+    if (unfilledRichTypes == 0) {
+      this.setState({
+        richTypeFilled: true,
+      });
+    }
   }
 
   handleChangeMetadata = (event) => {
@@ -152,7 +164,7 @@ export class ResourceEditor extends React.Component {
       f.type = f.columnType;
       delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
     });
-    let fdp = new OSTypes().fieldsToModel(resource["schema"]["fields"]);
+    let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
     resource.schema = fdp.schema;
     datapackage.model = fdp.model;
     datapackage.resources[0] = resource;
@@ -161,7 +173,7 @@ export class ResourceEditor extends React.Component {
       datapackage: datapackage,
     });
 
-    fileDownload(JSON.stringify(datapackage), "datapackage.json")
+    fileDownload(JSON.stringify(datapackage), "datapackage.json");
   };
 
   createResource = async (resource) => {
@@ -300,8 +312,8 @@ export class ResourceEditor extends React.Component {
   };
 
   nextScreen = () => {
-    let currentStep = this.state.currentStep
-    if (currentStep == 2){
+    let currentStep = this.state.currentStep;
+    if (currentStep == 2) {
       //TODO: check if all rich type has been added
     }
     let newStep = currentStep + 1;
@@ -350,6 +362,9 @@ export class ResourceEditor extends React.Component {
                 datasetId={this.state.datasetId}
                 handleUploadStatus={this.handleUploadStatus}
                 onChangeResourceId={this.onChangeResourceId}
+                organizationId={this.props.config.organizationId}
+                authToken={this.props.config.authToken}
+                lfs={this.props.config.lfs}
               />
             </>
           )}
@@ -378,6 +393,7 @@ export class ResourceEditor extends React.Component {
                 <TableSchema
                   schema={this.state.resource.schema}
                   data={this.state.resource.sample || []}
+                  handleRichType={this.handleRichTypeCount}
                 />
               </>
             )}
@@ -400,7 +416,7 @@ export class ResourceEditor extends React.Component {
             !this.state.isResourceEdit &&
             this.state.ui.success && (
               <button className="btn" onClick={this.handleUpload}>
-                Save and Publish
+                Save
               </button>
             )}
           {this.state.currentStep == 3 &&
@@ -413,11 +429,26 @@ export class ResourceEditor extends React.Component {
 
           {this.state.ui.success &&
             this.state.currentStep > 0 &&
-            this.state.currentStep < 3 && (
+            this.state.currentStep < 3 &&
+            this.state.currentStep !== 2 && (
               <button className="btn" onClick={this.nextScreen}>
                 Next
               </button>
             )}
+
+          {this.state.currentStep == 2 ? (
+            this.state.richTypeFilled ? (
+              <button className="btn" onClick={this.nextScreen}>
+                Next
+              </button>
+            ) : (
+              <button disabled={true} className="btn">
+                Next
+              </button>
+            )
+          ) : (
+            ""
+          )}
         </div>
       </div>
     );
@@ -432,8 +463,8 @@ ResourceEditor.defaultProps = {
   config: {
     authToken: "be270cae-1c77-4853-b8c1-30b6cf5e9878",
     api: "http://localhost:5000",
-    lfs: "http://localhost:5001", // Feel free to modify this
-    organizationId: "myorg",
+    lfs: "https://giftless-gift.herokuapp.com/", // Feel free to modify this
+    organizationId: "gift-data",
     datasetId: "data-test-2",
   },
 };

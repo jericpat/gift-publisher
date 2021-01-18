@@ -1,4 +1,5 @@
 import React from "react";
+import { Client } from "giftless-client";
 import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
 import { onFormatBytes } from "../../utils";
@@ -10,6 +11,7 @@ class Upload extends React.Component {
     super(props);
     this.state = {
       datasetId: props.datasetId,
+      organizationId: props.organizationId,
       selectedFile: null,
       fileSize: 0,
       formattedSize: "0 KB",
@@ -21,7 +23,7 @@ class Upload extends React.Component {
       loading: false,
       timeRemaining: 0,
       hashInProgress: false,
-      hashLoaded: 0
+      hashLoaded: 0,
     };
   }
 
@@ -56,17 +58,18 @@ class Upload extends React.Component {
       });
 
       //prepare sample for use in table preview component
-      let sample = []
+      let sample = [];
       sample_array.slice(1, 5).forEach((item) => {
-        let temp_obj = {}
+        let temp_obj = {};
         item.forEach((field, i) => {
-          temp_obj[column_names[i]] = field
-        })
-        sample.push(temp_obj)
+          temp_obj[column_names[i]] = field;
+        });
+        sample.push(temp_obj);
       });
 
-      this.props.metadataHandler(Object.assign(file.descriptor, { hash, sample, columns }));
-
+      this.props.metadataHandler(
+        Object.assign(file.descriptor, { hash, sample, columns })
+      );
     }
 
     this.setState({
@@ -111,7 +114,8 @@ class Upload extends React.Component {
   onClickHandler = async () => {
     const start = new Date().getTime();
     const { selectedFile } = this.state;
-    const { client } = this.props;
+    const { organizationId, lfs } = this.props;
+    const client = new Client(lfs);
 
     const resource = data.open(selectedFile);
 
@@ -127,33 +131,30 @@ class Upload extends React.Component {
       success: false,
     });
 
-    // Use client to upload file to the storage and track the progress
-    // client
-    //   .pushBlob(resource, this.onUploadProgress)
-    //   .then((response) => {
-    //     this.setState({
-    //       success: true,
-    //       loading: false,
-    //       fileExists: ! response,
-    //       loaded: 100
-    //     });
+    client
+      .upload(resource, organizationId, this.state.datasetId, this.onProgress)
+      .then((response) => {
+        this.setState({
+          success: true,
+          loading: false,
+          fileExists: !response,
+          loaded: 100,
+        });
 
-    //Temporarily set upload success to true so table preview can show in demo
-    this.props.handleUploadStatus({
-      loading: false,
-      success: true,
-    });
-    
-    // })
-    // .catch((error) => {
-    //   console.error("Upload failed with error: " + error);
-    //   this.setState({ error: true, loading: false });
-    //   this.props.handleUploadStatus({
-    //     loading: false,
-    //     success: false,
-    //     error: true,
-    //   });
-    // });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: true,
+        });
+      })
+      .catch((error) => {
+        console.error("Upload failed with error: " + error);
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+        });
+      });
   };
 
   render() {
@@ -164,7 +165,7 @@ class Upload extends React.Component {
       timeRemaining,
       selectedFile,
       formattedSize,
-      hashInProgress
+      hashInProgress,
     } = this.state;
     return (
       <div className="upload-area">
@@ -203,7 +204,9 @@ class Upload extends React.Component {
                 <li className="list-item">
                   <div className="upload-list-item">
                     <div>
-                      <p className="upload-file-name">Uploading {selectedFile.name}</p>
+                      <p className="upload-file-name">
+                        Uploading {selectedFile.name}
+                      </p>
                       <p className="upload-file-size">{formattedSize}</p>
                     </div>
                     <div>
