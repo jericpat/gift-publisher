@@ -1,5 +1,5 @@
 import React from "react";
-import * as OSTypes from "os-types/src/index";
+import TypeProcessor from "os-types/src/index";
 import fileDownload from "js-file-download";
 import PropTypes from "prop-types";
 import frictionlessCkanMapper from "frictionless-ckan-mapper-js";
@@ -164,7 +164,7 @@ export class ResourceEditor extends React.Component {
       f.type = f.columnType;
       delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
     });
-    let fdp = new OSTypes().fieldsToModel(resource["schema"]["fields"]);
+    let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
     resource.schema = fdp.schema;
     datapackage.model = fdp.model;
     datapackage.resources[0] = resource;
@@ -362,6 +362,9 @@ export class ResourceEditor extends React.Component {
                 datasetId={this.state.datasetId}
                 handleUploadStatus={this.handleUploadStatus}
                 onChangeResourceId={this.onChangeResourceId}
+                organizationId={this.props.config.organizationId}
+                authToken={this.props.config.authToken}
+                lfs={this.props.config.lfs}
               />
             </>
           )}
@@ -460,8 +463,8 @@ ResourceEditor.defaultProps = {
   config: {
     authToken: "be270cae-1c77-4853-b8c1-30b6cf5e9878",
     api: "http://localhost:5000",
-    lfs: "http://localhost:5001", // Feel free to modify this
-    organizationId: "myorg",
+    lfs: "https://giftless-gift.herokuapp.com/", // Feel free to modify this
+    organizationId: "gift-data",
     datasetId: "data-test-2",
   },
 };
