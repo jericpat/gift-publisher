@@ -3,7 +3,7 @@ import { Client } from "giftless-client";
 import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
 import { onFormatBytes } from "../../utils";
-import { Choose } from "datapub";
+import { Choose } from "datapub-nocss";
 import toArray from "stream-to-array";
 
 class Upload extends React.Component {
