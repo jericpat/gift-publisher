@@ -19,7 +19,7 @@ for(let keys in fileToCopy){
     )
     .toString()
     .split('\n');
-  if (typeof fileToCopy[keys]) {
+  if (fileToCopy[keys]) {
     const index = fileContent.indexOf(fileToCopy[keys]);
 
     fileContent.splice(index, 1);
