@@ -47,4 +47,5 @@ const TablePreview = ({ columns, data }) => {
   );
 };
 
+
 export default TablePreview;
