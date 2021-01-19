@@ -5887,10 +5887,10 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-datapub@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/datapub/-/datapub-0.2.2.tgz#37c8ecbeafc5b5aea8804f53181028f671fcaf65"
-  integrity sha512-HW4i8MmpMZZxcD2JwA+2ZdQezOrAjH15YJiQDxZm1Z45HJWbm72pN+JCEij4jaH3ist32lst/5aJbnMPzeuQFA==
+"datapub-nocss@0.1.0  ":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/datapub-nocss/-/datapub-nocss-0.1.0.tgz#9bdc0ede2cd04c8fd9276dee485e455d3c5cfd34"
+  integrity sha512-hEvNk6js2j+Bqzb3QPAFb5XggPXKoX4jxQqKZkpdJBwS+RW+8GFQ8RAB18z7/awlLBkaoMwwQ7vpAaIoM2J2jg==
   dependencies:
     axios "^0.19.2"
     ckan-client "git+https://github.com/datopian/ckan-client-js.git#v0.4.2"
@@ -6355,6 +6355,11 @@ electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.564, electron-to-chromi
   version "1.3.619"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.619.tgz#4dc529ae802f5c9c31e7eea830144340539b62b4"
   integrity sha512-WFGatwtk7Fw0QcKCZzfGD72hvbcXV8kLY8aFuj0Ip0QRnOtyLYMsc+wXbSjb2w4lk1gcAeNU1/lQ20A+tvuypQ==
+
+electron-to-chromium@^1.3.634:
+  version "1.3.641"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.641.tgz#03f14efd70a7971eff2efc947b3c1d0f717c82b9"
+  integrity sha512-b0DLhsHSHESC1I+Nx6n4w4Lr61chMd3m/av1rZQhS2IXTzaS5BMM5N+ldWdMIlni9CITMRM09m8He4+YV/92TA==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
