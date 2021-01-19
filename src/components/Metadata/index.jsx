@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import "./Metadata.css";
-import { encodeData, formatData } from "datapub";
+import { encodeData, formatData } from "datapub-nocss";
 
 const Metadata = ({ metadata, handleChange }) => {
   return (
