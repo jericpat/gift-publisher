@@ -1,4 +1,5 @@
 import React from "react";
+import axios from 'axios';
 import TypeProcessor from "os-types/src/index";
 import fileDownload from "js-file-download";
 import PropTypes from "prop-types";
@@ -325,8 +326,17 @@ export class ResourceEditor extends React.Component {
     this.setState({ currentStep: newStep });
   };
 
-  handleUpload = () => {
-    alert("Uploaded Successfully");
+  handleUpload = async () => {
+    axios({
+      method: 'post',
+      url: `/api/dataset/${this.state.datasetId}`,
+      data: {
+        metadata: this.state.resource,
+        description: this.state.resource.description
+      }
+    })
+    .then(response => alert('Uploaded Sucessfully'), 
+          error => alert('Error on upload dataset'));
   };
 
   render() {
