@@ -470,8 +470,8 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
                 method: 'post',
                 url: "/api/dataset/".concat(_this.state.datasetId),
                 data: {
-                  metadata: _this.state.resource,
-                  description: _this.state.resource.description
+                  metadata: _this.state.datapackage,
+                  description: _this.state.datapackage.description
                 }
               }).then(function (response) {
                 return alert('Uploaded Sucessfully');
