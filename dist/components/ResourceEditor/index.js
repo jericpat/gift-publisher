@@ -9,6 +9,8 @@ exports.default = exports.ResourceEditor = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
 var _index = _interopRequireDefault(require("os-types/src/index"));
 
 var _jsFileDownload = _interopRequireDefault(require("js-file-download"));
@@ -459,9 +461,31 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleUpload", function () {
-      alert("Uploaded Successfully");
-    });
+    _defineProperty(_assertThisInitialized(_this), "handleUpload", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              (0, _axios.default)({
+                method: 'post',
+                url: "/api/dataset/".concat(_this.state.datasetId),
+                data: {
+                  metadata: _this.state.resource,
+                  description: _this.state.resource.description
+                }
+              }).then(function (response) {
+                return alert('Uploaded Sucessfully');
+              }, function (error) {
+                return alert('Error on upload dataset');
+              });
+
+            case 1:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8);
+    })));
 
     _this.state = {
       datasetId: _this.props.config.datasetId,
@@ -511,21 +535,21 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
   _createClass(ResourceEditor, [{
     key: "componentDidMount",
     value: function () {
-      var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+      var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
         var config, authToken, api, lfs, organizationId, datasetId, resourceId;
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 config = this.props.config;
                 authToken = config.authToken, api = config.api, lfs = config.lfs, organizationId = config.organizationId, datasetId = config.datasetId, resourceId = config.resourceId;
 
               case 2:
               case "end":
-                return _context8.stop();
+                return _context9.stop();
             }
           }
-        }, _callee8, this);
+        }, _callee9, this);
       }));
 
       function componentDidMount() {

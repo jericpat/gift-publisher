@@ -11,7 +11,7 @@ import TableSchema from "./components/TableSchema";
 
 import Metadata from "./components/Metadata";
 import "./App.css";
-import { removeHyphen } from "./utils";
+import { removeHyphen } from "../../utils";
 import ReactLogo from "./progressBar.svg";
 
 export class ResourceEditor extends React.Component {
