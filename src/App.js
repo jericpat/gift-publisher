@@ -331,8 +331,8 @@ export class ResourceEditor extends React.Component {
       method: 'post',
       url: `/api/dataset/${this.state.datasetId}`,
       data: {
-        metadata: this.state.resource,
-        description: this.state.resource.description
+        metadata: this.state.datapackage,
+        description: this.state.datapackage.description
       }
     })
     .then(response => alert('Uploaded Sucessfully'), 
