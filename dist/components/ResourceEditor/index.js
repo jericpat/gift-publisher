@@ -510,19 +510,6 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
         model: {},
         name: "",
         profile: "data-package",
-        resources: [{
-          name: "",
-          count_of_rows: "",
-          dialect: {},
-          title: "",
-          description: "",
-          format: "",
-          mediatype: "",
-          encoding: "",
-          bytes: 0,
-          hash: "",
-          schema: {}
-        }],
         revision: undefined,
         title: ""
       }
@@ -574,8 +561,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
     value: function mapResourceToDatapackageResource(fileResource) {
       var datapackage = _objectSpread({}, this.state.datapackage);
 
-      var resource = _objectSpread({}, datapackage["resources"][0]);
-
+      var resource = {};
       resource["bytes"] = fileResource.size;
       resource["hash"] = fileResource.hash;
       resource["format"] = fileResource.format;
@@ -584,7 +570,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       resource["mediatype"] = fileResource.type;
       resource["name"] = fileResource.name;
       resource["dialect"] = fileResource.dialect;
-      datapackage["resources"][0] = resource;
+      datapackage["resources"] = [resource];
       datapackage["title"] = fileResource.name;
       datapackage["name"] = fileResource.name;
       return datapackage;

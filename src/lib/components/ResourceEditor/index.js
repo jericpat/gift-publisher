@@ -38,21 +38,6 @@ export class ResourceEditor extends React.Component {
         model: {},
         name: "",
         profile: "data-package",
-        resources: [
-          {
-            name: "",
-            count_of_rows: "",
-            dialect: {},
-            title: "",
-            description: "",
-            format: "",
-            mediatype: "",
-            encoding: "",
-            bytes: 0,
-            hash: "",
-            schema: {},
-          },
-        ],
         revision: undefined,
         title: "",
       },
@@ -86,7 +71,7 @@ export class ResourceEditor extends React.Component {
 
   mapResourceToDatapackageResource(fileResource) {
     let datapackage = { ...this.state.datapackage };
-    let resource = { ...datapackage["resources"][0] };
+    let resource = {}
 
     resource["bytes"] = fileResource.size;
     resource["hash"] = fileResource.hash;
@@ -97,7 +82,7 @@ export class ResourceEditor extends React.Component {
     resource["name"] = fileResource.name;
     resource["dialect"] = fileResource.dialect;
 
-    datapackage["resources"][0] = resource;
+    datapackage["resources"] = [resource];
     datapackage["title"] = fileResource.name;
     datapackage["name"] = fileResource.name;
 
