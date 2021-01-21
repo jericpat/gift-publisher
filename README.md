@@ -35,3 +35,11 @@ $ yarn build:lib
 
 This commands builds the components without including the css import.
 **NOTE**: Dont ignore the `dist/` folder while pushing new update to github and always ensure that before pushing new update to github run `yarn build:lib`
+
+Base on the fact that `datapub` contains css and always an issue when `gift-publisher` is imported in `gift-portal`, a datapub with no css is created. Due to this a separate branch called `Package` is created.
+
+Hence new update should be added to branch `Package`  and the following step should be taken;
+
+1. run `yarn build:lib`
+2. push new update to branch `Package`
+3. include new update in `gift-portal` package.json as `"gitfpub":  "git+https://github.com/datopian/gift-publisher.git#package#add-commit-hash"`
