@@ -620,7 +620,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
         datasetId: this.state.datasetId,
         handleUploadStatus: this.handleUploadStatus,
         onChangeResourceId: this.onChangeResourceId,
-        organizationId: this.props.config.organizationId,
+        organizationId: this.props.config.organisationId,
         authToken: this.props.config.authToken,
         lfs: this.props.config.lfs
       })), /*#__PURE__*/_react.default.createElement("div", {
