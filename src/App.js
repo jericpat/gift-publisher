@@ -301,7 +301,7 @@ export class DatasetEditor extends React.Component {
   handleUpload = async () => {
     axios({
       method: 'post',
-      url: `/api/dataset/${this.state.datasetId}`,
+      url: `${this.props.config.metastoreApi+this.state.datasetId}`,
       data: {
         metadata: this.state.resource,
         description: this.state.resource.description
@@ -313,6 +313,7 @@ export class DatasetEditor extends React.Component {
 
   render() {
     const { success, loading } = this.state.ui;
+    console.log(this.state.dataset.name)
     return (
       <div className="App">
         <img src={ReactLogo} width="50%" className="Img" />
