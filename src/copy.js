@@ -65,7 +65,7 @@ const appContent1 = appContent.join('\n')
                               .replace('<img src={ReactLogo} width="50%" className="Img" />', '');
 
 
-fs.writeFileSync(`${__dirname}/lib/components/ResourceEditor/index.js`,
+fs.writeFileSync(`${__dirname}/lib/components/DatasetEditor/index.js`,
                   appContent1);
 
 // copy directory (src/utils, src/db src/assests) to lib/
