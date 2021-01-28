@@ -443,16 +443,6 @@ export class DatasetEditor extends React.Component {
           ) : (
             ""
           )}
-
-          {
-            (this.state.currentStep == 1 && Object.keys(this.state.resource).length !=0) 
-            && 
-            (
-            <button className="btn" onClick={this.nextScreen}>
-              Next
-            </button>
-          )  
-          }
         </div>
       </div>
     );
