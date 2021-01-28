@@ -659,10 +659,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       }, "Next") : /*#__PURE__*/_react.default.createElement("button", {
         disabled: true,
         className: "btn"
-      }, "Next") : "", this.state.currentStep == 1 && Object.keys(this.state.resource).length != 0 && /*#__PURE__*/_react.default.createElement("button", {
-        className: "btn",
-        onClick: this.nextScreen
-      }, "Next")));
+      }, "Next") : ""));
     }
   }]);
 
