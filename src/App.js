@@ -20,6 +20,7 @@ export class DatasetEditor extends React.Component {
     this.state = {
       dataset: this.props.config.dataset,
       resource: this.props.config.dataset.resources[0] || {},
+      datasetId: this.props.config.dataset.id,
       ui: {
         fileOrLink: "",
         uploadComplete: false,
@@ -41,7 +42,7 @@ export class DatasetEditor extends React.Component {
     const {
       authToken,
       api,
-      lfs,
+      lfsServerUrl,
       organizationId,
       datasetId,
       resourceId,
@@ -345,9 +346,9 @@ export class DatasetEditor extends React.Component {
                 datasetId={this.state.datasetId}
                 handleUploadStatus={this.handleUploadStatus}
                 onChangeResourceId={this.onChangeResourceId}
-                organizationId={this.props.config.organizationId}
+                organizationId={'gift-data'}
                 authToken={this.props.config.authToken}
-                lfs={this.props.config.lfs}
+                lfsServerUrl={this.props.config.lfsServerUrl}
               />
             </>
             
@@ -455,10 +456,10 @@ export class DatasetEditor extends React.Component {
  * */
 DatasetEditor.defaultProps = {
   config: {
-    authorizedApi: "/api/authorize",
-    lfs: "https://localhost:6000", 
+    authorizedApi: "/api/authorize/",
+    lfsServerUrl: "https://localhost:6000", 
     dataset: {},
-    metastoreApi: '/api/dataset'
+    metastoreApi: '/api/dataset/'
   },
 };
 
