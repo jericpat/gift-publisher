@@ -613,7 +613,12 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         organizationId: 'gift-data',
         authToken: this.props.config.authToken,
         lfsServerUrl: this.props.config.lfsServerUrl
-      })), /*#__PURE__*/_react.default.createElement("div", {
+      }), /*#__PURE__*/_react.default.createElement("div", {
+        className: "resource-edit-actions"
+      }, this.state.currentStep == 1 && Object.keys(this.state.resource).length != 0 && /*#__PURE__*/_react.default.createElement("button", {
+        className: "btn",
+        onClick: this.nextScreen
+      }, "Next ", this.state.currentStep))), /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-edit-area"
       }, this.state.ui.success && this.state.currentStep == 1 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
