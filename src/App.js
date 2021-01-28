@@ -14,13 +14,13 @@ import "./App.css";
 import { removeHyphen } from "../../utils";
 import ReactLogo from "./progressBar.svg";
 
-export class ResourceEditor extends React.Component {
+export class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      datasetId: this.props.config.datasetId,
-      resourceId: "",
-      resource: this.props.resource || {},
+      dataset: this.props.config.dataset,
+      resource: this.props.config.dataset.resources[0] || {},
+      datasetId: this.props.config.dataset.id,
       ui: {
         fileOrLink: "",
         uploadComplete: false,
@@ -32,18 +32,6 @@ export class ResourceEditor extends React.Component {
       isResourceEdit: false,
       currentStep: 1,
       richTypeFilled: false,
-      datapackage: {
-        "@context":
-          "http://schemas.frictionlessdata.io/fiscal-data-package.jsonld",
-        author: "",
-        bytes: undefined,
-        description: "",
-        model: {},
-        name: "",
-        profile: "data-package",
-        revision: undefined,
-        title: "",
-      },
     };
     this.metadataHandler = this.metadataHandler.bind(this);
     this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
@@ -54,7 +42,7 @@ export class ResourceEditor extends React.Component {
     const {
       authToken,
       api,
-      lfs,
+      lfsServerUrl,
       organizationId,
       datasetId,
       resourceId,
@@ -73,7 +61,7 @@ export class ResourceEditor extends React.Component {
   }
 
   mapResourceToDatapackageResource(fileResource) {
-    let datapackage = { ...this.state.datapackage };
+    let datapackage = { ...this.state.dataset };
     let resource = {}
 
     resource["bytes"] = fileResource.size;
@@ -107,7 +95,7 @@ export class ResourceEditor extends React.Component {
     const value = target.value;
     const name = target.name;
     let resourceCopy = { ...this.state.resource };
-    let datapackageCopy = { ...this.state.datapackage };
+    let datapackageCopy = { ...this.state.dataset };
 
     if (["format", "encoding"].includes(name)) {
       //changes shopuld be made to datapackage resource
@@ -144,7 +132,7 @@ export class ResourceEditor extends React.Component {
   };
 
   downloadDatapackage = async () => {
-    let datapackage = { ...this.state.datapackage };
+    let datapackage = { ...this.state.dataset };
     let resource = { ...datapackage.resources[0] };
     resource.schema.fields.forEach((f) => {
       f.type = f.columnType;
@@ -314,7 +302,7 @@ export class ResourceEditor extends React.Component {
   handleUpload = async () => {
     axios({
       method: 'post',
-      url: `/api/dataset/${this.state.datasetId}`,
+      url: `${this.props.config.metastoreApi+this.state.datasetId}`,
       data: {
         metadata: this.state.datapackage,
         description: this.state.datapackage.description
@@ -326,6 +314,7 @@ export class ResourceEditor extends React.Component {
 
   render() {
     const { success, loading } = this.state.ui;
+    console.log(this.state.dataset.name)
     return (
       <div className="App">
         <img src={ReactLogo} width="50%" className="Img" />
@@ -339,7 +328,7 @@ export class ResourceEditor extends React.Component {
             return this.handleSubmitMetadata();
           }}
         >
-          {!this.state.ui.success && (
+          {(!this.state.ui.success && this.state.currentStep==1)&& (
             <>
               <div className="upload-header">
                 <h1 className="upload-header__title_h1">
@@ -357,11 +346,12 @@ export class ResourceEditor extends React.Component {
                 datasetId={this.state.datasetId}
                 handleUploadStatus={this.handleUploadStatus}
                 onChangeResourceId={this.onChangeResourceId}
-                organizationId={this.props.config.organisationId}
+                organizationId={'gift-data'}
                 authToken={this.props.config.authToken}
-                lfs={this.props.config.lfs}
+                lfsServerUrl={this.props.config.lfsServerUrl}
               />
             </>
+            
           )}
 
           <div className="upload-edit-area">
@@ -444,6 +434,16 @@ export class ResourceEditor extends React.Component {
           ) : (
             ""
           )}
+
+          {
+            (this.state.currentStep == 1 && Object.keys(this.state.resource).length !=0) 
+            && 
+            (
+            <button className="btn" onClick={this.nextScreen}>
+              Next
+            </button>
+          )  
+          }
         </div>
       </div>
     );
@@ -454,18 +454,17 @@ export class ResourceEditor extends React.Component {
  * If the parent component doesn't specify a `config` and scope prop, then
  * the default values will be used.
  * */
-ResourceEditor.defaultProps = {
+DatasetEditor.defaultProps = {
   config: {
-    authToken: "be270cae-1c77-4853-b8c1-30b6cf5e9878",
-    api: "http://localhost:5000",
-    lfs: "https://giftless-gift.herokuapp.com/", // Feel free to modify this
-    organizationId: "gift-data",
-    datasetId: "data-test-2",
+    authorizedApi: "/api/authorize/",
+    lfsServerUrl: "https://localhost:6000", 
+    dataset: {},
+    metastoreApi: '/api/dataset/'
   },
 };
 
-ResourceEditor.propTypes = {
+DatasetEditor.propTypes = {
   config: PropTypes.object.isRequired,
 };
 
-export default ResourceEditor;
+export default DatasetEditor;
