@@ -350,6 +350,18 @@ export class DatasetEditor extends React.Component {
                 authToken={this.props.config.authToken}
                 lfsServerUrl={this.props.config.lfsServerUrl}
               />
+
+              <div className="resource-edit-actions">
+                {
+                  (this.state.currentStep == 1 && Object.keys(this.state.resource).length !=0) 
+                  && 
+                  (
+                  <button className="btn" onClick={this.nextScreen}>
+                    Next {this.state.currentStep}
+                  </button>
+                  )  
+                }
+              </div>
             </>
             
           )}
