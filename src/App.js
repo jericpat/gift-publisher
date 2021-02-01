@@ -357,7 +357,7 @@ export class DatasetEditor extends React.Component {
                   && 
                   (
                   <button className="btn" onClick={this.nextScreen}>
-                    Next {this.state.currentStep}
+                    Next
                   </button>
                   )  
                 }
