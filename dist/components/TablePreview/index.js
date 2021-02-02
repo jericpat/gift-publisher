@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _react = _interopRequireDefault(require("react"));
+
 var _reactTable = require("react-table");
 
 var _Table = _interopRequireDefault(require("@material-ui/core/Table"));
@@ -32,16 +34,16 @@ var TablePreview = function TablePreview(_ref) {
       rows = _useTable.rows,
       prepareRow = _useTable.prepareRow;
 
-  return /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement("div", {
     className: "overflow-x-auto"
-  }, /*#__PURE__*/React.createElement(_Table.default, getTableProps(), /*#__PURE__*/React.createElement(_TableHead.default, null, headerGroups.map(function (headerGroup) {
-    return /*#__PURE__*/React.createElement(_TableRow.default, headerGroup.getHeaderGroupProps(), headerGroup.headers.map(function (column) {
-      return /*#__PURE__*/React.createElement(_TableCell.default, column.getHeaderProps(), column.render("Header"));
+  }, /*#__PURE__*/_react.default.createElement(_Table.default, getTableProps(), /*#__PURE__*/_react.default.createElement(_TableHead.default, null, headerGroups.map(function (headerGroup) {
+    return /*#__PURE__*/_react.default.createElement(_TableRow.default, headerGroup.getHeaderGroupProps(), headerGroup.headers.map(function (column) {
+      return /*#__PURE__*/_react.default.createElement(_TableCell.default, column.getHeaderProps(), column.render("Header"));
     }));
-  })), /*#__PURE__*/React.createElement(_TableBody.default, null, rows.map(function (row, i) {
+  })), /*#__PURE__*/_react.default.createElement(_TableBody.default, null, rows.map(function (row, i) {
     prepareRow(row);
-    return /*#__PURE__*/React.createElement(_TableRow.default, row.getRowProps(), row.cells.map(function (cell) {
-      return /*#__PURE__*/React.createElement(_TableCell.default, cell.getCellProps(), cell.render("Cell"));
+    return /*#__PURE__*/_react.default.createElement(_TableRow.default, row.getRowProps(), row.cells.map(function (cell) {
+      return /*#__PURE__*/_react.default.createElement(_TableCell.default, cell.getCellProps(), cell.render("Cell"));
     }));
   }))));
 };

@@ -17,7 +17,7 @@ var _ProgressBar = _interopRequireDefault(require("../ProgressBar"));
 
 var _utils = require("../../utils");
 
-var _datapub = require("datapub");
+var _datapubNocss = require("datapub-nocss");
 
 var _streamToArray = _interopRequireDefault(require("stream-to-array"));
 
@@ -202,7 +202,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "onClickHandler", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var start, selectedFile, _this$props, organizationId, lfs, client, resource;
+      var start, selectedFile, _this$props, organizationId, lfsServerUrl, client, resource;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -210,8 +210,8 @@ var Upload = /*#__PURE__*/function (_React$Component) {
             case 0:
               start = new Date().getTime();
               selectedFile = _this.state.selectedFile;
-              _this$props = _this.props, organizationId = _this$props.organizationId, lfs = _this$props.lfs;
-              client = new _giftlessClient.Client(lfs);
+              _this$props = _this.props, organizationId = _this$props.organizationId, lfsServerUrl = _this$props.lfsServerUrl;
+              client = new _giftlessClient.Client(lfsServerUrl);
               resource = data.open(selectedFile);
 
               _this.setState({
@@ -293,7 +293,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
           hashInProgress = _this$state2.hashInProgress;
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-area"
-      }, /*#__PURE__*/_react.default.createElement(_datapub.Choose, {
+      }, /*#__PURE__*/_react.default.createElement(_datapubNocss.Choose, {
         onChangeHandler: this.onChangeHandler,
         onChangeUrl: function onChangeUrl(event) {
           return console.log("Get url:", event.target.value);

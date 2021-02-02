@@ -33,10 +33,10 @@ Object.defineProperty(exports, "Upload", {
     return _Upload.default;
   }
 });
-Object.defineProperty(exports, "ResourceEditor", {
+Object.defineProperty(exports, "DatasetEditor", {
   enumerable: true,
   get: function get() {
-    return _ResourceEditor.default;
+    return _DatasetEditor.default;
   }
 });
 
@@ -50,6 +50,6 @@ var _TableSchema = _interopRequireDefault(require("./components/TableSchema"));
 
 var _Upload = _interopRequireDefault(require("./components/Upload"));
 
-var _ResourceEditor = _interopRequireDefault(require("./components/ResourceEditor"));
+var _DatasetEditor = _interopRequireDefault(require("./components/DatasetEditor"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

@@ -5,9 +5,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.ResourceEditor = void 0;
+exports.default = exports.DatasetEditor = void 0;
 
 var _react = _interopRequireDefault(require("react"));
+
+var _axios = _interopRequireDefault(require("axios"));
 
 var _index = _interopRequireDefault(require("os-types/src/index"));
 
@@ -27,7 +29,7 @@ var _TableSchema = _interopRequireDefault(require("../TableSchema"));
 
 var _Metadata = _interopRequireDefault(require("../Metadata"));
 
-var _utils = require("./utils");
+var _utils = require("../../utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -61,15 +63,15 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var ResourceEditor = /*#__PURE__*/function (_React$Component) {
-  _inherits(ResourceEditor, _React$Component);
+var DatasetEditor = /*#__PURE__*/function (_React$Component) {
+  _inherits(DatasetEditor, _React$Component);
 
-  var _super = _createSuper(ResourceEditor);
+  var _super = _createSuper(DatasetEditor);
 
-  function ResourceEditor(props) {
+  function DatasetEditor(props) {
     var _this;
 
-    _classCallCheck(this, ResourceEditor);
+    _classCallCheck(this, DatasetEditor);
 
     _this = _super.call(this, props);
 
@@ -80,7 +82,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
 
       var resourceCopy = _objectSpread({}, _this.state.resource);
 
-      var datapackageCopy = _objectSpread({}, _this.state.datapackage);
+      var datapackageCopy = _objectSpread({}, _this.state.dataset.metadata);
 
       if (["format", "encoding"].includes(name)) {
         //changes shopuld be made to datapackage resource
@@ -151,7 +153,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              datapackage = _objectSpread({}, _this.state.datapackage);
+              datapackage = _objectSpread({}, _this.state.dataset.metadata);
               resource = _objectSpread({}, datapackage.resources[0]);
               resource.schema.fields.forEach(function (f) {
                 f.type = f.columnType;
@@ -459,14 +461,36 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleUpload", function () {
-      alert("Uploaded Successfully");
-    });
+    _defineProperty(_assertThisInitialized(_this), "handleUpload", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              (0, _axios.default)({
+                method: 'post',
+                url: "".concat(_this.props.config.metastoreApi + _this.state.datasetId),
+                data: {
+                  metadata: _this.state.dataset.metadata,
+                  description: _this.state.dataset.metadata.description
+                }
+              }).then(function (response) {
+                return alert('Uploaded Sucessfully');
+              }, function (error) {
+                return alert('Error on upload dataset');
+              });
+
+            case 1:
+            case "end":
+              return _context8.stop();
+          }
+        }
+      }, _callee8);
+    })));
 
     _this.state = {
-      datasetId: _this.props.config.datasetId,
-      resourceId: "",
-      resource: _this.props.resource || {},
+      dataset: _this.props.config.dataset,
+      resource: _this.props.config.dataset.resources[0] || {},
+      datasetId: _this.props.config.dataset.id,
       ui: {
         fileOrLink: "",
         uploadComplete: false,
@@ -477,55 +501,31 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       client: null,
       isResourceEdit: false,
       currentStep: 1,
-      richTypeFilled: false,
-      datapackage: {
-        "@context": "http://schemas.frictionlessdata.io/fiscal-data-package.jsonld",
-        author: "",
-        bytes: undefined,
-        description: "",
-        model: {},
-        name: "",
-        profile: "data-package",
-        resources: [{
-          name: "",
-          count_of_rows: "",
-          dialect: {},
-          title: "",
-          description: "",
-          format: "",
-          mediatype: "",
-          encoding: "",
-          bytes: 0,
-          hash: "",
-          schema: {}
-        }],
-        revision: undefined,
-        title: ""
-      }
+      richTypeFilled: false
     };
     _this.metadataHandler = _this.metadataHandler.bind(_assertThisInitialized(_this));
     _this.handleRichTypeCount = _this.handleRichTypeCount.bind(_assertThisInitialized(_this));
     return _this;
   }
 
-  _createClass(ResourceEditor, [{
+  _createClass(DatasetEditor, [{
     key: "componentDidMount",
     value: function () {
-      var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-        var config, authToken, api, lfs, organizationId, datasetId, resourceId;
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+        var config, authToken, api, lfsServerUrl, organizationId, datasetId, resourceId;
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 config = this.props.config;
-                authToken = config.authToken, api = config.api, lfs = config.lfs, organizationId = config.organizationId, datasetId = config.datasetId, resourceId = config.resourceId;
+                authToken = config.authToken, api = config.api, lfsServerUrl = config.lfsServerUrl, organizationId = config.organizationId, datasetId = config.datasetId, resourceId = config.resourceId;
 
               case 2:
               case "end":
-                return _context8.stop();
+                return _context9.stop();
             }
           }
-        }, _callee8, this);
+        }, _callee9, this);
       }));
 
       function componentDidMount() {
@@ -548,10 +548,9 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "mapResourceToDatapackageResource",
     value: function mapResourceToDatapackageResource(fileResource) {
-      var datapackage = _objectSpread({}, this.state.datapackage);
+      var datapackage = _objectSpread({}, this.state.dataset.metadata);
 
-      var resource = _objectSpread({}, datapackage["resources"][0]);
-
+      var resource = {};
       resource["bytes"] = fileResource.size;
       resource["hash"] = fileResource.hash;
       resource["format"] = fileResource.format;
@@ -560,7 +559,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       resource["mediatype"] = fileResource.type;
       resource["name"] = fileResource.name;
       resource["dialect"] = fileResource.dialect;
-      datapackage["resources"][0] = resource;
+      datapackage["resources"] = [resource];
       datapackage["title"] = fileResource.name;
       datapackage["name"] = fileResource.name;
       return datapackage;
@@ -584,6 +583,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
       var _this$state$ui = this.state.ui,
           success = _this$state$ui.success,
           loading = _this$state$ui.loading;
+      console.log(this.state.dataset.name);
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "App"
       }, /*#__PURE__*/_react.default.createElement("form", {
@@ -597,7 +597,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
 
           return _this2.handleSubmitMetadata();
         }
-      }, !this.state.ui.success && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      }, !this.state.ui.success && this.state.currentStep == 1 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
@@ -610,10 +610,15 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
         datasetId: this.state.datasetId,
         handleUploadStatus: this.handleUploadStatus,
         onChangeResourceId: this.onChangeResourceId,
-        organizationId: this.props.config.organizationId,
+        organizationId: 'gift-data',
         authToken: this.props.config.authToken,
-        lfs: this.props.config.lfs
-      })), /*#__PURE__*/_react.default.createElement("div", {
+        lfsServerUrl: this.props.config.lfsServerUrl
+      }), /*#__PURE__*/_react.default.createElement("div", {
+        className: "resource-edit-actions"
+      }, this.state.currentStep == 1 && Object.keys(this.state.resource).length != 0 && /*#__PURE__*/_react.default.createElement("button", {
+        className: "btn",
+        onClick: this.nextScreen
+      }, "Next"))), /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-edit-area"
       }, this.state.ui.success && this.state.currentStep == 1 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
@@ -639,7 +644,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
         handleChange: this.handleChangeMetadata
       })))), /*#__PURE__*/_react.default.createElement("div", {
         className: "resource-edit-actions"
-      }, this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && /*#__PURE__*/_react.default.createElement("button", {
+      }, this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.handleUpload
       }, "Save"), this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
@@ -658,7 +663,7 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
     }
   }]);
 
-  return ResourceEditor;
+  return DatasetEditor;
 }(_react.default.Component);
 /**
  * If the parent component doesn't specify a `config` and scope prop, then
@@ -666,19 +671,17 @@ var ResourceEditor = /*#__PURE__*/function (_React$Component) {
  * */
 
 
-exports.ResourceEditor = ResourceEditor;
-ResourceEditor.defaultProps = {
+exports.DatasetEditor = DatasetEditor;
+DatasetEditor.defaultProps = {
   config: {
-    authToken: "be270cae-1c77-4853-b8c1-30b6cf5e9878",
-    api: "http://localhost:5000",
-    lfs: "https://giftless-gift.herokuapp.com/",
-    // Feel free to modify this
-    organizationId: "gift-data",
-    datasetId: "data-test-2"
+    authorizedApi: "/api/authorize/",
+    lfsServerUrl: "https://localhost:6000",
+    dataset: {},
+    metastoreApi: '/api/dataset/'
   }
 };
-ResourceEditor.propTypes = {
+DatasetEditor.propTypes = {
   config: _propTypes.default.object.isRequired
 };
-var _default = ResourceEditor;
+var _default = DatasetEditor;
 exports.default = _default;

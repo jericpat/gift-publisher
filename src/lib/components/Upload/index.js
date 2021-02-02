@@ -114,8 +114,8 @@ class Upload extends React.Component {
   onClickHandler = async () => {
     const start = new Date().getTime();
     const { selectedFile } = this.state;
-    const { organizationId, lfs } = this.props;
-    const client = new Client(lfs);
+    const { organizationId, lfsServerUrl } = this.props;
+    const client = new Client(lfsServerUrl);
 
     const resource = data.open(selectedFile);
 
