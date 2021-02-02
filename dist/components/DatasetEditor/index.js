@@ -489,8 +489,8 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
     _this.state = {
       dataset: _this.props.config.dataset,
-      resource: _this.props.config.dataset.metadata.resources[0] || {},
-      datasetId: _this.props.config.dataset.objectId,
+      resource: _this.props.config.dataset.resources[0] || {},
+      datasetId: _this.props.config.dataset.id,
       ui: {
         fileOrLink: "",
         uploadComplete: false,
