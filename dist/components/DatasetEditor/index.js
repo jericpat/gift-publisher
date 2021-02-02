@@ -644,7 +644,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         handleChange: this.handleChangeMetadata
       })))), /*#__PURE__*/_react.default.createElement("div", {
         className: "resource-edit-actions"
-      }, this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.ui.success && /*#__PURE__*/_react.default.createElement("button", {
+      }, this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.handleUpload
       }, "Save"), this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
