@@ -1,17 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import './assets/main.css'
+import "./assets/main.css";
 import App from "./App";
-import * as data from './data.json';
+// import * as data from './data.json';
+import { metadataEmpty, metadataSingle, metadataDouble } from "./data/metadata";
 
 // Automatically mount the app if an element with id='ResourceEditor' exists
 const element = document.getElementById("ResourceEditor");
 if (element) {
   const config = {
     authorizedApi: "/api/authorize",
-    lfs: "https://localhost:6000", 
-    dataset: data.default,
-    metastoreApi: '/api/dataset'
+    lfs: "https://localhost:6000",
+    dataset: metadataEmpty, //for test purpose, suppose to be provided by portal
+    metastoreApi: "/api/dataset",
   };
 
   ReactDOM.render(

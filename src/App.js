@@ -1,5 +1,5 @@
 import React from "react";
-import axios from 'axios';
+import axios from "axios";
 import TypeProcessor from "os-types/src/index";
 import fileDownload from "js-file-download";
 import PropTypes from "prop-types";
@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import Upload from "./components/Upload";
 import TablePreview from "./components/TablePreview";
 import TableSchema from "./components/TableSchema";
-
+import ResourceList from "./components/ResourceList";
 import Metadata from "./components/Metadata";
 import "./App.css";
 import { removeHyphen } from "./utils";
@@ -17,10 +17,11 @@ import ReactLogo from "./progressBar.svg";
 export class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
+    const dataset = props.config.dataset;
     this.state = {
       dataset: this.props.config.dataset,
       resource: this.props.config.dataset.resources[0] || {},
-      datasetId: this.props.config.dataset.id,
+      datasetId: dataset.id,
       ui: {
         fileOrLink: "",
         uploadComplete: false,
@@ -61,8 +62,8 @@ export class DatasetEditor extends React.Component {
   }
 
   mapResourceToDatapackageResource(fileResource) {
-    let datapackage = { ...this.state.dataset.metadata };
-    let resource = {}
+    let datapackage = { ...this.state.dataset };
+    let resource = {};
 
     resource["bytes"] = fileResource.size;
     resource["hash"] = fileResource.hash;
@@ -301,15 +302,16 @@ export class DatasetEditor extends React.Component {
 
   handleUpload = async () => {
     axios({
-      method: 'post',
-      url: `${this.props.config.metastoreApi+this.state.datasetId}`,
+      method: "post",
+      url: `/api/dataset/${this.state.datasetId}`,
       data: {
-        metadata: this.state.dataset.metadata,
-        description: this.state.dataset.metadata.description
-      }
-    })
-    .then(response => alert('Uploaded Sucessfully'), 
-          error => alert('Error on upload dataset'));
+        metadata: this.state.dataset,
+        description: this.state.dataset.description,
+      },
+    }).then(
+      (response) => alert("Uploaded Sucessfully"),
+      (error) => alert("Error on upload dataset")
+    );
   };
 
   render() {
@@ -329,6 +331,18 @@ export class DatasetEditor extends React.Component {
           }}
         >
           {(!this.state.ui.success && this.state.currentStep==1)&& (
+            <>
+              <div className="upload-header">
+                <h1 className="upload-header__title_h1">
+                  Available Resources in Dataset
+                </h1>
+              </div>
+
+              <ResourceList dataset={this.state.dataset} />
+            </>
+          )}
+
+          {/* {!this.state.ui.success && (
             <>
               <div className="upload-header">
                 <h1 className="upload-header__title_h1">
@@ -363,8 +377,7 @@ export class DatasetEditor extends React.Component {
                 }
               </div>
             </>
-            
-          )}
+          )} */}
 
           <div className="upload-edit-area">
             {this.state.ui.success && this.state.currentStep == 1 && (
