@@ -411,7 +411,7 @@ export class DatasetEditor extends React.Component {
         <div className="resource-edit-actions">
           {this.state.currentStep == 3 &&
             !this.state.isResourceEdit &&
-            this.state.ui.success && (
+            this.state.resource && (
               <button className="btn" onClick={this.handleUpload}>
                 Save
               </button>
