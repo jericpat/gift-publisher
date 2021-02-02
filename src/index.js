@@ -11,7 +11,7 @@ if (element) {
   const config = {
     authorizedApi: "/api/authorize",
     lfs: "https://localhost:6000",
-    dataset: metadataEmpty, //for test purpose, suppose to be provided by portal
+    dataset: metadataDouble, //for test purpose, suppose to be provided by portal
     metastoreApi: "/api/dataset",
   };
 

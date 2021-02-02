@@ -19,8 +19,10 @@ export class DatasetEditor extends React.Component {
     super(props);
     const dataset = props.config.dataset;
     this.state = {
-      dataset: this.props.config.dataset,
-      resource: this.props.config.dataset.resources[0] || {},
+      dataset,
+      resource: Object.keys(dataset).includes("resources")
+        ? this.props.config.dataset.resources[0]
+        : {},
       datasetId: dataset.id,
       ui: {
         fileOrLink: "",
@@ -31,7 +33,7 @@ export class DatasetEditor extends React.Component {
       },
       client: null,
       isResourceEdit: false,
-      currentStep: 1,
+      currentStep: 0,
       richTypeFilled: false,
     };
     this.metadataHandler = this.metadataHandler.bind(this);
@@ -316,10 +318,11 @@ export class DatasetEditor extends React.Component {
 
   render() {
     const { success, loading } = this.state.ui;
-    console.log(this.state.dataset.name)
     return (
       <div className="App">
-        <img src={ReactLogo} width="50%" className="Img" />
+        {this.state.currentStep > 0 && (
+          <img src={ReactLogo} width="50%" className="Img" />
+        )}
         <form
           className="upload-wrapper"
           onSubmit={(event) => {
@@ -330,20 +333,14 @@ export class DatasetEditor extends React.Component {
             return this.handleSubmitMetadata();
           }}
         >
-          {(!this.state.ui.success && this.state.currentStep==1)&& (
+          {this.state.currentStep == 0 && (
             <>
-              <div className="upload-header">
-                <h1 className="upload-header__title_h1">
-                  Available Resources in Dataset
-                </h1>
-              </div>
-
-              <ResourceList dataset={this.state.dataset} />
+              <ResourceList dataset={this.state.dataset} addResourceScreen={this.nextScreen} />
             </>
           )}
 
-          {/* {!this.state.ui.success && (
-            <>
+          {this.state.currentStep == 1 && (
+            <div>
               <div className="upload-header">
                 <h1 className="upload-header__title_h1">
                   Provide your data file
@@ -360,27 +357,15 @@ export class DatasetEditor extends React.Component {
                 datasetId={this.state.datasetId}
                 handleUploadStatus={this.handleUploadStatus}
                 onChangeResourceId={this.onChangeResourceId}
-                organizationId={'gift-data'}
+                organizationId={"gift-data"}
                 authToken={this.props.config.authToken}
                 lfsServerUrl={this.props.config.lfsServerUrl}
               />
-
-              <div className="resource-edit-actions">
-                {
-                  (this.state.currentStep == 1 && Object.keys(this.state.resource).length !=0) 
-                  && 
-                  (
-                  <button className="btn" onClick={this.nextScreen}>
-                    Next
-                  </button>
-                  )  
-                }
-              </div>
-            </>
-          )} */}
+            </div>
+          )}
 
           <div className="upload-edit-area">
-            {this.state.ui.success && this.state.currentStep == 1 && (
+            {this.state.ui.success && this.state.currentStep == 2 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -393,7 +378,7 @@ export class DatasetEditor extends React.Component {
                 />
               </>
             )}
-            {this.state.resource.schema && this.state.currentStep == 2 && (
+            {this.state.resource.schema && this.state.currentStep == 3 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
@@ -408,7 +393,7 @@ export class DatasetEditor extends React.Component {
               </>
             )}
 
-            {this.state.currentStep == 3 && (
+            {this.state.currentStep == 4 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">Provide Metadata</h1>
@@ -422,14 +407,14 @@ export class DatasetEditor extends React.Component {
           </div>
         </form>
         <div className="resource-edit-actions">
-          {this.state.currentStep == 3 &&
+          {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
             this.state.resource && (
               <button className="btn" onClick={this.handleUpload}>
                 Save
               </button>
             )}
-          {this.state.currentStep == 3 &&
+          {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
             this.state.resource && (
               <button className="btn" onClick={this.downloadDatapackage}>
@@ -438,15 +423,15 @@ export class DatasetEditor extends React.Component {
             )}
 
           {this.state.ui.success &&
-            this.state.currentStep > 0 &&
-            this.state.currentStep < 3 &&
-            this.state.currentStep !== 2 && (
+            this.state.currentStep > 1 &&
+            this.state.currentStep < 4 &&
+            this.state.currentStep !== 3 && (
               <button className="btn" onClick={this.nextScreen}>
                 Next
               </button>
             )}
 
-          {this.state.currentStep == 2 ? (
+          {this.state.currentStep == 3 ? (
             this.state.richTypeFilled ? (
               <button className="btn" onClick={this.nextScreen}>
                 Next
@@ -472,9 +457,9 @@ export class DatasetEditor extends React.Component {
 DatasetEditor.defaultProps = {
   config: {
     authorizedApi: "/api/authorize/",
-    lfsServerUrl: "https://localhost:6000", 
+    lfsServerUrl: "https://localhost:6000",
     dataset: {},
-    metastoreApi: '/api/dataset/'
+    metastoreApi: "/api/dataset/",
   },
 };
 
