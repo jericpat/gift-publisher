@@ -148,29 +148,30 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
     })));
 
     _defineProperty(_assertThisInitialized(_this), "downloadDatapackage", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var datapackage, resource, fdp;
+      var dataset, resource, fdp;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              datapackage = _objectSpread({}, _this.state.dataset);
-              resource = _objectSpread({}, datapackage.resources[0]);
+              dataset = _objectSpread({}, _this.state.dataset);
+              resource = _objectSpread({}, _this.state.resource);
               resource.schema.fields.forEach(function (f) {
                 f.type = f.columnType;
                 delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
               });
               fdp = new _index.default().fieldsToModel(resource["schema"]["fields"]);
               resource.schema = fdp.schema;
-              datapackage.model = fdp.model;
-              datapackage.resources[0] = resource;
+              dataset.model = fdp.model;
+              dataset.resources[0] = resource;
 
               _this.setState({
-                datapackage: datapackage
+                dataset: dataset
               });
 
-              (0, _jsFileDownload.default)(JSON.stringify(datapackage), "datapackage.json");
+              console.log(dataset);
+              (0, _jsFileDownload.default)(JSON.stringify(dataset), "datapackage.json");
 
-            case 9:
+            case 10:
             case "end":
               return _context2.stop();
           }
