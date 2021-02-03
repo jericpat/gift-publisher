@@ -9,7 +9,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _datapubNocss = require("datapub-nocss");
+var _datapub = require("datapub");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47,7 +47,7 @@ var Metadata = function Metadata(_ref) {
   }, /*#__PURE__*/_react.default.createElement("option", {
     value: "",
     disabled: true
-  }, "Select..."), _datapubNocss.encodeData.map(function (item) {
+  }, "Select..."), _datapub.encodeData.map(function (item) {
     return /*#__PURE__*/_react.default.createElement("option", {
       key: "format-".concat(item.value),
       value: item.value

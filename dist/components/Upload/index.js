@@ -17,7 +17,7 @@ var _ProgressBar = _interopRequireDefault(require("../ProgressBar"));
 
 var _utils = require("../../utils");
 
-var _datapubNocss = require("datapub-nocss");
+var _datapub = require("datapub");
 
 var _streamToArray = _interopRequireDefault(require("stream-to-array"));
 
@@ -293,7 +293,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
           hashInProgress = _this$state2.hashInProgress;
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-area"
-      }, /*#__PURE__*/_react.default.createElement(_datapubNocss.Choose, {
+      }, /*#__PURE__*/_react.default.createElement(_datapub.Choose, {
         onChangeHandler: this.onChangeHandler,
         onChangeUrl: function onChangeUrl(event) {
           return console.log("Get url:", event.target.value);
