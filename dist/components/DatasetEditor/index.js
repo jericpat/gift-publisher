@@ -489,7 +489,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
     _this.state = {
       dataset: _this.props.config.dataset,
-      resource: _this.props.config.dataset.resources[0] || {},
+      resource: typeof _this.props.config.dataset.resources != "undefined" ? _this.props.config.dataset.resources[0] : {},
       datasetId: _this.props.config.dataset.id,
       ui: {
         fileOrLink: "",
