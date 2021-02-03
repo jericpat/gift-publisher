@@ -132,22 +132,23 @@ export class DatasetEditor extends React.Component {
   };
 
   downloadDatapackage = async () => {
-    let datapackage = { ...this.state.dataset.metadata };
-    let resource = { ...datapackage.resources[0] };
+    let dataset = { ...this.state.dataset };
+    let resource = {...this.state.resource}
     resource.schema.fields.forEach((f) => {
       f.type = f.columnType;
       delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
     });
     let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
     resource.schema = fdp.schema;
-    datapackage.model = fdp.model;
-    datapackage.resources[0] = resource;
+    dataset.model = fdp.model;
+    dataset.resources[0] = resource;
 
     this.setState({
-      datapackage: datapackage,
+      dataset: dataset,
     });
 
-    fileDownload(JSON.stringify(datapackage), "datapackage.json");
+    console.log(dataset);
+    fileDownload(JSON.stringify(dataset), "datapackage.json");
   };
 
   createResource = async (resource) => {
@@ -304,8 +305,8 @@ export class DatasetEditor extends React.Component {
       method: 'post',
       url: `${this.props.config.metastoreApi+this.state.datasetId}`,
       data: {
-        metadata: this.state.dataset.metadata,
-        description: this.state.dataset.metadata.description
+        metadata: this.state.dataset,
+        description: this.state.dataset.description
       }
     })
     .then(response => alert('Uploaded Sucessfully'), 
