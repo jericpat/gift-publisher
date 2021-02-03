@@ -299,7 +299,7 @@ export class DatasetEditor extends React.Component {
   handleUpload = async () => {
     axios({
       method: 'post',
-      url: `${this.props.config.metastoreApi+this.state.datasetId}`,
+      url: `${this.props.config.metastoreApi+this.state.dataset.name}`,
       data: {
         metadata: this.state.dataset,
         description: this.state.dataset.description

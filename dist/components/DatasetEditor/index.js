@@ -468,7 +468,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
             case 0:
               (0, _axios.default)({
                 method: 'post',
-                url: "".concat(_this.props.config.metastoreApi + _this.state.datasetId),
+                url: "".concat(_this.props.config.metastoreApi + _this.state.dataset.name),
                 data: {
                   metadata: _this.state.dataset,
                   description: _this.state.dataset.description
