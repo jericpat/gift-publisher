@@ -9,7 +9,7 @@ import Upload from "../Upload";
 import TablePreview from "../TablePreview";
 import TableSchema from "../TableSchema";
 import Metadata from "../Metadata";
-import { removeHyphen } from "../../utils";
+import { removeHyphen } from "./utils";
 
 export class DatasetEditor extends React.Component {
   constructor(props) {

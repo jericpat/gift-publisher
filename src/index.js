@@ -9,7 +9,7 @@ const element = document.getElementById("ResourceEditor");
 if (element) {
   const config = {
     authorizedApi: "/api/authorize",
-    lfs: "https://localhost:6000", 
+    lfsServerUrl: "https://giftless-gift.herokuapp.com", 
     dataset: data.default,
     metastoreApi: '/api/dataset'
   };
