@@ -82,7 +82,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
       var resourceCopy = _objectSpread({}, _this.state.resource);
 
-      var datapackageCopy = _objectSpread({}, _this.state.dataset.metadata);
+      var datapackageCopy = _objectSpread({}, _this.state.dataset);
 
       if (["format", "encoding"].includes(name)) {
         //changes shopuld be made to datapackage resource
@@ -153,7 +153,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              datapackage = _objectSpread({}, _this.state.dataset.metadata);
+              datapackage = _objectSpread({}, _this.state.dataset);
               resource = _objectSpread({}, datapackage.resources[0]);
               resource.schema.fields.forEach(function (f) {
                 f.type = f.columnType;
@@ -470,8 +470,8 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
                 method: 'post',
                 url: "".concat(_this.props.config.metastoreApi + _this.state.datasetId),
                 data: {
-                  metadata: _this.state.dataset.metadata,
-                  description: _this.state.dataset.metadata.description
+                  metadata: _this.state.dataset,
+                  description: _this.state.dataset.description
                 }
               }).then(function (response) {
                 return alert('Uploaded Sucessfully');
@@ -548,7 +548,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "mapResourceToDatapackageResource",
     value: function mapResourceToDatapackageResource(fileResource) {
-      var datapackage = _objectSpread({}, this.state.dataset.metadata);
+      var datapackage = _objectSpread({}, this.state.dataset);
 
       var resource = {};
       resource["bytes"] = fileResource.size;
