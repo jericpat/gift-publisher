@@ -5887,10 +5887,10 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-datapub@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/datapub/-/datapub-0.2.2.tgz#37c8ecbeafc5b5aea8804f53181028f671fcaf65"
-  integrity sha512-HW4i8MmpMZZxcD2JwA+2ZdQezOrAjH15YJiQDxZm1Z45HJWbm72pN+JCEij4jaH3ist32lst/5aJbnMPzeuQFA==
+"datapub-nocss@0.1.0  ":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/datapub-nocss/-/datapub-nocss-0.1.0.tgz#9bdc0ede2cd04c8fd9276dee485e455d3c5cfd34"
+  integrity sha512-hEvNk6js2j+Bqzb3QPAFb5XggPXKoX4jxQqKZkpdJBwS+RW+8GFQ8RAB18z7/awlLBkaoMwwQ7vpAaIoM2J2jg==
   dependencies:
     axios "^0.19.2"
     ckan-client "git+https://github.com/datopian/ckan-client-js.git#v0.4.2"

@@ -29,7 +29,7 @@ var _TableSchema = _interopRequireDefault(require("../TableSchema"));
 
 var _Metadata = _interopRequireDefault(require("../Metadata"));
 
-var _utils = require("./utils");
+var _utils = require("../../utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

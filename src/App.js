@@ -11,7 +11,7 @@ import TableSchema from "./components/TableSchema";
 
 import Metadata from "./components/Metadata";
 import "./App.css";
-import { removeHyphen } from "./utils";
+import { removeHyphen } from "../../utils";
 import ReactLogo from "./progressBar.svg";
 
 export class DatasetEditor extends React.Component {
@@ -199,7 +199,7 @@ export class DatasetEditor extends React.Component {
         this.onChangeResourceId(response.result.id);
       });
   };
-  
+
   deleteResource = async () => {
     const { resource, client, datasetId } = this.state;
     if (window.confirm("Are you sure to delete this resource?")) {
