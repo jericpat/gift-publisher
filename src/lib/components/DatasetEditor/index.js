@@ -16,7 +16,7 @@ export class DatasetEditor extends React.Component {
     super(props);
     this.state = {
       dataset: this.props.config.dataset,
-      resource: this.props.config.dataset.resources[0] || {},
+      resource: typeof this.props.config.dataset.resources != "undefined"? this.props.config.dataset.resources[0] : {},
       datasetId: this.props.config.dataset.id,
       ui: {
         fileOrLink: "",
