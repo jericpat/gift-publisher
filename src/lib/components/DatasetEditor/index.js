@@ -58,7 +58,7 @@ export class DatasetEditor extends React.Component {
   }
 
   mapResourceToDatapackageResource(fileResource) {
-    let datapackage = { ...this.state.dataset.metadata };
+    let datapackage = { ...this.state.dataset };
     let resource = {}
 
     resource["bytes"] = fileResource.size;
@@ -92,7 +92,7 @@ export class DatasetEditor extends React.Component {
     const value = target.value;
     const name = target.name;
     let resourceCopy = { ...this.state.resource };
-    let datapackageCopy = { ...this.state.dataset.metadata };
+    let datapackageCopy = { ...this.state.dataset };
 
     if (["format", "encoding"].includes(name)) {
       //changes shopuld be made to datapackage resource
@@ -129,7 +129,7 @@ export class DatasetEditor extends React.Component {
   };
 
   downloadDatapackage = async () => {
-    let datapackage = { ...this.state.dataset.metadata };
+    let datapackage = { ...this.state.dataset };
     let resource = { ...datapackage.resources[0] };
     resource.schema.fields.forEach((f) => {
       f.type = f.columnType;
@@ -301,8 +301,8 @@ export class DatasetEditor extends React.Component {
       method: 'post',
       url: `${this.props.config.metastoreApi+this.state.datasetId}`,
       data: {
-        metadata: this.state.dataset.metadata,
-        description: this.state.dataset.metadata.description
+        metadata: this.state.dataset,
+        description: this.state.dataset.description
       }
     })
     .then(response => alert('Uploaded Sucessfully'), 
