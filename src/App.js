@@ -20,9 +20,10 @@ export class DatasetEditor extends React.Component {
     const dataset = props.config.dataset;
     this.state = {
       dataset,
-      resource: Object.keys(dataset).includes("resources")
-        ? this.props.config.dataset.resources[0]
-        : {},
+      // resource: Object.keys(dataset).includes("resources")
+      //   ? this.props.config.dataset.resources[0]
+      //   : {},
+      resource: {}, //selected resource
       datasetId: dataset.id,
       ui: {
         fileOrLink: "",
@@ -40,31 +41,15 @@ export class DatasetEditor extends React.Component {
     this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
   }
 
-  async componentDidMount() {
-    const { config } = this.props;
-    const {
-      authToken,
-      api,
-      lfsServerUrl,
-      organizationId,
-      datasetId,
-      resourceId,
-    } = config;
-  }
-
   metadataHandler(resource) {
-    let datapackage = this.mapResourceToDatapackageResource(resource);
+    let dataset = this.mapResourceToDatapackageResource(resource);
     this.setState({
-      resource: {
-        ...resource,
-        title: resource.name,
-      },
-      datapackage: datapackage,
+      dataset,
     });
   }
 
   mapResourceToDatapackageResource(fileResource) {
-    let datapackage = { ...this.state.dataset };
+    let dataset = { ...this.state.dataset };
     let resource = {};
 
     resource["bytes"] = fileResource.size;
@@ -75,12 +60,24 @@ export class DatasetEditor extends React.Component {
     resource["mediatype"] = fileResource.type;
     resource["name"] = fileResource.name;
     resource["dialect"] = fileResource.dialect;
+    resource["path"] = `data/${fileResource.name}`;
+    resource["title"] = fileResource["name"].split(".")[0];
 
-    datapackage["resources"] = [resource];
-    datapackage["title"] = fileResource.name;
-    datapackage["name"] = fileResource.name;
+    if (Object.keys(dataset).includes("resources")) {
+      dataset.resources.push(resource);
+    } else {
+      dataset["resources"] = [resource];
+    }
 
-    return datapackage;
+    //Add sample and column before saving to resource state.
+    // This is used in resource preview
+    resource["sample"] = fileResource.sample;
+    resource["columns"] = fileResource.columns;
+    this.setState({
+      resource,
+    });
+
+    return dataset;
   }
 
   //set state of rich type field. If all rich type fields have been filled,
@@ -93,121 +90,136 @@ export class DatasetEditor extends React.Component {
     }
   }
 
-  handleChangeMetadata = (event) => {
+  handleChangeMetadata = (event, hash) => {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-    let resourceCopy = { ...this.state.resource };
-    let datapackageCopy = { ...this.state.dataset.metadata };
+    const dataset = { ...this.state.dataset };
+    let updatedResource = {};
 
-    if (["format", "encoding"].includes(name)) {
-      //changes shopuld be made to datapackage resource
-      datapackageCopy.resources[0][name] = value;
-    } else {
-      datapackageCopy[name] = value;
-    }
-    resourceCopy[name] = value;
+    const resources = dataset.resources.map((resource) => {
+      if (resource.hash == hash) {
+        resource[name] = value;
+        updatedResource = { ...resource };
+        return resource;
+      } else {
+        return resource;
+      }
+    });
+
+    dataset.resources = resources;
 
     this.setState({
-      resource: resourceCopy,
-      datapackage: datapackageCopy,
+      resource: updatedResource,
+      dataset,
     });
   };
 
-  handleSubmitMetadata = async () => {
-    const { resource, client } = this.state;
-    await this.createResource(resource);
-    const isResourceCreate = true;
-    if (isResourceCreate) {
-      const datasetMetadata = await client.action("package_show", {
-        id: this.state.datasetId,
-      });
-      let result = datasetMetadata.result;
+  // handleSubmitMetadata = async () => {
+  //   const { resource, client } = this.state;
+  //   await this.createResource(resource);
+  //   const isResourceCreate = true;
+  //   if (isResourceCreate) {
+  //     const datasetMetadata = await client.action("package_show", {
+  //       id: this.state.datasetId,
+  //     });
+  //     let result = datasetMetadata.result;
 
-      if (result.state === "draft") {
-        result.state = "active";
-        await client.action("package_update", result);
-      }
-    }
+  //     if (result.state === "draft") {
+  //       result.state = "active";
+  //       await client.action("package_update", result);
+  //     }
+  //   }
 
-    // Redirect to dataset page
-    return (window.location.href = `/dataset/${this.state.datasetId}`);
-  };
+  //   // Redirect to dataset page
+  //   return (window.location.href = `/dataset/${this.state.datasetId}`);
+  // };
 
-  downloadDatapackage = async () => {
-    let datapackage = { ...this.state.dataset.metadata };
-    let resource = { ...datapackage.resources[0] };
+  mapDatasetToFiscalFormat = (resource) => {
     resource.schema.fields.forEach((f) => {
       f.type = f.columnType;
       delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
     });
     let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
-    resource.schema = fdp.schema;
-    datapackage.model = fdp.model;
-    datapackage.resources[0] = resource;
+    resource.schema.fields = Object.values(fdp.schema.fields);
 
-    this.setState({
-      datapackage: datapackage,
+    const dataset = { ...this.state.dataset };
+    dataset.resources.map((res) => {
+      if (res.hash == resource.hash) {
+        return resource;
+      } else {
+        return res;
+      }
     });
-
-    fileDownload(JSON.stringify(datapackage), "datapackage.json");
+    this.setState({
+      dataset,
+    });
   };
 
-  createResource = async (resource) => {
-    const { client } = this.state;
-    const { config } = this.props;
-    const { organizationId, datasetId, resourceId } = config;
-
-    const ckanResource = frictionlessCkanMapper.resourceFrictionlessToCkan(
-      resource
-    );
-
-    //create a valid format from sample
-    let data = { ...ckanResource.sample };
-    //delete sample because is an invalid format
-    delete ckanResource.sample;
-    //generate an unique id for bq_table_name property
-    let bqTableName = removeHyphen(
-      ckanResource.bq_table_name ? ckanResource.bq_table_name : uuidv4()
-    );
-    // create a copy from ckanResource to add package_id, name, url, sha256,size, lfs_prefix, url, url_type
-    // without this properties ckan-blob-storage doesn't work properly
-    let ckanResourceCopy = {
-      ...ckanResource,
-      package_id: this.state.datasetId,
-      name: bqTableName,
-      title: resource.title,
-      sha256: resource.hash,
-      size: resource.size,
-      lfs_prefix: `${organizationId}/${datasetId}`,
-      url: resource.name,
-      url_type: "upload",
-      bq_table_name: bqTableName,
-      sample: data,
-    };
-
-    //Check if the user is editing resource, call resource_update and redirect to the dataset page
-    if (resourceId) {
-      ckanResourceCopy = {
-        ...ckanResourceCopy,
-        id: resourceId,
-      };
-      await client.action("resource_update", ckanResourceCopy);
-      return (window.location.href = `/dataset/${datasetId}`);
-    }
-    await client
-      .action("resource_create", ckanResourceCopy)
-      .then((response) => {
-        this.onChangeResourceId(response.result.id);
-      });
+  downloadDatapackage = async () => {
+    this.mapDatasetToFiscalFormat({ ...this.state.resource });
+    fileDownload(JSON.stringify(this.state.dataset), "datapackage.json");
   };
 
-  deleteResource = async () => {
-    const { resource, client, datasetId } = this.state;
+  // createResource = async (resource) => {
+  //   const { client } = this.state;
+  //   const { config } = this.props;
+  //   const { organizationId, datasetId, resourceId } = config;
+
+  //   const ckanResource = frictionlessCkanMapper.resourceFrictionlessToCkan(
+  //     resource
+  //   );
+
+  //   //create a valid format from sample
+  //   let data = { ...ckanResource.sample };
+  //   //delete sample because is an invalid format
+  //   delete ckanResource.sample;
+  //   //generate an unique id for bq_table_name property
+  //   let bqTableName = removeHyphen(
+  //     ckanResource.bq_table_name ? ckanResource.bq_table_name : uuidv4()
+  //   );
+  //   // create a copy from ckanResource to add package_id, name, url, sha256,size, lfs_prefix, url, url_type
+  //   // without this properties ckan-blob-storage doesn't work properly
+  //   let ckanResourceCopy = {
+  //     ...ckanResource,
+  //     package_id: this.state.datasetId,
+  //     name: bqTableName,
+  //     title: resource.title,
+  //     sha256: resource.hash,
+  //     size: resource.size,
+  //     lfs_prefix: `${organizationId}/${datasetId}`,
+  //     url: resource.name,
+  //     url_type: "upload",
+  //     bq_table_name: bqTableName,
+  //     sample: data,
+  //   };
+
+  //   //Check if the user is editing resource, call resource_update and redirect to the dataset page
+  //   if (resourceId) {
+  //     ckanResourceCopy = {
+  //       ...ckanResourceCopy,
+  //       id: resourceId,
+  //     };
+  //     await client.action("resource_update", ckanResourceCopy);
+  //     return (window.location.href = `/dataset/${datasetId}`);
+  //   }
+  //   await client
+  //     .action("resource_create", ckanResourceCopy)
+  //     .then((response) => {
+  //       this.onChangeResourceId(response.result.id);
+  //     });
+  // };
+
+  deleteResource = (resourceName) => {
+    const { dataset } = { ...this.state };
     if (window.confirm("Are you sure to delete this resource?")) {
-      await client.action("resource_delete", { id: resource.id });
-
-      return (window.location.href = `/dataset/${datasetId}`);
+      const newResource = dataset.resources.filter(
+        (resource) => resource.name != resourceName
+      );
+      dataset.resources = newResource;
+      this.setState({
+        dataset,
+      });
     }
   };
 
@@ -225,7 +237,7 @@ export class DatasetEditor extends React.Component {
       error: status.error,
       loading: status.loading,
     };
-
+    this.nextScreen();
     this.setState({ ui: newUiState });
   };
 
@@ -233,64 +245,64 @@ export class DatasetEditor extends React.Component {
     this.setState({ resourceId });
   };
 
-  onSchemaSelected = async (resourceId) => {
-    this.setLoading(true);
-    const { sample, schema } = await this.getSchemaWithSample(resourceId);
-    this.setLoading(false);
+  // onSchemaSelected = async (resourceId) => {
+  //   this.setLoading(true);
+  //   const { sample, schema } = await this.getSchemaWithSample(resourceId);
+  //   this.setLoading(false);
 
-    this.setState({
-      resource: Object.assign(this.state.resource, { schema, sample }),
-    });
-  };
+  //   this.setState({
+  //     resource: Object.assign(this.state.resource, { schema, sample }),
+  //   });
+  // };
 
-  getSchemaWithSample = async (resourceId) => {
-    const { client } = this.state;
+  // getSchemaWithSample = async (resourceId) => {
+  //   const { client } = this.state;
 
-    const resourceSchema = await client.action("resource_schema_show", {
-      id: resourceId,
-    });
-    const resourceSample = await client.action("resource_sample_show", {
-      id: resourceId,
-    });
+  //   const resourceSchema = await client.action("resource_schema_show", {
+  //     id: resourceId,
+  //   });
+  //   const resourceSample = await client.action("resource_sample_show", {
+  //     id: resourceId,
+  //   });
 
-    const sample = [];
+  //   const sample = [];
 
-    const schema = resourceSchema.result || { fields: [] };
+  //   const schema = resourceSchema.result || { fields: [] };
 
-    try {
-      // push the values to an array
-      for (const property in resourceSample.result) {
-        sample.push(resourceSample.result[property]);
-      }
-    } catch (e) {
-      console.error(e);
-      //generate empty values not to break the tableschema component
-    }
+  //   try {
+  //     // push the values to an array
+  //     for (const property in resourceSample.result) {
+  //       sample.push(resourceSample.result[property]);
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //     //generate empty values not to break the tableschema component
+  //   }
 
-    return { schema, sample };
-  };
+  //   return { schema, sample };
+  // };
 
-  setResource = async (resourceId) => {
-    const { client } = this.state;
+  // setResource = async (resourceId) => {
+  //   const { client } = this.state;
 
-    const { result } = await client.action("resource_show", { id: resourceId });
+  //   const { result } = await client.action("resource_show", { id: resourceId });
 
-    let resourceCopy = {
-      ...result,
-      ...(await this.getSchemaWithSample(resourceId)),
-    };
+  //   let resourceCopy = {
+  //     ...result,
+  //     ...(await this.getSchemaWithSample(resourceId)),
+  //   };
 
-    return this.setState({
-      client,
-      resourceId,
-      resource: resourceCopy,
-      isResourceEdit: true,
-    });
-  };
+  //   return this.setState({
+  //     client,
+  //     resourceId,
+  //     resource: resourceCopy,
+  //     isResourceEdit: true,
+  //   });
+  // };
 
   nextScreen = () => {
     let currentStep = this.state.currentStep;
-    if (currentStep == 2) {
+    if (currentStep == 3) {
       //TODO: check if all rich type has been added
     }
     let newStep = currentStep + 1;
@@ -327,15 +339,19 @@ export class DatasetEditor extends React.Component {
           className="upload-wrapper"
           onSubmit={(event) => {
             event.preventDefault();
-            if (this.state.isResourceEdit) {
-              return this.createResource(this.state.resource);
-            }
-            return this.handleSubmitMetadata();
+            // if (this.state.isResourceEdit) {
+            //   return this.createResource(this.state.resource);
+            // }
+            // return this.handleSubmitMetadata();
           }}
         >
           {this.state.currentStep == 0 && (
             <>
-              <ResourceList dataset={this.state.dataset} addResourceScreen={this.nextScreen} />
+              <ResourceList
+                dataset={this.state.dataset}
+                addResourceScreen={this.nextScreen}
+                deleteResource={this.deleteResource}
+              />
             </>
           )}
 
@@ -360,6 +376,7 @@ export class DatasetEditor extends React.Component {
                 organizationId={"gift-data"}
                 authToken={this.props.config.authToken}
                 lfsServerUrl={this.props.config.lfsServerUrl}
+                dataset={this.state.dataset}
               />
             </div>
           )}

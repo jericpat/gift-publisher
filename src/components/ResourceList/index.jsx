@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 
 import "./ResourceList.css";
 
-const ResourceList = ({ dataset, addResourceScreen }) => {
-  console.log(dataset);
+const ResourceList = ({ dataset, deleteResource, addResourceScreen }) => {
   const hasResources = Object.keys(dataset).includes("resources")
   if (!hasResources) {
     return (
@@ -33,7 +32,7 @@ const ResourceList = ({ dataset, addResourceScreen }) => {
                       <div className="flex items-center">
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {resource.name}
+                            {resource.title}
                           </div>
 
                         </div>
@@ -42,7 +41,7 @@ const ResourceList = ({ dataset, addResourceScreen }) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="ml-4">
-                          <button className="btn-delete">Remove</button>
+                          <button className="btn-delete" onClick={() => { deleteResource(resource.name) }}>Remove</button>
                         </div>
                       </div>
                     </td>
@@ -64,7 +63,8 @@ const ResourceList = ({ dataset, addResourceScreen }) => {
 
 ResourceList.propTypes = {
   dataset: PropTypes.object.isRequired,
-  addResourceHandler: PropTypes.func.isRequired
+  deleteResource: PropTypes.func.isRequired,
+  addResourceScreen: PropTypes.func.isRequired
 };
 
 export default ResourceList;
