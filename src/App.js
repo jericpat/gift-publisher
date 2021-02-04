@@ -30,6 +30,7 @@ export class DatasetEditor extends React.Component {
       isResourceEdit: false,
       currentStep: 0,
       richTypeFilled: false,
+      saveButtonText: "Save",
     };
     this.metadataHandler = this.metadataHandler.bind(this);
     this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
@@ -85,26 +86,11 @@ export class DatasetEditor extends React.Component {
   }
 
   handleChangeMetadata = (event) => {
-    console.log(event);
     const target = event.target;
     const value = target.value;
     const name = target.name;
     const dataset = { ...this.state.dataset };
-
     dataset[name] = value;
-    // let updatedResource = {};
-
-    // const resources = dataset.resources.map((resource) => {
-    //   if (resource.hash == hash) {
-    //     resource[name] = value;
-    //     updatedResource = { ...resource };
-    //     return resource;
-    //   } else {
-    //     return resource;
-    //   }
-    // });
-
-    // dataset.resources = resources;
 
     this.setState({
       dataset,
@@ -186,7 +172,8 @@ export class DatasetEditor extends React.Component {
     this.setState({ currentStep: newStep });
   };
 
-  handleUpload = async () => {
+  handleSaveDataset = async () => {
+    this.setState({ saveButtonText: "Saving..." });
     axios({
       method: "post",
       url: `/api/dataset/${this.state.datasetId}`,
@@ -195,8 +182,15 @@ export class DatasetEditor extends React.Component {
         description: this.state.dataset.description,
       },
     }).then(
-      (response) => alert("Uploaded Sucessfully"),
-      (error) => alert("Error on upload dataset")
+      (response) => {
+        this.setState({ saveButtonText: "Save" });
+        alert("Uploaded Sucessfully");
+        this.setState({ currentStep: 0 });
+      },
+      (error) => {
+        console.log(error);
+        alert("Error on upload dataset!");
+      }
     );
   };
 
@@ -272,7 +266,7 @@ export class DatasetEditor extends React.Component {
               </>
             )}
 
-            {this.state.currentStep == 4 && (
+            {this.state.currentStep == 4 && !this.state.savedDataset && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">Provide Metadata</h1>
@@ -289,8 +283,8 @@ export class DatasetEditor extends React.Component {
           {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
             this.state.resource && (
-              <button className="btn" onClick={this.handleUpload}>
-                Save
+              <button className="btn" onClick={this.handleSaveDataset}>
+                {this.state.saveButtonText}
               </button>
             )}
           {this.state.currentStep == 4 &&

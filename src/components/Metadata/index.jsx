@@ -33,8 +33,8 @@ const Metadata = ({ dataset, handleChange }) => {
             onChange={(e) => { handleChange(e) }}
             required
           >
-            <option value="" disabled>
-              Select...
+            <option value="utf_8">
+              UTF-8
             </option>
             {encodeData.map((item) => (
               <option key={`format-${item.value}`} value={item.value}>
@@ -77,7 +77,7 @@ const Metadata = ({ dataset, handleChange }) => {
 };
 
 Metadata.propTypes = {
-  metadata: PropTypes.object.isRequired,
+  dataset: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,
 };
 
