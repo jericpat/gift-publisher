@@ -11,6 +11,11 @@ const ResourceList = ({ dataset, deleteResource, addResourceScreen }) => {
         <div>
           <h1>No Resource Available</h1>
         </div>
+        <div className="resource-edit-actions">
+          <button className="btn" onClick={() => { addResourceScreen() }}>
+            Add Resource
+                </button>
+        </div>
       </div>
     )
   }

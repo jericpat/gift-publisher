@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { encodeData, formatData } from "datapub";
+import { encodeData } from "datapub";
 
-const Metadata = ({ metadata, handleChange }) => {
+const Metadata = ({ dataset, handleChange }) => {
+
   return (
     <>
       <div className="metadata-form">
@@ -15,11 +16,11 @@ const Metadata = ({ metadata, handleChange }) => {
             type="text"
             name="title"
             id="title"
-            value={metadata.title}
-            onChange={(e)=> handleChange(e, metadata.hash)}
+            value={dataset.title}
+            onChange={(e) => { handleChange(e) }}
           />
         </div>
-      
+
         <div className="metadata-input">
           <label className="metadata-label" htmlFor="encoding">
             Encoding
@@ -28,8 +29,8 @@ const Metadata = ({ metadata, handleChange }) => {
             className="metadata-input__input"
             name="encoding"
             id="encoding"
-            value={metadata.encoding || ""}
-            onChange={(e)=> handleChange(e, metadata.hash)}
+            value={dataset.encoding || ""}
+            onChange={(e) => { handleChange(e) }}
             required
           >
             <option value="" disabled>
@@ -50,13 +51,7 @@ const Metadata = ({ metadata, handleChange }) => {
             className="metadata-input__input"
             name="format"
             id="format"
-            value={(metadata.format || "").toLowerCase()}
-            onChange={(e)=> handleChange(e, metadata.hash)}
-            required
           >
-            <option value="" disabled>
-              Select...
-            </option>
             <option value="csv">
               CSV
             </option>
@@ -71,8 +66,8 @@ const Metadata = ({ metadata, handleChange }) => {
             type="text"
             name="description"
             id="description"
-            value={metadata.description || ""}
-            onChange={(e)=> handleChange(e, metadata.hash)}
+            value={dataset.description || ""}
+            onChange={(e) => { handleChange(e) }}
             rows={4}
           ></textarea>
         </div>
