@@ -180,7 +180,7 @@ export class DatasetEditor extends React.Component {
 
     //clears error message after 4 seconds
     setTimeout(() => {
-      this.setState({ ui: { errorMsg: "" } });
+      this.setState({ ui: { ...this.state.ui, errorMsg: "" } });
     }, 4000);
   };
 
