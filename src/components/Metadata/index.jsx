@@ -1,13 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { encodeData } from "datapub";
 
-import "./Metadata.css";
-import { encodeData, formatData } from "datapub";
+const Metadata = ({ dataset, handleChange }) => {
 
-const Metadata = ({ metadata, handleChange }) => {
   return (
     <>
-      <h3 className="metadata-name">{metadata.path}</h3>
       <div className="metadata-form">
         <div className="metadata-input">
           <label className="metadata-label" htmlFor="title">
@@ -18,11 +16,11 @@ const Metadata = ({ metadata, handleChange }) => {
             type="text"
             name="title"
             id="title"
-            value={metadata.title}
-            onChange={handleChange}
+            value={dataset.title}
+            onChange={(e) => { handleChange(e) }}
           />
         </div>
-      
+
         <div className="metadata-input">
           <label className="metadata-label" htmlFor="encoding">
             Encoding
@@ -31,12 +29,12 @@ const Metadata = ({ metadata, handleChange }) => {
             className="metadata-input__input"
             name="encoding"
             id="encoding"
-            value={metadata.encoding || ""}
-            onChange={handleChange}
+            value={dataset.encoding || ""}
+            onChange={(e) => { handleChange(e) }}
             required
           >
-            <option value="" disabled>
-              Select...
+            <option value="utf_8">
+              UTF-8
             </option>
             {encodeData.map((item) => (
               <option key={`format-${item.value}`} value={item.value}>
@@ -53,13 +51,7 @@ const Metadata = ({ metadata, handleChange }) => {
             className="metadata-input__input"
             name="format"
             id="format"
-            value={(metadata.format || "").toLowerCase()}
-            onChange={handleChange}
-            required
           >
-            <option value="" disabled>
-              Select...
-            </option>
             <option value="csv">
               CSV
             </option>
@@ -74,8 +66,8 @@ const Metadata = ({ metadata, handleChange }) => {
             type="text"
             name="description"
             id="description"
-            value={metadata.description || ""}
-            onChange={handleChange}
+            value={dataset.description || ""}
+            onChange={(e) => { handleChange(e) }}
             rows={4}
           ></textarea>
         </div>
@@ -85,7 +77,7 @@ const Metadata = ({ metadata, handleChange }) => {
 };
 
 Metadata.propTypes = {
-  metadata: PropTypes.object.isRequired,
+  dataset: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,
 };
 

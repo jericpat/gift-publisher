@@ -14,7 +14,7 @@ describe("<Metadata />", () => {
     const div = document.createElement("div");
     ReactDOM.render(
       <Metadata
-        metadata={{}}
+        dataset={{id: "testID"}}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         deleteResource={deleteResource}
@@ -29,7 +29,7 @@ describe("<Metadata />", () => {
   it("auto-populate input fields", () => {
     const wrapper = shallow(
       <Metadata
-        metadata={{
+        dataset={{
           title: "sample",
           format: "csv",
           description: "Lorem ...",
@@ -45,13 +45,10 @@ describe("<Metadata />", () => {
       />
     );
     const inputTitle = wrapper.find("#title");
-    const inputFormat = wrapper.find("#format");
     const inputDescription = wrapper.find("#description");
-    const inputRestricted = wrapper.find("#restricted");
     const inputEncoding = wrapper.find("#encoding");
 
     expect(inputTitle.props().value).toEqual("sample");
-    expect(inputFormat.props().value).toEqual("csv");
     expect(inputDescription.props().value).toEqual("Lorem ...");
     expect(inputEncoding.props().value).toEqual("utf-8");
   });
