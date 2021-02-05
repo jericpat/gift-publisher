@@ -37,9 +37,13 @@ export class DatasetEditor extends React.Component {
   }
 
   metadataHandler(resource) {
-    let dataset = this.mapResourceToDatapackageResource(resource);
+    let {
+      dataset,
+      resource: updatedResource,
+    } = this.mapResourceToDatapackageResource(resource);
     this.setState({
       dataset,
+      resource: updatedResource,
     });
   }
 
@@ -68,11 +72,8 @@ export class DatasetEditor extends React.Component {
     // This is used in resource preview
     resource["sample"] = fileResource.sample;
     resource["columns"] = fileResource.columns;
-    this.setState({
-      resource,
-    });
 
-    return dataset;
+    return { dataset, resource };
   }
 
   //set state of rich type field. If all rich type fields have been filled,
@@ -123,16 +124,33 @@ export class DatasetEditor extends React.Component {
     fileDownload(JSON.stringify(this.state.dataset), "datapackage.json");
   };
 
-  deleteResource = (resourceName) => {
+  deleteResource = (hash) => {
     const { dataset } = { ...this.state };
     if (window.confirm("Are you sure to delete this resource?")) {
       const newResource = dataset.resources.filter(
-        (resource) => resource.name != resourceName
+        (resource) => resource.hash != hash
       );
       dataset.resources = newResource;
       this.setState({
         dataset,
       });
+
+      // axios({
+      //   method: "post",
+      //   url: `/api/dataset/${this.state.datasetId}`,
+      //   data: {
+      //     metadata: this.state.dataset,
+      //     description: this.state.dataset.description,
+      //   },
+      // }).then(
+      //   (response) => {
+      //     alert("Resource has been removed sucessfully");
+      //   },
+      //   (error) => {
+      //     console.log(error);
+      //     alert("Error when removing resource!");
+      //   }
+      // );
     }
   };
 
@@ -150,8 +168,16 @@ export class DatasetEditor extends React.Component {
       error: status.error,
       loading: status.loading,
     };
-    this.nextScreen();
     this.setState({ ui: newUiState });
+    if (status.success && !status.loading) {
+      this.nextScreen();
+    }
+    if (!status.success && status.error) {
+      const dataset = { ...this.state.dataset };
+      dataset.resources.pop(); //remove failed uploaded resource from datset state
+      this.setState({ dataset, resource: {} });
+      this.prevScreen();
+    }
   };
 
   onChangeResourceId = (resourceId) => {
@@ -173,25 +199,32 @@ export class DatasetEditor extends React.Component {
   };
 
   handleSaveDataset = async () => {
+    this.mapDatasetToFiscalFormat({ ...this.state.resource });
     this.setState({ saveButtonText: "Saving..." });
-    axios({
-      method: "post",
-      url: `/api/dataset/${this.state.datasetId}`,
-      data: {
-        metadata: this.state.dataset,
-        description: this.state.dataset.description,
-      },
-    }).then(
-      (response) => {
-        this.setState({ saveButtonText: "Save" });
-        alert("Uploaded Sucessfully");
-        this.setState({ currentStep: 0 });
-      },
-      (error) => {
-        console.log(error);
-        alert("Error on upload dataset!");
-      }
-    );
+    setTimeout(() => {
+      this.setState({ saveButtonText: "Save" });
+      alert("Uploaded Sucessfully");
+      this.setState({ currentStep: 0 });
+    }, 4000);
+
+    // axios({
+    //   method: "post",
+    //   url: `/api/dataset/${this.state.datasetId}`,
+    //   data: {
+    //     metadata: this.state.dataset,
+    //     description: this.state.dataset.description,
+    //   },
+    // }).then(
+    //   (response) => {
+    //     this.setState({ saveButtonText: "Save" });
+    //     alert("Uploaded Sucessfully");
+    //     this.setState({ currentStep: 0 });
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //     alert("Error on upload dataset!");
+    //   }
+    // );
   };
 
   render() {
@@ -238,7 +271,7 @@ export class DatasetEditor extends React.Component {
           )}
 
           <div className="upload-edit-area">
-            {this.state.ui.success && this.state.currentStep == 2 && (
+            {this.state.resource.sample && this.state.currentStep == 2 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
