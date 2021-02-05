@@ -40,8 +40,16 @@ class Upload extends React.Component {
         console.warn(e);
       }
 
+
+      formattedSize = onFormatBytes(file.size);
+      let self = this;
+      const hash = await file.hash("sha256", (progress) => {
+        self.onHashProgress(progress);
+      });
+      Object.assign(file.descriptor, { hash })
+
       //check if file has the same schema
-      if (!this.hasSameSchema(selectedFile)) {
+      if (!this.hasSameSchema(file._descriptor)) {
         this.setState({ error: true, loading: false });
         this.props.handleUploadStatus({
           loading: false,
@@ -53,7 +61,7 @@ class Upload extends React.Component {
       }
 
       //check if file already exists in resource
-      if (this.hasSameHash(selectedFile)) {
+      if (this.hasSameHash(file._descriptor)) {
         this.setState({ error: true, loading: false });
         this.props.handleUploadStatus({
           loading: false,
@@ -63,12 +71,6 @@ class Upload extends React.Component {
         });
         return
       }
-
-      formattedSize = onFormatBytes(file.size);
-      let self = this;
-      const hash = await file.hash("sha256", (progress) => {
-        self.onHashProgress(progress);
-      });
 
       //get sample
       let sample_stream = await file.rows({ size: 460 });
@@ -94,7 +96,7 @@ class Upload extends React.Component {
       });
 
       this.props.metadataHandler(
-        Object.assign(file.descriptor, { hash, sample, columns })
+        Object.assign(file.descriptor, { sample, columns })
       );
 
       this.setState({
@@ -158,7 +160,7 @@ class Upload extends React.Component {
       && this.state.dataset.resources.length > 0) {
       const { resources } = this.state.dataset
       const sameHashes = resources.map((resource) => {
-        return resource.hash === newResource.hash
+        return resource.hash == newResource.hash
       })
       return sameHashes.includes(true)
     } else {
