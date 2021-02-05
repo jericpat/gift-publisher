@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import "./ResourceList.css";
 
 const ResourceList = ({ dataset, deleteResource, addResourceScreen }) => {
   const hasResources = Object.keys(dataset).includes("resources")
