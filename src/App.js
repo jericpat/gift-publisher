@@ -100,14 +100,19 @@ export class DatasetEditor extends React.Component {
   };
 
   mapDatasetToFiscalFormat = (resource) => {
+    const dataset = { ...this.state.dataset };
+
     resource.schema.fields.forEach((f) => {
       f.type = f.columnType;
       delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
     });
     let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
+
+    if (!Object.keys(dataset).includes("model")) {
+      dataset.model = fdp.model;
+    }
     resource.schema.fields = Object.values(fdp.schema.fields);
 
-    const dataset = { ...this.state.dataset };
     dataset.resources.map((res) => {
       if (res.hash == resource.hash) {
         return resource;
@@ -121,20 +126,25 @@ export class DatasetEditor extends React.Component {
   };
 
   downloadDatapackage = async () => {
-    this.mapDatasetToFiscalFormat({ ...this.state.resource });
     fileDownload(JSON.stringify(this.state.dataset), "datapackage.json");
   };
 
   deleteResource = (hash) => {
     const { dataset } = { ...this.state };
     if (window.confirm("Are you sure to delete this resource?")) {
-      const newResource = dataset.resources.filter(
-        (resource) => resource.hash != hash
-      );
-      dataset.resources = newResource;
-      this.setState({
-        dataset,
-      });
+      if (dataset.resources.length == 1) {
+        dataset.resources = [];
+        this.setState({ dataset, resource: {} });
+      } else {
+        const newResource = dataset.resources.filter(
+          (resource) => resource.hash != hash
+        );
+        dataset.resources = newResource;
+        this.setState({
+          dataset,
+          resource: {},
+        });
+      }
 
       // axios({
       //   method: "post",
@@ -178,10 +188,10 @@ export class DatasetEditor extends React.Component {
       this.prevScreen();
     }
 
-    //clears error message after 4 seconds
+    //clears error message after 6 seconds
     setTimeout(() => {
       this.setState({ ui: { ...this.state.ui, errorMsg: "" } });
-    }, 4000);
+    }, 6000);
   };
 
   onChangeResourceId = (resourceId) => {
@@ -191,7 +201,7 @@ export class DatasetEditor extends React.Component {
   nextScreen = () => {
     let currentStep = this.state.currentStep;
     if (currentStep == 3) {
-      //TODO: check if all rich type has been added
+      this.mapDatasetToFiscalFormat({ ...this.state.resource }); //generate model and fiscal schema as soon as richtypes have been updated.
     }
     let newStep = currentStep + 1;
     this.setState({ currentStep: newStep });
@@ -203,7 +213,6 @@ export class DatasetEditor extends React.Component {
   };
 
   handleSaveDataset = async () => {
-    this.mapDatasetToFiscalFormat({ ...this.state.resource });
     this.setState({ saveButtonText: "Saving..." });
     setTimeout(() => {
       this.setState({ saveButtonText: "Save" });
@@ -232,7 +241,6 @@ export class DatasetEditor extends React.Component {
   };
 
   render() {
-    const { success, loading } = this.state.ui;
     return (
       <div className="App">
         <div>

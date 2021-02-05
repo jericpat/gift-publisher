@@ -33,18 +33,6 @@ class Upload extends React.Component {
 
     if (event.target.files.length > 0) {
       selectedFile = event.target.files[0];
-      //check if file already exists in resource
-      if (this.hasSameName(selectedFile)) {
-        this.setState({ error: true, loading: false });
-        this.props.handleUploadStatus({
-          loading: false,
-          success: false,
-          error: true,
-          errorMsg: "Possible duplicate, a resource with the same name already exists!"
-        });
-        return
-      }
-
       const file = data.open(selectedFile);
       try {
         await file.addSchema();
@@ -60,6 +48,18 @@ class Upload extends React.Component {
           success: false,
           error: true,
           errorMsg: "Schema of uploaded resource does not match existing one!"
+        });
+        return
+      }
+
+      //check if file already exists in resource
+      if (this.hasSameHash(selectedFile)) {
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+          errorMsg: "Possible duplicate, the resource already exists!"
         });
         return
       }
@@ -139,8 +139,6 @@ class Upload extends React.Component {
   };
 
   hasSameSchema = (resource) => {
-    // console.log("resou", resource);
-    // console.log(this.state.dataset.resources[0]);
     if (Object.keys(this.state.dataset).includes("resources") && this.state.dataset.resources.length > 0) {
 
       const newFields = resource.schema.fields.map((field) => {
@@ -155,14 +153,14 @@ class Upload extends React.Component {
     }
   }
 
-  hasSameName(newResource) {
+  hasSameHash(newResource) {
     if (Object.keys(this.state.dataset).includes("resources")
       && this.state.dataset.resources.length > 0) {
       const { resources } = this.state.dataset
-      const sameNames = resources.map((resource) => {
-        return resource.name === newResource.name
+      const sameHashes = resources.map((resource) => {
+        return resource.hash === newResource.hash
       })
-      return sameNames.includes(true)
+      return sameHashes.includes(true)
     } else {
       return false
     }
@@ -188,18 +186,6 @@ class Upload extends React.Component {
       success: false,
     });
 
-
-    //check if schema are the same
-    // if (!this.hasSameSchema(resource)) {
-    //   console.log("hereee");
-    //   this.setState({ error: true, loading: false });
-    //   this.props.handleUploadStatus({
-    //     loading: false,
-    //     success: false,
-    //     error: true,
-    //   });
-    //   // alert(`Schema of uploaded resource does not match existing one!`)
-    // } else {
 
     this.setState({
       success: true,
