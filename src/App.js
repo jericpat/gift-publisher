@@ -25,6 +25,7 @@ export class DatasetEditor extends React.Component {
         success: false,
         error: false,
         loading: false,
+        errorMsg: "",
       },
       client: null,
       isResourceEdit: false,
@@ -167,17 +168,20 @@ export class DatasetEditor extends React.Component {
       success: status.success,
       error: status.error,
       loading: status.loading,
+      errorMsg: status.errorMsg,
     };
     this.setState({ ui: newUiState });
     if (status.success && !status.loading) {
       this.nextScreen();
     }
     if (!status.success && status.error) {
-      const dataset = { ...this.state.dataset };
-      dataset.resources.pop(); //remove failed uploaded resource from datset state
-      this.setState({ dataset, resource: {} });
       this.prevScreen();
     }
+
+    //clears error message after 4 seconds
+    setTimeout(() => {
+      this.setState({ ui: { errorMsg: "" } });
+    }, 4000);
   };
 
   onChangeResourceId = (resourceId) => {
@@ -205,7 +209,7 @@ export class DatasetEditor extends React.Component {
       this.setState({ saveButtonText: "Save" });
       alert("Uploaded Sucessfully");
       this.setState({ currentStep: 0 });
-    }, 4000);
+    }, 6000);
 
     // axios({
     //   method: "post",
@@ -231,6 +235,9 @@ export class DatasetEditor extends React.Component {
     const { success, loading } = this.state.ui;
     return (
       <div className="App">
+        <div>
+          <h1 className="errorMsg">{this.state.ui.errorMsg}</h1>
+        </div>
         {this.state.currentStep > 0 && (
           <img src={ReactLogo} width="50%" className="Img" />
         )}

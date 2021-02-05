@@ -38,6 +38,11 @@ code {
   column-gap: 20px;
 }
 
+.errorMsg {
+  color: #c70e00;
+  font-weight: 10;
+}
+
 .upload-header {
   grid-area: header;
   border-bottom: 1px solid #e3ebff;
