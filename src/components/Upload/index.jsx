@@ -35,60 +35,79 @@ class Upload extends React.Component {
       selectedFile = event.target.files[0];
       //check if file already exists in resource
       if (this.hasSameName(selectedFile)) {
-        alert(`Possible duplicate, a resource with the same name already exists!`)
         this.setState({ error: true, loading: false });
-      } else {
-
-        const file = data.open(selectedFile);
-        try {
-          await file.addSchema();
-        } catch (e) {
-          console.warn(e);
-        }
-        formattedSize = onFormatBytes(file.size);
-        let self = this;
-        const hash = await file.hash("sha256", (progress) => {
-          self.onHashProgress(progress);
-        });
-
-        //get sample
-        let sample_stream = await file.rows({ size: 460 });
-        let sample_array = await toArray(sample_stream);
-
-        //get column names for table
-        const column_names = sample_array[0]; //first row is the column names
-        const columns = column_names.map((item) => {
-          return {
-            Header: item,
-            accessor: item,
-          };
-        });
-
-        //prepare sample for use in table preview component
-        let sample = [];
-        sample_array.slice(1, 5).forEach((item) => {
-          let temp_obj = {};
-          item.forEach((field, i) => {
-            temp_obj[column_names[i]] = field;
-          });
-          sample.push(temp_obj);
-        });
-
-        this.props.metadataHandler(
-          Object.assign(file.descriptor, { hash, sample, columns })
-        );
-
-        this.setState({
-          selectedFile,
-          loaded: 0,
+        this.props.handleUploadStatus({
+          loading: false,
           success: false,
-          fileExists: false,
-          error: false,
-          formattedSize,
+          error: true,
+          errorMsg: "Possible duplicate, a resource with the same name already exists!"
         });
-
-        await this.onClickHandler();
+        return
       }
+
+      const file = data.open(selectedFile);
+      try {
+        await file.addSchema();
+      } catch (e) {
+        console.warn(e);
+      }
+
+      //check if file has the same schema
+      if (!this.hasSameSchema(selectedFile)) {
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+          errorMsg: "Schema of uploaded resource does not match existing one!"
+        });
+        return
+      }
+
+      formattedSize = onFormatBytes(file.size);
+      let self = this;
+      const hash = await file.hash("sha256", (progress) => {
+        self.onHashProgress(progress);
+      });
+
+      //get sample
+      let sample_stream = await file.rows({ size: 460 });
+      let sample_array = await toArray(sample_stream);
+
+      //get column names for table
+      const column_names = sample_array[0]; //first row is the column names
+      const columns = column_names.map((item) => {
+        return {
+          Header: item,
+          accessor: item,
+        };
+      });
+
+      //prepare sample for use in table preview component
+      let sample = [];
+      sample_array.slice(1, 5).forEach((item) => {
+        let temp_obj = {};
+        item.forEach((field, i) => {
+          temp_obj[column_names[i]] = field;
+        });
+        sample.push(temp_obj);
+      });
+
+      this.props.metadataHandler(
+        Object.assign(file.descriptor, { hash, sample, columns })
+      );
+
+      this.setState({
+        selectedFile,
+        loaded: 0,
+        success: false,
+        fileExists: false,
+        error: false,
+        formattedSize,
+      });
+
+      await this.onClickHandler();
+
     }
   };
 
@@ -120,9 +139,11 @@ class Upload extends React.Component {
   };
 
   hasSameSchema = (resource) => {
+    // console.log("resou", resource);
+    // console.log(this.state.dataset.resources[0]);
     if (Object.keys(this.state.dataset).includes("resources") && this.state.dataset.resources.length > 0) {
 
-      const newFields = resource._descriptor.schema.fields.map((field) => {
+      const newFields = resource.schema.fields.map((field) => {
         return field.name
       })
       const oldFields = this.state.dataset.resources[0].schema.fields.map((field) => {
@@ -169,53 +190,54 @@ class Upload extends React.Component {
 
 
     //check if schema are the same
-    if (!this.hasSameSchema(resource)) {
-      this.setState({ error: true, loading: false });
-      this.props.handleUploadStatus({
-        loading: false,
-        success: false,
-        error: true,
-      });
-      alert(`Schema of uploaded resource does not match existing one!`)
-    } else {
+    // if (!this.hasSameSchema(resource)) {
+    //   console.log("hereee");
+    //   this.setState({ error: true, loading: false });
+    //   this.props.handleUploadStatus({
+    //     loading: false,
+    //     success: false,
+    //     error: true,
+    //   });
+    //   // alert(`Schema of uploaded resource does not match existing one!`)
+    // } else {
 
-      this.setState({
-        success: true,
-        loading: false,
-        fileExists: true,
-        loaded: 100,
-      });
+    this.setState({
+      success: true,
+      loading: false,
+      fileExists: true,
+      loaded: 100,
+    });
 
-      this.props.handleUploadStatus({
-        loading: false,
-        success: true,
-      });
+    this.props.handleUploadStatus({
+      loading: false,
+      success: true,
+    });
 
-      // client
-      //   .upload(resource, organizationId, this.state.datasetId, this.onProgress)
-      //   .then((response) => {
-      //     this.setState({
-      //       success: true,
-      //       loading: false,
-      //       fileExists: !response,
-      //       loaded: 100,
-      //     });
+    // client
+    //   .upload(resource, organizationId, this.state.datasetId, this.onProgress)
+    //   .then((response) => {
+    //     this.setState({
+    //       success: true,
+    //       loading: false,
+    //       fileExists: !response,
+    //       loaded: 100,
+    //     });
 
-      //     this.props.handleUploadStatus({
-      //       loading: false,
-      //       success: true,
-      //     });
-      //   })
-      //   .catch((error) => {
-      //     console.error("Upload failed with error: " + error);
-      //     this.setState({ error: true, loading: false });
-      //     this.props.handleUploadStatus({
-      //       loading: false,
-      //       success: false,
-      //       error: true,
-      //     });
-      //   });
-    }
+    //     this.props.handleUploadStatus({
+    //       loading: false,
+    //       success: true,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.error("Upload failed with error: " + error);
+    //     this.setState({ error: true, loading: false });
+    //     this.props.handleUploadStatus({
+    //       loading: false,
+    //       success: false,
+    //       error: true,
+    //     });
+    //   });
+    // }
   };
 
   render() {
