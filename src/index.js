@@ -11,7 +11,7 @@ if (element) {
   const config = {
     authorizedApi: "/api/authorize",
     lfsServerUrl: "https://giftless-gift.herokuapp.com",
-    dataset: metadataSingle, //for test purpose, suppose to be provided by portal
+    dataset: metadataEmpty, //for test purpose, suppose to be provided by portal
     metastoreApi: "/api/dataset",
   };
 

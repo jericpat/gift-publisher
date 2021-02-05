@@ -147,22 +147,22 @@ export class DatasetEditor extends React.Component {
         });
       }
 
-      // axios({
-      //   method: "post",
-      //   url: `/api/dataset/${this.state.datasetId}`,
-      //   data: {
-      //     metadata: this.state.dataset,
-      //     description: this.state.dataset.description,
-      //   },
-      // }).then(
-      //   (response) => {
-      //     alert("Resource has been removed sucessfully");
-      //   },
-      //   (error) => {
-      //     console.log(error);
-      //     alert("Error when removing resource!");
-      //   }
-      // );
+      axios({
+        method: "post",
+        url: `/api/dataset/${this.state.datasetId}`,
+        data: {
+          metadata: this.state.dataset,
+          description: this.state.dataset.description,
+        },
+      }).then(
+        (response) => {
+          alert("Resource has been removed sucessfully");
+        },
+        (error) => {
+          console.log(error);
+          alert("Error when removing resource!");
+        }
+      );
     }
   };
 
@@ -221,24 +221,24 @@ export class DatasetEditor extends React.Component {
     //   this.setState({ currentStep: 0 });
     // }, 2000);
 
-    // axios({
-    //   method: "post",
-    //   url: `/api/dataset/${this.state.datasetId}`,
-    //   data: {
-    //     metadata: this.state.dataset,
-    //     description: this.state.dataset.description,
-    //   },
-    // }).then(
-    //   (response) => {
-    //     this.setState({ saveButtonText: "Save" });
-    //     alert("Uploaded Sucessfully");
-    //     this.setState({ currentStep: 0 });
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //     alert("Error on upload dataset!");
-    //   }
-    // );
+    axios({
+      method: "post",
+      url: `/api/dataset/${this.state.datasetId}`,
+      data: {
+        metadata: this.state.dataset,
+        description: this.state.dataset.description,
+      },
+    }).then(
+      (response) => {
+        this.setState({ saveButtonText: "Save" });
+        alert("Uploaded Sucessfully");
+        this.setState({ currentStep: 0 });
+      },
+      (error) => {
+        console.log(error);
+        alert("Error on upload dataset!");
+      }
+    );
   };
 
   render() {
