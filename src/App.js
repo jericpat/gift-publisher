@@ -79,13 +79,14 @@ export class DatasetEditor extends React.Component {
 
   //set state of rich type field. If all rich type fields have been filled,
   // then activate the next button in the Table Schema screen
-  handleRichTypeCount(unfilledRichTypes) {
+  handleRichTypeCount = (unfilledRichTypes) => {
     if (unfilledRichTypes == 0) {
       this.setState({
         richTypeFilled: true,
       });
     }
   }
+
 
   handleChangeMetadata = (event) => {
     const target = event.target;
@@ -214,11 +215,11 @@ export class DatasetEditor extends React.Component {
 
   handleSaveDataset = async () => {
     this.setState({ saveButtonText: "Saving..." });
-    setTimeout(() => {
-      this.setState({ saveButtonText: "Save" });
-      alert("Uploaded Sucessfully");
-      this.setState({ currentStep: 0 });
-    }, 6000);
+    // setTimeout(() => {
+    //   this.setState({ saveButtonText: "Save" });
+    //   alert("Uploaded Sucessfully");
+    //   this.setState({ currentStep: 0 });
+    // }, 2000);
 
     // axios({
     //   method: "post",
@@ -307,6 +308,7 @@ export class DatasetEditor extends React.Component {
                   </h1>
                 </div>
                 <TableSchema
+                  dataset={this.state.dataset}
                   schema={this.state.resource.schema}
                   data={this.state.resource.sample || []}
                   handleRichType={this.handleRichTypeCount}
