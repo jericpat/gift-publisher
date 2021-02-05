@@ -9,6 +9,7 @@ describe("<TableSchema />", () => {
   it("render TableSchema without crashing", () => {
     const wrapper = shallow(
       <TableSchema
+        dataset={{id: "testID"}}
         data={[]}
         schema={{ fields: [] }}
         handleRichType={(count) => console.log(count)}
