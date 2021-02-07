@@ -12,6 +12,7 @@ class Upload extends React.Component {
     this.state = {
       datasetId: props.datasetId,
       organizationId: props.organizationId,
+      dataset: props.dataset,
       selectedFile: null,
       fileSize: 0,
       formattedSize: "0 KB",
@@ -38,11 +39,38 @@ class Upload extends React.Component {
       } catch (e) {
         console.warn(e);
       }
+
+
       formattedSize = onFormatBytes(file.size);
       let self = this;
       const hash = await file.hash("sha256", (progress) => {
         self.onHashProgress(progress);
       });
+      Object.assign(file.descriptor, { hash })
+
+      //check if file has the same schema
+      if (!this.hasSameSchema(file._descriptor)) {
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+          errorMsg: "Schema of uploaded resource does not match existing one!"
+        });
+        return
+      }
+
+      //check if file already exists in resource
+      if (this.hasSameHash(file._descriptor)) {
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+          errorMsg: "Possible duplicate, the resource already exists!"
+        });
+        return
+      }
 
       //get sample
       let sample_stream = await file.rows({ size: 460 });
@@ -68,20 +96,21 @@ class Upload extends React.Component {
       });
 
       this.props.metadataHandler(
-        Object.assign(file.descriptor, { hash, sample, columns })
+        Object.assign(file.descriptor, { sample, columns })
       );
+
+      this.setState({
+        selectedFile,
+        loaded: 0,
+        success: false,
+        fileExists: false,
+        error: false,
+        formattedSize,
+      });
+
+      await this.onClickHandler();
+
     }
-
-    this.setState({
-      selectedFile,
-      loaded: 0,
-      success: false,
-      fileExists: false,
-      error: false,
-      formattedSize,
-    });
-
-    await this.onClickHandler();
   };
 
   onHashProgress = (progress) => {
@@ -111,6 +140,34 @@ class Upload extends React.Component {
     });
   };
 
+  hasSameSchema = (resource) => {
+    if (Object.keys(this.state.dataset).includes("resources") && this.state.dataset.resources.length > 0) {
+
+      const newFields = resource.schema.fields.map((field) => {
+        return field.name
+      })
+      const oldFields = this.state.dataset.resources[0].schema.fields.map((field) => {
+        return field.name
+      })
+      return JSON.stringify(newFields) === JSON.stringify(oldFields);
+    } else {
+      return true
+    }
+  }
+
+  hasSameHash(newResource) {
+    if (Object.keys(this.state.dataset).includes("resources")
+      && this.state.dataset.resources.length > 0) {
+      const { resources } = this.state.dataset
+      const sameHashes = resources.map((resource) => {
+        return resource.hash == newResource.hash
+      })
+      return sameHashes.includes(true)
+    } else {
+      return false
+    }
+  }
+
   onClickHandler = async () => {
     const start = new Date().getTime();
     const { selectedFile } = this.state;
@@ -130,6 +187,8 @@ class Upload extends React.Component {
       error: false,
       success: false,
     });
+
+
 
     client
       .upload(resource, organizationId, this.state.datasetId, this.onProgress)
