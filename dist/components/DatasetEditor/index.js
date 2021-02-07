@@ -23,6 +23,8 @@ var _TablePreview = _interopRequireDefault(require("../TablePreview"));
 
 var _TableSchema = _interopRequireDefault(require("../TableSchema"));
 
+var _ResourceList = _interopRequireDefault(require("../ResourceList"));
+
 var _Metadata = _interopRequireDefault(require("../Metadata"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -366,7 +368,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         className: "errorMsg"
       }, this.state.ui.errorMsg)), /*#__PURE__*/_react.default.createElement("form", {
         className: "upload-wrapper"
-      }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(ResourceList, {
+      }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ResourceList.default, {
         dataset: this.state.dataset,
         addResourceScreen: this.nextScreen,
         deleteResource: this.deleteResource
