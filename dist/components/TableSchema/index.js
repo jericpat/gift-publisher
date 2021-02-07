@@ -64,8 +64,13 @@ var TableSchema = function TableSchema(props) {
   var _useState3 = (0, _react.useState)(props.schema.fields.length - 1),
       _useState4 = _slicedToArray(_useState3, 2),
       unfilledRichTypes = _useState4[0],
-      setUnfilledRichTypes = _useState4[1]; // eslint-disable-next-line react-hooks/exhaustive-deps
+      setUnfilledRichTypes = _useState4[1];
 
+  (0, _react.useEffect)(function () {
+    if (resourceHasRichType(props.dataset)) {
+      props.handleRichType(0);
+    }
+  }, []); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   var data = _react.default.useMemo(function () {
     return _toConsumableArray(props.data);
@@ -106,6 +111,17 @@ var TableSchema = function TableSchema(props) {
     }
 
     props.handleRichType(unfilledRichTypes);
+  };
+
+  var resourceHasRichType = function resourceHasRichType(dataset) {
+    if (Object.keys(dataset).includes("resources") && dataset.resources.length > 0) {
+      var fields = dataset.resources[0].schema.fields;
+      var columnTypes = fields.filter(function (field) {
+        return Object.keys(field).includes("columnType");
+      });
+      var hasRichTypes = columnTypes.length == fields.length ? true : false;
+      return hasRichTypes;
+    }
   }; //if the the user upload a new file, will update the state
   //and render with the new values
 
@@ -164,19 +180,36 @@ var TableSchema = function TableSchema(props) {
     };
 
     if (key === "columnType") {
-      return schema.fields.map(function (item, index) {
-        return /*#__PURE__*/_react.default.createElement("td", {
-          key: "schema-type-field-".concat(key, "-").concat(index)
-        }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
-          styles: customStyles,
-          options: columnTypeOptions,
-          width: "200px",
-          menuColor: "red",
-          onChange: function onChange(event) {
-            return handleChange(event, key, index);
-          }
-        }));
-      });
+      if (resourceHasRichType(props.dataset)) {
+        var existingRichTypes = props.dataset.resources[0].schema.fields.map(function (field) {
+          return field.columnType;
+        }); //The schema already exists, and we assume columns have the same richTypes. Prefill and set to uneditable
+
+        return existingRichTypes.map(function (item, index) {
+          return /*#__PURE__*/_react.default.createElement("td", {
+            key: "schema-type-field-".concat(key, "-").concat(index)
+          }, /*#__PURE__*/_react.default.createElement("input", {
+            className: "table-tbody-input",
+            type: "text",
+            value: item,
+            disabled: true
+          }));
+        });
+      } else {
+        return schema.fields.map(function (item, index) {
+          return /*#__PURE__*/_react.default.createElement("td", {
+            key: "schema-type-field-".concat(key, "-").concat(index)
+          }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
+            styles: customStyles,
+            options: columnTypeOptions,
+            width: "200px",
+            menuColor: "red",
+            onChange: function onChange(event) {
+              return handleChange(event, key, index);
+            }
+          }));
+        });
+      }
     }
 
     return schema.fields.map(function (item, index) {
