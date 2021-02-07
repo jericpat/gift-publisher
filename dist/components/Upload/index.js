@@ -76,7 +76,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 _this$state = _this.state, formattedSize = _this$state.formattedSize, selectedFile = _this$state.selectedFile;
 
                 if (!(event.target.files.length > 0)) {
-                  _context.next = 28;
+                  _context.next = 40;
                   break;
                 }
 
@@ -105,17 +105,61 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
               case 16:
                 hash = _context.sent;
-                _context.next = 19;
+                Object.assign(file.descriptor, {
+                  hash: hash
+                }); //check if file has the same schema
+
+                if (_this.hasSameSchema(file._descriptor)) {
+                  _context.next = 22;
+                  break;
+                }
+
+                _this.setState({
+                  error: true,
+                  loading: false
+                });
+
+                _this.props.handleUploadStatus({
+                  loading: false,
+                  success: false,
+                  error: true,
+                  errorMsg: "Schema of uploaded resource does not match existing one!"
+                });
+
+                return _context.abrupt("return");
+
+              case 22:
+                if (!_this.hasSameHash(file._descriptor)) {
+                  _context.next = 26;
+                  break;
+                }
+
+                _this.setState({
+                  error: true,
+                  loading: false
+                });
+
+                _this.props.handleUploadStatus({
+                  loading: false,
+                  success: false,
+                  error: true,
+                  errorMsg: "Possible duplicate, the resource already exists!"
+                });
+
+                return _context.abrupt("return");
+
+              case 26:
+                _context.next = 28;
                 return file.rows({
                   size: 460
                 });
 
-              case 19:
+              case 28:
                 sample_stream = _context.sent;
-                _context.next = 22;
+                _context.next = 31;
                 return (0, _streamToArray.default)(sample_stream);
 
-              case 22:
+              case 31:
                 sample_array = _context.sent;
                 //get column names for table
                 column_names = sample_array[0]; //first row is the column names
@@ -137,12 +181,10 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 });
 
                 _this.props.metadataHandler(Object.assign(file.descriptor, {
-                  hash: hash,
                   sample: sample,
                   columns: columns
                 }));
 
-              case 28:
                 _this.setState({
                   selectedFile: selectedFile,
                   loaded: 0,
@@ -152,10 +194,10 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   formattedSize: formattedSize
                 });
 
-                _context.next = 31;
+                _context.next = 40;
                 return _this.onClickHandler();
 
-              case 31:
+              case 40:
               case "end":
                 return _context.stop();
             }
@@ -199,6 +241,22 @@ var Upload = /*#__PURE__*/function (_React$Component) {
       _this.setState({
         timeRemaining: timeRemaining / 1000
       });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "hasSameSchema", function (resource) {
+      if (Object.keys(_this.state.dataset).includes("resources") && _this.state.dataset.resources.length > 0) {
+        var newFields = resource.schema.fields.map(function (field) {
+          return field.name;
+        });
+
+        var oldFields = _this.state.dataset.resources[0].schema.fields.map(function (field) {
+          return field.name;
+        });
+
+        return JSON.stringify(newFields) === JSON.stringify(oldFields);
+      } else {
+        return true;
+      }
     });
 
     _defineProperty(_assertThisInitialized(_this), "onClickHandler", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
@@ -264,6 +322,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
     _this.state = {
       datasetId: props.datasetId,
       organizationId: props.organizationId,
+      dataset: props.dataset,
       selectedFile: null,
       fileSize: 0,
       formattedSize: "0 KB",
@@ -281,6 +340,19 @@ var Upload = /*#__PURE__*/function (_React$Component) {
   }
 
   _createClass(Upload, [{
+    key: "hasSameHash",
+    value: function hasSameHash(newResource) {
+      if (Object.keys(this.state.dataset).includes("resources") && this.state.dataset.resources.length > 0) {
+        var resources = this.state.dataset.resources;
+        var sameHashes = resources.map(function (resource) {
+          return resource.hash == newResource.hash;
+        });
+        return sameHashes.includes(true);
+      } else {
+        return false;
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this$state2 = this.state,
