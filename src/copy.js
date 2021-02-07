@@ -8,7 +8,8 @@ const fileToCopy = {
   ProgressBar: 'import "./ProgressBar.css";',
   TablePreview:  undefined,
   TableSchema: 'import "./TableSchema.css";',
-  Upload: undefined
+  Upload: undefined,
+  ResourceList: undefined
 }
 
 
