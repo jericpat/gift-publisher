@@ -12,6 +12,11 @@ const TableSchema = (props) => {
   const [schema, setSchema] = useState(props.schema);
   const [unfilledRichTypes, setUnfilledRichTypes] = useState(props.schema.fields.length - 1);
 
+  useEffect(() => {
+    if (resourceHasRichType(props.dataset)) {
+      props.handleRichType(0)
+    }
+  }, [])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const data = React.useMemo(() => [...props.data], [schema]);
 
@@ -45,6 +50,20 @@ const TableSchema = (props) => {
     props.handleRichType(unfilledRichTypes)
 
   };
+
+  const resourceHasRichType = (dataset) => {
+    if (Object.keys(dataset).includes("resources") && dataset.resources.length > 0) {
+      const fields = dataset.resources[0].schema.fields
+      const columnTypes = fields.filter((field) => {
+        return Object.keys(field).includes("columnType")
+      })
+
+      const hasRichTypes = columnTypes.length == fields.length ? true : false
+      return hasRichTypes
+    }
+
+
+  }
 
 
   //if the the user upload a new file, will update the state
@@ -102,15 +121,34 @@ const TableSchema = (props) => {
     }
 
     if (key === "columnType") {
-      return schema.fields.map((item, index) => (
-        <td key={`schema-type-field-${key}-${index}`}>
-          <Select styles={customStyles}
-            options={columnTypeOptions}
-            width='200px'
-            menuColor='red'
-            onChange={(event) => handleChange(event, key, index)} />
-        </td>
-      ));
+      if (resourceHasRichType(props.dataset)) {
+        const existingRichTypes = props.dataset.resources[0].schema.fields.map((field) => {
+          return field.columnType
+        })
+        //The schema already exists, and we assume columns have the same richTypes. Prefill and set to uneditable
+        return existingRichTypes.map((item, index) => (
+          <td key={`schema-type-field-${key}-${index}`}>
+            <input
+              className="table-tbody-input"
+              type="text"
+              value={item}
+              disabled
+            />
+          </td>
+        ));
+
+      } else {
+        return schema.fields.map((item, index) => (
+          <td key={`schema-type-field-${key}-${index}`}>
+            <Select styles={customStyles}
+              options={columnTypeOptions}
+              width='200px'
+              menuColor='red'
+              onChange={(event) => handleChange(event, key, index)} />
+          </td>
+        ));
+      }
+
     }
 
     return schema.fields.map((item, index) => (
