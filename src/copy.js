@@ -48,6 +48,7 @@ const appComponents = [
   'import Upload from "../Upload";',
   'import TablePreview from "../TablePreview";',
   'import TableSchema from "../TableSchema";',
+  'import ResourceList from "../ResourceList"',
   'import Metadata from "../Metadata";'
 ];
 
