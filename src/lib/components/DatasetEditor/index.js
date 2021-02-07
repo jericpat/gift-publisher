@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import Upload from "../Upload";
 import TablePreview from "../TablePreview";
 import TableSchema from "../TableSchema";
+import ResourceList from "../ResourceList"
 import Metadata from "../Metadata";
 
 export class DatasetEditor extends React.Component {
