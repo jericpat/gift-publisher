@@ -1,9 +1,5 @@
 [
     {
-      "value": "utf_8",
-      "label": "UTF-8"
-    },
-    {
       "value": "iso_8859_1",
       "label": "ISO-8859-1"
     },

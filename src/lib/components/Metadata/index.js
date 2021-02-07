@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import { encodeData, formatData } from "datapub-nocss";
 
 const Metadata = ({ metadata, handleChange }) => {
+  console.log(metadata);
   return (
     <>
-      <h3 className="metadata-name">{metadata.path}</h3>
       <div className="metadata-form">
         <div className="metadata-input">
           <label className="metadata-label" htmlFor="title">
@@ -18,7 +18,7 @@ const Metadata = ({ metadata, handleChange }) => {
             name="title"
             id="title"
             value={metadata.title}
-            onChange={handleChange}
+            onChange={handleChange(e, metadata.hash)}
           />
         </div>
       
@@ -31,7 +31,7 @@ const Metadata = ({ metadata, handleChange }) => {
             name="encoding"
             id="encoding"
             value={metadata.encoding || ""}
-            onChange={handleChange}
+            onChange={handleChange(e, metadata.hash)}
             required
           >
             <option value="" disabled>
@@ -53,7 +53,7 @@ const Metadata = ({ metadata, handleChange }) => {
             name="format"
             id="format"
             value={(metadata.format || "").toLowerCase()}
-            onChange={handleChange}
+            onChange={handleChange(e, metadata.hash)}
             required
           >
             <option value="" disabled>
@@ -74,7 +74,7 @@ const Metadata = ({ metadata, handleChange }) => {
             name="description"
             id="description"
             value={metadata.description || ""}
-            onChange={handleChange}
+            onChange={handleChange(e, metadata.hash)}
             rows={4}
           ></textarea>
         </div>
