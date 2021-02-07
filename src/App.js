@@ -9,7 +9,7 @@ import TableSchema from "./components/TableSchema";
 import ResourceList from "./components/ResourceList";
 import Metadata from "./components/Metadata";
 import "./App.css";
-import { removeHyphen } from "../../utils";
+import ReactLogo from "./progressBar.svg";
 
 export class DatasetEditor extends React.Component {
   constructor(props) {
