@@ -147,7 +147,7 @@ export class DatasetEditor extends React.Component {
 
       axios({
         method: "post",
-        url: `/api/dataset/${this.state.datasetId}`,
+        url: `/api/dataset/${this.state.dataset.name}`,
         data: {
           metadata: this.state.dataset,
           description: this.state.dataset.description,
@@ -221,7 +221,7 @@ export class DatasetEditor extends React.Component {
 
     axios({
       method: "post",
-      url: `/api/dataset/${this.state.datasetId}`,
+      url: `/api/dataset/${this.state.dataset.name}`,
       data: {
         metadata: this.state.dataset,
         description: this.state.dataset.description,
