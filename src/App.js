@@ -15,6 +15,9 @@ export class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
     const dataset = props.config.dataset;
+    dataset.encoding = "utf_8"
+    dataset.format = "csv"
+    
     this.state = {
       dataset,
       resource: {}, //This will hold the uploaded resource metadata
@@ -85,8 +88,7 @@ export class DatasetEditor extends React.Component {
         richTypeFilled: true,
       });
     }
-  }
-
+  };
 
   handleChangeMetadata = (event) => {
     const target = event.target;
@@ -268,7 +270,7 @@ export class DatasetEditor extends React.Component {
                   Provide your data file
                 </h1>
                 <h2 className="upload-header__title_h2">
-                  Supported formats: csv, xlsx, xls
+                  Supported format: CSV
                 </h2>
               </div>
 
@@ -315,8 +317,17 @@ export class DatasetEditor extends React.Component {
                 />
               </>
             )}
+            <>
+              <div className="upload-header">
+                <h1 className="upload-header__title_h1">Provide Metadata</h1>
+              </div>
+              <Metadata
+                dataset={this.state.dataset}
+                handleChange={this.handleChangeMetadata}
+              />
+            </>
 
-            {this.state.currentStep == 4 && !this.state.savedDataset && (
+            {/* {this.state.currentStep == 4 && !this.state.savedDataset && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">Provide Metadata</h1>
@@ -326,7 +337,7 @@ export class DatasetEditor extends React.Component {
                   handleChange={this.handleChangeMetadata}
                 />
               </>
-            )}
+            )} */}
           </div>
         </form>
         <div className="resource-edit-actions">
