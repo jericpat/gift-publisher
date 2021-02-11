@@ -140,32 +140,29 @@ export class DatasetEditor extends React.Component {
     fileDownload(JSON.stringify(this.state.dataset), "datapackage.json");
   };
 
+  
   deleteResource = (hash) => {
     const { dataset } = { ...this.state };
-    if (window.confirm("Are you sure to delete this resource?")) {
-      if (dataset.resources.length == 1) {
-        dataset.resources = [];
-        this.setState({ dataset, resource: {} });
+    if (window.confirm("Are you sure you want to delete this resource?")) {
+      const temp_dataset = { ...dataset };
+      if (temp_dataset.resources.length == 1) {
+        temp_dataset.resources = [];
       } else {
-        const newResource = dataset.resources.filter(
+        const newResource = temp_dataset.resources.filter(
           (resource) => resource.hash != hash
         );
-        dataset.resources = newResource;
-        this.setState({
-          dataset,
-          resource: {},
-        });
+        temp_dataset.resources = newResource;
       }
-
       axios({
         method: "post",
-        url: `/api/dataset/${this.state.dataset.name}`,
+        url: `/api/dataset/${temp_dataset.name}`,
         data: {
-          metadata: this.state.dataset,
-          description: this.state.dataset.description,
+          metadata: temp_dataset,
+          description: temp_dataset.description,
         },
       }).then(
         (response) => {
+          this.setState({ temp_dataset, resource: {} });
           alert("Resource has been removed sucessfully");
         },
         (error) => {
@@ -175,6 +172,7 @@ export class DatasetEditor extends React.Component {
       );
     }
   };
+
 
   setLoading = (isLoading) => {
     this.setState({
