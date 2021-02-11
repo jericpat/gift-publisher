@@ -15,6 +15,13 @@ export class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
     const dataset = props.config.dataset;
+    if (
+      !("sample" in dataset) &&
+      "resources" in dataset &&
+      dataset["resources"].length > 0
+    ) {
+      dataset["sample"] = dataset["resources"][0]["sample"];
+    }
     this.state = {
       dataset,
       resource: {}, //This will hold the uploaded resource metadata
@@ -73,6 +80,10 @@ export class DatasetEditor extends React.Component {
     // This is used in resource preview
     resource["sample"] = fileResource.sample;
     resource["columns"] = fileResource.columns;
+    
+    if (dataset["sample"].length == 0) {
+      dataset["sample"] = fileResource.sample;
+    }
 
     return { dataset, resource };
   }
@@ -85,8 +96,7 @@ export class DatasetEditor extends React.Component {
         richTypeFilled: true,
       });
     }
-  }
-
+  };
 
   handleChangeMetadata = (event) => {
     const target = event.target;
