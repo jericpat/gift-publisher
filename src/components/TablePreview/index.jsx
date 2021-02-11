@@ -10,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 const TablePreview = ({ columns, data }) => {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
-    data,
+    data: data.slice(0, 5),
   });
 
   return (

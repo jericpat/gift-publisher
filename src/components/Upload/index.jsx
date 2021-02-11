@@ -87,7 +87,7 @@ class Upload extends React.Component {
 
       //prepare sample for use in table preview component
       let sample = [];
-      sample_array.slice(1, 5).forEach((item) => {
+      sample_array.slice(1, 11).forEach((item) => {
         let temp_obj = {};
         item.forEach((field, i) => {
           temp_obj[column_names[i]] = field;
