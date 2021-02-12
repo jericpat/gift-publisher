@@ -189,44 +189,44 @@ class Upload extends React.Component {
     });
 
 
-    this.setState({
-      success: true,
-      loading: false,
-      fileExists: true,
-      loaded: 100,
-    });
+    // this.setState({
+    //   success: true,
+    //   loading: false,
+    //   fileExists: true,
+    //   loaded: 100,
+    // });
 
-    this.props.handleUploadStatus({
-      loading: false,
-      success: true,
-    });
+    // this.props.handleUploadStatus({
+    //   loading: false,
+    //   success: true,
+    // });
 
-    // client
-    //   .upload(resource, organizationId, this.state.datasetId, this.onProgress)
-    //   .then((response) => {
-    //     this.setState({
-    //       success: true,
-    //       loading: false,
-    //       fileExists: !response,
-    //       loaded: 100,
-    //     });
+    client
+      .upload(resource, organizationId, this.state.datasetId, this.onProgress)
+      .then((response) => {
+        this.setState({
+          success: true,
+          loading: false,
+          fileExists: !response,
+          loaded: 100,
+        });
 
-    //     this.props.handleUploadStatus({
-    //       loading: false,
-    //       success: true,
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.error("Upload failed with error: " + error);
-    //     this.setState({ error: true, loading: false });
-    //     this.props.handleUploadStatus({
-    //       loading: false,
-    //       success: false,
-    //       error: true,
-    //     });
-    //   });
-    // }
-  };
+        this.props.handleUploadStatus({
+          loading: false,
+          success: true,
+        });
+      })
+      .catch((error) => {
+        console.error("Upload failed with error: " + error);
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+        });
+      });
+  }
+
 
   render() {
     const {
