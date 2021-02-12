@@ -23,6 +23,8 @@ export class DatasetEditor extends React.Component {
       dataset["resources"].length > 0
     ) {
       dataset["sample"] = dataset["resources"][0]["sample"];
+    } else {
+      dataset["sample"] = [];
     }
     this.state = {
       dataset,
@@ -82,7 +84,7 @@ export class DatasetEditor extends React.Component {
     // This is used in resource preview
     resource["sample"] = fileResource.sample;
     resource["columns"] = fileResource.columns;
-    
+
     if (dataset["sample"].length == 0) {
       dataset["sample"] = fileResource.sample;
     }
@@ -142,7 +144,6 @@ export class DatasetEditor extends React.Component {
     fileDownload(JSON.stringify(this.state.dataset), "datapackage.json");
   };
 
-  
   deleteResource = (hash) => {
     const { dataset } = { ...this.state };
     if (window.confirm("Are you sure you want to delete this resource?")) {
@@ -175,7 +176,6 @@ export class DatasetEditor extends React.Component {
     }
   };
 
-
   setLoading = (isLoading) => {
     this.setState({
       ui: { ...this.state.ui, loading: isLoading },
@@ -194,15 +194,19 @@ export class DatasetEditor extends React.Component {
     this.setState({ ui: newUiState });
     if (status.success && !status.loading) {
       this.nextScreen();
-    }
-    if (!status.success && status.error) {
+    } else if (!status.success && status.error) {
+      const dataset = { ...this.state.dataset };
+      if ("resources" in dataset && dataset["resources"].length > 0) {
+        dataset.resources.pop();
+      }
+      this.setState({ dataset });
       this.prevScreen();
     }
 
     //clears error message after 6 seconds
     setTimeout(() => {
       this.setState({ ui: { ...this.state.ui, errorMsg: "" } });
-    }, 6000);
+    }, 10000);
   };
 
   onChangeResourceId = (resourceId) => {
@@ -340,7 +344,6 @@ export class DatasetEditor extends React.Component {
           </div>
         </form>
 
-
         <div className="resource-edit-actions">
           {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
@@ -352,7 +355,10 @@ export class DatasetEditor extends React.Component {
           {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
             this.state.resource && (
-              <button className="btn-download" onClick={this.downloadDatapackage}>
+              <button
+                className="btn-download"
+                onClick={this.downloadDatapackage}
+              >
                 Download Package
               </button>
             )}
