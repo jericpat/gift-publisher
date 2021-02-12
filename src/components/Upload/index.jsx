@@ -2,7 +2,7 @@ import React from "react";
 import { Client } from "giftless-client";
 import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
-import { onFormatBytes } from "../../utils";
+import { onFormatBytes, isValidURL } from "../../utils";
 import { Choose } from "datapub";
 import toArray from "stream-to-array";
 
@@ -28,90 +28,164 @@ class Upload extends React.Component {
     };
   }
 
+
   onChangeHandler = async (event) => {
     let { formattedSize, selectedFile } = this.state;
-
-    if (event.target.files.length > 0) {
+    if (event.target.type == "file" && event.target.files.length > 0) {
       selectedFile = event.target.files[0];
-      const file = data.open(selectedFile);
-      try {
-        await file.addSchema();
-      } catch (e) {
-        console.warn(e);
-      }
-
-
-      formattedSize = onFormatBytes(file.size);
-      let self = this;
-      const hash = await file.hash("sha256", (progress) => {
-        self.onHashProgress(progress);
-      });
-      Object.assign(file.descriptor, { hash })
-
-      //check if file has the same schema
-      if (!this.hasSameSchema(file._descriptor)) {
-        this.setState({ error: true, loading: false });
-        this.props.handleUploadStatus({
-          loading: false,
-          success: false,
-          error: true,
-          errorMsg: "Schema of uploaded resource does not match existing one!"
-        });
+    } else {
+      selectedFile = event.target.value
+      if (!isValidURL(selectedFile)) {
+        this.setErrorState("Invalid URL! Please ensure entered URL is correct")
         return
       }
-
-      //check if file already exists in resource
-      if (this.hasSameHash(file._descriptor)) {
-        this.setState({ error: true, loading: false });
-        this.props.handleUploadStatus({
-          loading: false,
-          success: false,
-          error: true,
-          errorMsg: "Possible duplicate, the resource already exists!"
-        });
-        return
-      }
-
-      //get sample
-      let sample_stream = await file.rows({ size: 460 });
-      let sample_array = await toArray(sample_stream);
-
-      //get column names for table
-      const column_names = sample_array[0]; //first row is the column names
-      const columns = column_names.map((item) => {
-        return {
-          Header: item,
-          accessor: item,
-        };
-      });
-
-      //prepare sample for use in table preview component
-      let sample = [];
-      sample_array.slice(1, 11).forEach((item) => {
-        let temp_obj = {};
-        item.forEach((field, i) => {
-          temp_obj[column_names[i]] = field;
-        });
-        sample.push(temp_obj);
-      });
-
-      this.props.metadataHandler(
-        Object.assign(file.descriptor, { sample, columns })
-      );
-
-      this.setState({
-        selectedFile,
-        loaded: 0,
-        success: false,
-        fileExists: false,
-        error: false,
-        formattedSize,
-      });
-
-      await this.onClickHandler();
-
     }
+
+    const { validFile, errorMsg, file } = await this.validFileSelected(selectedFile, event.target.type)
+
+
+    if (!validFile) {
+      this.setErrorState(errorMsg)
+      return
+    }
+
+    formattedSize = onFormatBytes(file.size);
+
+    let self = this;
+    const hash = await file.hash("sha256", (progress) => {
+      self.onHashProgress(progress);
+    });
+
+
+    Object.assign(file.descriptor, { hash })
+
+    //check if file has the same schema
+    if (!this.hasSameSchema(file._descriptor)) {
+      this.setErrorState("Schema of uploaded resource does not match existing one!")
+      return
+    }
+
+    //check if file already exists in resource
+    if (this.hasSameHash(file._descriptor)) {
+      this.setErrorState("Possible duplicate, the resource already exists!")
+      return
+    }
+
+    //get sample
+    let sample_stream = await file.rows({ size: 460 });
+    let sample_array = await toArray(sample_stream);
+    //get column names for table
+    const column_names = sample_array[0]; //first row is the column names
+    const columns = column_names.map((item) => {
+      return {
+        Header: item,
+        accessor: item,
+      };
+    });
+
+    //prepare sample for use in table preview component
+    let sample = [];
+    sample_array.slice(1, 11).forEach((item) => {
+      let temp_obj = {};
+      item.forEach((field, i) => {
+        temp_obj[column_names[i]] = field;
+      });
+      sample.push(temp_obj);
+    });
+
+    this.props.metadataHandler(
+      Object.assign(file.descriptor, { sample, columns })
+    );
+
+    this.setState({
+      selectedFile,
+      loaded: 0,
+      success: false,
+      fileExists: false,
+      error: false,
+      formattedSize,
+    });
+
+    await this.onClickHandler();
+
+
   };
+
+  validFileSelected = (selectedFile, fileType) => {
+    return new Promise(async (resolve, reject) => {
+      if (fileType == "url") {
+        const fileExt = selectedFile.split(".").pop()
+        if (fileExt != "csv") {
+          resolve({ validFile: false, errorMsg: "File Type not supported! Please upload a CSV file", file: undefined })
+          return
+        }
+        fetch(selectedFile).then(async (resp) => {
+          let file;
+          try {
+            file = data.open(selectedFile)
+            await file.addSchema()
+            resolve({
+              validFile: true,
+              errorMsg: "", file
+            })
+          } catch (error) {
+            console.log(error);
+            resolve({
+              validFile: false,
+              errorMsg: "An error occured when trying to load the file!", file
+            })
+          }
+        }).catch((error) => {
+          console.log(error);
+          resolve({
+            validFile: false,
+            errorMsg: "An error occured when trying to load the file!"
+          })
+        })
+      } else {
+        const fileExt = selectedFile.type.split("/").pop()
+
+        if (fileExt != "csv") {
+          resolve({
+            validFile: false,
+            errorMsg: "File Type not supported! Please upload a CSV file",
+            file: {}
+          })
+          return
+        }
+        if (selectedFile.size == 0) {
+          resolve({
+            validFile: false,
+            errorMsg: "CSV file is empty! Please upload a CSV file with contents",
+            file: {}
+          })
+          return
+        }
+
+        try {
+          const file = data.open(selectedFile)
+          await file.addSchema()
+          resolve({ validFile: true, errorMsg: "", file })
+        } catch (error) {
+          console.log(error);
+          resolve({
+            validFile: false,
+            errorMsg: "An error occured when trying to load the file!", file: {}
+          })
+        }
+      }
+    })
+  }
+
+  setErrorState(errorMsg) {
+    this.setState({ error: true, loading: false });
+    this.props.handleUploadStatus({
+      loading: false,
+      success: false,
+      error: true,
+      errorMsg
+    });
+  }
 
   onHashProgress = (progress) => {
     if (progress === 100) {
@@ -189,42 +263,43 @@ class Upload extends React.Component {
     });
 
 
-    // this.setState({
-    //   success: true,
-    //   loading: false,
-    //   fileExists: true,
-    //   loaded: 100,
-    // });
+    this.setState({
+      success: true,
+      loading: false,
+      fileExists: true,
+      loaded: 100,
+    });
 
-    // this.props.handleUploadStatus({
-    //   loading: false,
-    //   success: true,
-    // });
+    this.props.handleUploadStatus({
+      loading: false,
+      success: true,
+    });
 
-    client
-      .upload(resource, organizationId, this.state.datasetId, this.onProgress)
-      .then((response) => {
-        this.setState({
-          success: true,
-          loading: false,
-          fileExists: !response,
-          loaded: 100,
-        });
+    // client
+    //   .upload(resource, organizationId, this.state.datasetId, this.onProgress)
+    //   .then((response) => {
+    //     this.setState({
+    //       success: true,
+    //       loading: false,
+    //       fileExists: !response,
+    //       loaded: 100,
+    //     });
 
-        this.props.handleUploadStatus({
-          loading: false,
-          success: true,
-        });
-      })
-      .catch((error) => {
-        console.error("Upload failed with error: " + error);
-        this.setState({ error: true, loading: false });
-        this.props.handleUploadStatus({
-          loading: false,
-          success: false,
-          error: true,
-        });
-      });
+    //     this.props.handleUploadStatus({
+    //       loading: false,
+    //       success: true,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.error("Upload failed with error: " + error);
+    //     this.setState({ error: true, loading: false });
+    //     this.props.handleUploadStatus({
+    //       loading: false,
+    //       success: false,
+    //       error: true,
+    //       errorMsg: "Upload failed!"
+    //     });
+    //   });
   }
 
 
@@ -242,7 +317,7 @@ class Upload extends React.Component {
       <div className="upload-area">
         <Choose
           onChangeHandler={this.onChangeHandler}
-          onChangeUrl={(event) => console.log("Get url:", event.target.value)}
+          onChangeUrl={this.onChangeHandler}
         />
         <div className="upload-area__info">
           {hashInProgress && (
