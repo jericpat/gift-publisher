@@ -8,6 +8,7 @@ import toArray from "stream-to-array";
 
 class Upload extends React.Component {
   constructor(props) {
+    console.log(props);
     super(props);
     this.state = {
       datasetId: props.datasetId,
@@ -31,14 +32,18 @@ class Upload extends React.Component {
 
   onChangeHandler = async (event) => {
     let { formattedSize, selectedFile } = this.state;
+    let path = ""
     if (event.target.type == "file" && event.target.files.length > 0) {
       selectedFile = event.target.files[0];
+      path = `data/${selectedFile.name}`
+      // resource["title"] = fileResource["name"].split(".")[0];
     } else {
       selectedFile = event.target.value
       if (!isValidURL(selectedFile)) {
         this.setErrorState("Invalid URL! Please ensure entered URL is correct")
         return
       }
+      path = selectedFile
     }
 
     const { validFile, errorMsg, file } = await this.validFileSelected(selectedFile, event.target.type)
@@ -94,7 +99,7 @@ class Upload extends React.Component {
     });
 
     this.props.metadataHandler(
-      Object.assign(file.descriptor, { sample, columns })
+      Object.assign(file.descriptor, { sample, columns, path })
     );
 
     this.setState({
@@ -196,6 +201,7 @@ class Upload extends React.Component {
   };
 
   onUploadProgress = (progressEvent) => {
+    console.log("progress", progressEvent);
     this.onTimeRemaining(progressEvent.loaded);
     this.setState({
       loaded: (progressEvent.loaded / progressEvent.total) * 100,
@@ -276,7 +282,7 @@ class Upload extends React.Component {
     });
 
     // client
-    //   .upload(resource, organizationId, this.state.datasetId, this.onProgress)
+    //   .upload(resource, organizationId, this.state.datasetId, this.onUploadProgress)
     //   .then((response) => {
     //     this.setState({
     //       success: true,
@@ -297,7 +303,7 @@ class Upload extends React.Component {
     //       loading: false,
     //       success: false,
     //       error: true,
-    //       errorMsg: "Upload failed!"
+    //       errorMsg: `Upload failed with error: ${error.message}`
     //     });
     //   });
   }
