@@ -26,6 +26,7 @@ class Upload extends React.Component {
       hashInProgress: false,
       hashLoaded: 0,
       uploadInProgress: false,
+      uploadedFileType: null
     };
   }
 
@@ -36,13 +37,14 @@ class Upload extends React.Component {
     if (event.target.type == "file" && event.target.files.length > 0) {
       selectedFile = event.target.files[0];
       path = `data/${selectedFile.name}`
-      // resource["title"] = fileResource["name"].split(".")[0];
+      this.setState({ uploadedFileType: "file" })
     } else {
       selectedFile = event.target.value
       if (!isValidURL(selectedFile)) {
         this.setErrorState("Invalid URL! Please ensure entered URL is correct")
         return
       }
+      this.setState({ uploadedFileType: "url" })
       path = selectedFile
     }
 
@@ -248,62 +250,62 @@ class Upload extends React.Component {
   }
 
   onClickHandler = async () => {
-    const start = new Date().getTime();
-    const { selectedFile } = this.state;
-    const { organizationId, lfsServerUrl } = this.props;
-    const client = new Client(lfsServerUrl);
-
-    const resource = data.open(selectedFile);
-    this.setState({
-      fileSize: resource.size,
-      start,
-      loading: true,
-    });
-
-    this.props.handleUploadStatus({
-      loading: true,
-      error: false,
-      success: false,
-    });
-
-
-    // this.setState({
-    //   success: true,
-    //   loading: false,
-    //   fileExists: true,
-    //   loaded: 100,
-    // });
-
-    // this.props.handleUploadStatus({
-    //   loading: false,
-    //   success: true,
-    // });
-
-    client
-      .upload(resource, organizationId, this.state.datasetId, this.onUploadProgress)
-      .then((response) => {
-        this.setState({
-          success: true,
-          loading: false,
-          fileExists: !response,
-          loaded: 100,
-        });
-
-        this.props.handleUploadStatus({
-          loading: false,
-          success: true,
-        });
-      })
-      .catch((error) => {
-        console.error("Upload failed with error: " + error);
-        this.setState({ error: true, loading: false });
-        this.props.handleUploadStatus({
-          loading: false,
-          success: false,
-          error: true,
-          errorMsg: `Upload failed with error: ${error.message}`
-        });
+    const { selectedFile, uploadedFileType } = this.state;
+    if (uploadedFileType == "url") {
+      this.setState({
+        success: true,
+        loading: false,
+        loaded: 100,
       });
+
+      this.props.handleUploadStatus({
+        loading: false,
+        success: true,
+      });
+    } else {
+      const start = new Date().getTime();
+      const { organizationId, lfsServerUrl } = this.props;
+      const client = new Client(lfsServerUrl);
+
+      const resource = data.open(selectedFile);
+      this.setState({
+        fileSize: resource.size,
+        start,
+        loading: true,
+      });
+
+      this.props.handleUploadStatus({
+        loading: true,
+        error: false,
+        success: false,
+      });
+
+      client
+        .upload(resource, organizationId, this.state.datasetId, this.onUploadProgress)
+        .then((response) => {
+          this.setState({
+            success: true,
+            loading: false,
+            fileExists: !response,
+            loaded: 100,
+          });
+
+          this.props.handleUploadStatus({
+            loading: false,
+            success: true,
+          });
+        })
+        .catch((error) => {
+          console.error("Upload failed with error: " + error);
+          this.setState({ error: true, loading: false });
+          this.props.handleUploadStatus({
+            loading: false,
+            success: false,
+            error: true,
+            errorMsg: `Upload failed with error: ${error.message}`
+          });
+        });
+    }
   }
 
 
@@ -319,14 +321,15 @@ class Upload extends React.Component {
       uploadInProgress,
     } = this.state;
     return (
-      <div className="upload-area">
+
+      <div >
         <Choose
           onChangeHandler={this.onChangeHandler}
           onChangeUrl={this.onChangeHandler}
         />
-      
+
         {hashInProgress && (
-          <div className="">
+          <div>
             <>
               <div>
                 <p className="upload-file-name">Computing file hash...</p>
@@ -343,13 +346,13 @@ class Upload extends React.Component {
           </div>
         )}
         {uploadInProgress && (
-          <div className="">
+          <div>
             <>
               <div>
                 <p className="upload-file-name">
-                  Uploading {selectedFile.name}
+                  Uploading {selectedFile.name}...
                 </p>
-                <p className="upload-file-name">{formattedSize}</p>
+                <p className="upload-file-name">Size: {formattedSize}</p>
               </div>
               <ProgressBar
                 progress={this.state.loaded}
@@ -357,9 +360,9 @@ class Upload extends React.Component {
                 strokeWidth={5}
                 circleOneStroke="#d9edfe"
                 circleTwoStroke={"#7ea9e1"}
-                // timeRemaining={timeRemaining}
+              // timeRemaining={timeRemaining}
               />
-              <h2 className="upload-message">
+              <h2>
                 {success &&
                   !fileExists &&
                   !error &&
