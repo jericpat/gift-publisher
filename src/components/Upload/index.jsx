@@ -5,10 +5,9 @@ import ProgressBar from "../ProgressBar";
 import { onFormatBytes, isValidURL } from "../../utils";
 import { Choose } from "datapub";
 import toArray from "stream-to-array";
-
+import "./Upload.css"
 class Upload extends React.Component {
   constructor(props) {
-    console.log(props);
     super(props);
     this.state = {
       datasetId: props.datasetId,
@@ -26,6 +25,7 @@ class Upload extends React.Component {
       timeRemaining: 0,
       hashInProgress: false,
       hashLoaded: 0,
+      uploadInProgress: false,
     };
   }
 
@@ -47,7 +47,6 @@ class Upload extends React.Component {
     }
 
     const { validFile, errorMsg, file } = await this.validFileSelected(selectedFile, event.target.type)
-
 
     if (!validFile) {
       this.setErrorState(errorMsg)
@@ -193,7 +192,7 @@ class Upload extends React.Component {
   }
 
   onHashProgress = (progress) => {
-    if (progress === 100) {
+    if (progress == 100) {
       this.setState({ hashInProgress: false });
     } else {
       this.setState({ hashLoaded: progress, hashInProgress: true });
@@ -201,10 +200,11 @@ class Upload extends React.Component {
   };
 
   onUploadProgress = (progressEvent) => {
-    console.log("progress", progressEvent);
+    const loaded = Number(((progressEvent.loaded / progressEvent.total) * 100).toFixed())
     this.onTimeRemaining(progressEvent.loaded);
     this.setState({
-      loaded: (progressEvent.loaded / progressEvent.total) * 100,
+      loaded,
+      uploadInProgress: true
     });
   };
 
@@ -214,7 +214,6 @@ class Upload extends React.Component {
     const bps = progressLoaded / duration;
     const kbps = bps / 1024;
     const timeRemaining = (this.state.fileSize - progressLoaded) / kbps;
-
     this.setState({
       timeRemaining: timeRemaining / 1000,
     });
@@ -255,7 +254,6 @@ class Upload extends React.Component {
     const client = new Client(lfsServerUrl);
 
     const resource = data.open(selectedFile);
-
     this.setState({
       fileSize: resource.size,
       start,
@@ -269,43 +267,43 @@ class Upload extends React.Component {
     });
 
 
-    this.setState({
-      success: true,
-      loading: false,
-      fileExists: true,
-      loaded: 100,
-    });
+    // this.setState({
+    //   success: true,
+    //   loading: false,
+    //   fileExists: true,
+    //   loaded: 100,
+    // });
 
-    this.props.handleUploadStatus({
-      loading: false,
-      success: true,
-    });
+    // this.props.handleUploadStatus({
+    //   loading: false,
+    //   success: true,
+    // });
 
-    // client
-    //   .upload(resource, organizationId, this.state.datasetId, this.onUploadProgress)
-    //   .then((response) => {
-    //     this.setState({
-    //       success: true,
-    //       loading: false,
-    //       fileExists: !response,
-    //       loaded: 100,
-    //     });
+    client
+      .upload(resource, organizationId, this.state.datasetId, this.onUploadProgress)
+      .then((response) => {
+        this.setState({
+          success: true,
+          loading: false,
+          fileExists: !response,
+          loaded: 100,
+        });
 
-    //     this.props.handleUploadStatus({
-    //       loading: false,
-    //       success: true,
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.error("Upload failed with error: " + error);
-    //     this.setState({ error: true, loading: false });
-    //     this.props.handleUploadStatus({
-    //       loading: false,
-    //       success: false,
-    //       error: true,
-    //       errorMsg: `Upload failed with error: ${error.message}`
-    //     });
-    //   });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: true,
+        });
+      })
+      .catch((error) => {
+        console.error("Upload failed with error: " + error);
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+          errorMsg: `Upload failed with error: ${error.message}`
+        });
+      });
   }
 
 
@@ -318,6 +316,7 @@ class Upload extends React.Component {
       selectedFile,
       formattedSize,
       hashInProgress,
+      uploadInProgress,
     } = this.state;
     return (
       <div className="upload-area">
@@ -325,55 +324,41 @@ class Upload extends React.Component {
           onChangeHandler={this.onChangeHandler}
           onChangeUrl={this.onChangeHandler}
         />
-        <div className="upload-area__info">
-          {hashInProgress && (
+      
+        {hashInProgress && (
+          <div className="">
             <>
-              <ul className="upload-list">
-                <li className="list-item">
-                  <div className="upload-list-item">
-                    <div>
-                      <p className="upload-file-name">Computing file hash...</p>
-                    </div>
-                    <div>
-                      <ProgressBar
-                        progress={Math.round(this.state.hashLoaded)}
-                        size={100}
-                        strokeWidth={5}
-                        circleOneStroke="#d9edfe"
-                        circleTwoStroke={"#7ea9e1"}
-                      />
-                    </div>
-                  </div>
-                </li>
-              </ul>
+              <div>
+                <p className="upload-file-name">Computing file hash...</p>
+              </div>
+              <ProgressBar
+                progress={Math.round(this.state.hashLoaded)}
+                size={100}
+                strokeWidth={5}
+                circleOneStroke="#d9edfe"
+                circleTwoStroke={"#7ea9e1"}
+              />
             </>
-          )}
-        </div>
-        <div className="upload-area__info">
-          {selectedFile && (
+
+          </div>
+        )}
+        {uploadInProgress && (
+          <div className="">
             <>
-              <ul className="upload-list">
-                <li className="list-item">
-                  <div className="upload-list-item">
-                    <div>
-                      <p className="upload-file-name">
-                        Uploading {selectedFile.name}
-                      </p>
-                      <p className="upload-file-size">{formattedSize}</p>
-                    </div>
-                    <div>
-                      <ProgressBar
-                        progress={Math.round(this.state.loaded)}
-                        size={100}
-                        strokeWidth={5}
-                        circleOneStroke="#d9edfe"
-                        circleTwoStroke={"#7ea9e1"}
-                        timeRemaining={timeRemaining}
-                      />
-                    </div>
-                  </div>
-                </li>
-              </ul>
+              <div>
+                <p className="upload-file-name">
+                  Uploading {selectedFile.name}
+                </p>
+                <p className="upload-file-name">{formattedSize}</p>
+              </div>
+              <ProgressBar
+                progress={this.state.loaded}
+                size={100}
+                strokeWidth={5}
+                circleOneStroke="#d9edfe"
+                circleTwoStroke={"#7ea9e1"}
+                // timeRemaining={timeRemaining}
+              />
               <h2 className="upload-message">
                 {success &&
                   !fileExists &&
@@ -383,8 +368,9 @@ class Upload extends React.Component {
                 {error && "Upload failed"}
               </h2>
             </>
-          )}
-        </div>
+
+          </div>
+        )}
       </div>
     );
   }
