@@ -21,6 +21,8 @@ var _datapubNocss = require("datapub-nocss");
 
 var _streamToArray = _interopRequireDefault(require("stream-to-array"));
 
+require("./Upload.css");
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -67,99 +69,113 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "onChangeHandler", /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
-        var _this$state, formattedSize, selectedFile, file, self, hash, sample_stream, sample_array, column_names, columns, sample;
+        var _this$state, formattedSize, selectedFile, path, _yield$_this$validFil, validFile, errorMsg, file, self, hash, sample_stream, sample_array, column_names, columns, sample;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _this$state = _this.state, formattedSize = _this$state.formattedSize, selectedFile = _this$state.selectedFile;
+                path = "";
 
-                if (!(event.target.files.length > 0)) {
-                  _context.next = 40;
+                if (!(event.target.type == "file" && event.target.files.length > 0)) {
+                  _context.next = 8;
                   break;
                 }
 
                 selectedFile = event.target.files[0];
-                file = data.open(selectedFile);
-                _context.prev = 4;
-                _context.next = 7;
-                return file.addSchema();
+                path = "data/".concat(selectedFile.name);
 
-              case 7:
-                _context.next = 12;
+                _this.setState({
+                  uploadedFileType: "file"
+                });
+
+                _context.next = 14;
                 break;
 
-              case 9:
-                _context.prev = 9;
-                _context.t0 = _context["catch"](4);
-                console.warn(_context.t0);
+              case 8:
+                selectedFile = event.target.value;
+
+                if (isValidURL(selectedFile)) {
+                  _context.next = 12;
+                  break;
+                }
+
+                _this.setErrorState("Invalid URL! Please ensure entered URL is correct");
+
+                return _context.abrupt("return");
 
               case 12:
+                _this.setState({
+                  uploadedFileType: "url"
+                });
+
+                path = selectedFile;
+
+              case 14:
+                _context.next = 16;
+                return _this.validFileSelected(selectedFile, event.target.type);
+
+              case 16:
+                _yield$_this$validFil = _context.sent;
+                validFile = _yield$_this$validFil.validFile;
+                errorMsg = _yield$_this$validFil.errorMsg;
+                file = _yield$_this$validFil.file;
+
+                if (validFile) {
+                  _context.next = 23;
+                  break;
+                }
+
+                _this.setErrorState(errorMsg);
+
+                return _context.abrupt("return");
+
+              case 23:
                 formattedSize = (0, _utils.onFormatBytes)(file.size);
                 self = _assertThisInitialized(_this);
-                _context.next = 16;
+                _context.next = 27;
                 return file.hash("sha256", function (progress) {
                   self.onHashProgress(progress);
                 });
 
-              case 16:
+              case 27:
                 hash = _context.sent;
                 Object.assign(file.descriptor, {
                   hash: hash
                 }); //check if file has the same schema
 
                 if (_this.hasSameSchema(file._descriptor)) {
-                  _context.next = 22;
+                  _context.next = 32;
                   break;
                 }
 
-                _this.setState({
-                  error: true,
-                  loading: false
-                });
-
-                _this.props.handleUploadStatus({
-                  loading: false,
-                  success: false,
-                  error: true,
-                  errorMsg: "Schema of uploaded resource does not match existing one!"
-                });
+                _this.setErrorState("Schema of uploaded resource does not match existing one!");
 
                 return _context.abrupt("return");
 
-              case 22:
+              case 32:
                 if (!_this.hasSameHash(file._descriptor)) {
-                  _context.next = 26;
+                  _context.next = 35;
                   break;
                 }
 
-                _this.setState({
-                  error: true,
-                  loading: false
-                });
-
-                _this.props.handleUploadStatus({
-                  loading: false,
-                  success: false,
-                  error: true,
-                  errorMsg: "Possible duplicate, the resource already exists!"
-                });
+                _this.setErrorState("Possible duplicate, the resource already exists!");
 
                 return _context.abrupt("return");
 
-              case 26:
-                _context.next = 28;
+              case 35:
+                _context.next = 37;
                 return file.rows({
                   size: 460
                 });
 
-              case 28:
+              case 37:
                 sample_stream = _context.sent;
-                _context.next = 31;
+                _context.next = 40;
                 return (0, _streamToArray.default)(sample_stream);
 
-              case 31:
+              case 40:
                 sample_array = _context.sent;
                 //get column names for table
                 column_names = sample_array[0]; //first row is the column names
@@ -172,7 +188,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 }); //prepare sample for use in table preview component
 
                 sample = [];
-                sample_array.slice(1, 5).forEach(function (item) {
+                sample_array.slice(1, 11).forEach(function (item) {
                   var temp_obj = {};
                   item.forEach(function (field, i) {
                     temp_obj[column_names[i]] = field;
@@ -182,7 +198,8 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
                 _this.props.metadataHandler(Object.assign(file.descriptor, {
                   sample: sample,
-                  columns: columns
+                  columns: columns,
+                  path: path
                 }));
 
                 _this.setState({
@@ -194,15 +211,15 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   formattedSize: formattedSize
                 });
 
-                _context.next = 40;
+                _context.next = 49;
                 return _this.onClickHandler();
 
-              case 40:
+              case 49:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[4, 9]]);
+        }, _callee);
       }));
 
       return function (_x) {
@@ -210,8 +227,156 @@ var Upload = /*#__PURE__*/function (_React$Component) {
       };
     }());
 
+    _defineProperty(_assertThisInitialized(_this), "validFileSelected", function (selectedFile, fileType) {
+      return new Promise( /*#__PURE__*/function () {
+        var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(resolve, reject) {
+          var fileExt, _fileExt, file;
+
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  if (!(fileType == "url")) {
+                    _context3.next = 8;
+                    break;
+                  }
+
+                  fileExt = selectedFile.split(".").pop();
+
+                  if (!(fileExt != "csv")) {
+                    _context3.next = 5;
+                    break;
+                  }
+
+                  resolve({
+                    validFile: false,
+                    errorMsg: "File Type not supported! Please upload a CSV file",
+                    file: undefined
+                  });
+                  return _context3.abrupt("return");
+
+                case 5:
+                  fetch(selectedFile).then( /*#__PURE__*/function () {
+                    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(resp) {
+                      var file;
+                      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                        while (1) {
+                          switch (_context2.prev = _context2.next) {
+                            case 0:
+                              _context2.prev = 0;
+                              file = data.open(selectedFile);
+                              _context2.next = 4;
+                              return file.addSchema();
+
+                            case 4:
+                              resolve({
+                                validFile: true,
+                                errorMsg: "",
+                                file: file
+                              });
+                              _context2.next = 11;
+                              break;
+
+                            case 7:
+                              _context2.prev = 7;
+                              _context2.t0 = _context2["catch"](0);
+                              console.log(_context2.t0);
+                              resolve({
+                                validFile: false,
+                                errorMsg: "An error occured when trying to load the file!",
+                                file: file
+                              });
+
+                            case 11:
+                            case "end":
+                              return _context2.stop();
+                          }
+                        }
+                      }, _callee2, null, [[0, 7]]);
+                    }));
+
+                    return function (_x4) {
+                      return _ref3.apply(this, arguments);
+                    };
+                  }()).catch(function (error) {
+                    console.log(error);
+                    resolve({
+                      validFile: false,
+                      errorMsg: "An error occured when trying to load the file!"
+                    });
+                  });
+                  _context3.next = 26;
+                  break;
+
+                case 8:
+                  _fileExt = selectedFile.type.split("/").pop();
+
+                  if (!(_fileExt != "csv")) {
+                    _context3.next = 12;
+                    break;
+                  }
+
+                  resolve({
+                    validFile: false,
+                    errorMsg: "File Type not supported! Please upload a CSV file",
+                    file: {}
+                  });
+                  return _context3.abrupt("return");
+
+                case 12:
+                  if (!(selectedFile.size == 0)) {
+                    _context3.next = 15;
+                    break;
+                  }
+
+                  resolve({
+                    validFile: false,
+                    errorMsg: "CSV file is empty! Please upload a CSV file with contents",
+                    file: {}
+                  });
+                  return _context3.abrupt("return");
+
+                case 15:
+                  _context3.prev = 15;
+                  file = data.open(selectedFile);
+                  _context3.next = 19;
+                  return file.addSchema();
+
+                case 19:
+                  resolve({
+                    validFile: true,
+                    errorMsg: "",
+                    file: file
+                  });
+                  _context3.next = 26;
+                  break;
+
+                case 22:
+                  _context3.prev = 22;
+                  _context3.t0 = _context3["catch"](15);
+                  console.log(_context3.t0);
+                  resolve({
+                    validFile: false,
+                    errorMsg: "An error occured when trying to load the file!",
+                    file: {}
+                  });
+
+                case 26:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3, null, [[15, 22]]);
+        }));
+
+        return function (_x2, _x3) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    });
+
     _defineProperty(_assertThisInitialized(_this), "onHashProgress", function (progress) {
-      if (progress === 100) {
+      if (progress == 100) {
         _this.setState({
           hashInProgress: false
         });
@@ -224,10 +389,13 @@ var Upload = /*#__PURE__*/function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "onUploadProgress", function (progressEvent) {
+      var loaded = Number((progressEvent.loaded / progressEvent.total * 100).toFixed());
+
       _this.onTimeRemaining(progressEvent.loaded);
 
       _this.setState({
-        loaded: progressEvent.loaded / progressEvent.total * 100
+        loaded: loaded,
+        uploadInProgress: true
       });
     });
 
@@ -259,36 +427,19 @@ var Upload = /*#__PURE__*/function (_React$Component) {
       }
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onClickHandler", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var start, selectedFile, _this$props, organizationId, lfsServerUrl, client, resource;
+    _defineProperty(_assertThisInitialized(_this), "onClickHandler", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _this$state2, selectedFile, uploadedFileType, start, _this$props, organizationId, lfsServerUrl, client, resource;
 
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              start = new Date().getTime();
-              selectedFile = _this.state.selectedFile;
-              _this$props = _this.props, organizationId = _this$props.organizationId, lfsServerUrl = _this$props.lfsServerUrl;
-              client = new _giftlessClient.Client(lfsServerUrl);
-              resource = data.open(selectedFile);
+              _this$state2 = _this.state, selectedFile = _this$state2.selectedFile, uploadedFileType = _this$state2.uploadedFileType;
 
-              _this.setState({
-                fileSize: resource.size,
-                start: start,
-                loading: true
-              });
-
-              _this.props.handleUploadStatus({
-                loading: true,
-                error: false,
-                success: false
-              });
-
-              client.upload(resource, organizationId, _this.state.datasetId, _this.onProgress).then(function (response) {
+              if (uploadedFileType == "url") {
                 _this.setState({
                   success: true,
                   loading: false,
-                  fileExists: !response,
                   loaded: 100
                 });
 
@@ -296,27 +447,59 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   loading: false,
                   success: true
                 });
-              }).catch(function (error) {
-                console.error("Upload failed with error: " + error);
+              } else {
+                start = new Date().getTime();
+                _this$props = _this.props, organizationId = _this$props.organizationId, lfsServerUrl = _this$props.lfsServerUrl;
+                client = new _giftlessClient.Client(lfsServerUrl);
+                resource = data.open(selectedFile);
 
                 _this.setState({
-                  error: true,
-                  loading: false
+                  fileSize: resource.size,
+                  start: start,
+                  loading: true
                 });
 
                 _this.props.handleUploadStatus({
-                  loading: false,
-                  success: false,
-                  error: true
+                  loading: true,
+                  error: false,
+                  success: false
                 });
-              });
 
-            case 8:
+                client.upload(resource, organizationId, _this.state.datasetId, _this.onUploadProgress).then(function (response) {
+                  _this.setState({
+                    success: true,
+                    loading: false,
+                    fileExists: !response,
+                    loaded: 100
+                  });
+
+                  _this.props.handleUploadStatus({
+                    loading: false,
+                    success: true
+                  });
+                }).catch(function (error) {
+                  console.error("Upload failed with error: " + error);
+
+                  _this.setState({
+                    error: true,
+                    loading: false
+                  });
+
+                  _this.props.handleUploadStatus({
+                    loading: false,
+                    success: false,
+                    error: true,
+                    errorMsg: "Upload failed with error: ".concat(error.message)
+                  });
+                });
+              }
+
+            case 2:
             case "end":
-              return _context2.stop();
+              return _context4.stop();
           }
         }
-      }, _callee2);
+      }, _callee4);
     })));
 
     _this.state = {
@@ -334,12 +517,28 @@ var Upload = /*#__PURE__*/function (_React$Component) {
       loading: false,
       timeRemaining: 0,
       hashInProgress: false,
-      hashLoaded: 0
+      hashLoaded: 0,
+      uploadInProgress: false,
+      uploadedFileType: null
     };
     return _this;
   }
 
   _createClass(Upload, [{
+    key: "setErrorState",
+    value: function setErrorState(errorMsg) {
+      this.setState({
+        error: true,
+        loading: false
+      });
+      this.props.handleUploadStatus({
+        loading: false,
+        success: false,
+        error: true,
+        errorMsg: errorMsg
+      });
+    }
+  }, {
     key: "hasSameHash",
     value: function hasSameHash(newResource) {
       if (Object.keys(this.state.dataset).includes("resources") && this.state.dataset.resources.length > 0) {
@@ -355,59 +554,38 @@ var Upload = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this$state2 = this.state,
-          success = _this$state2.success,
-          fileExists = _this$state2.fileExists,
-          error = _this$state2.error,
-          timeRemaining = _this$state2.timeRemaining,
-          selectedFile = _this$state2.selectedFile,
-          formattedSize = _this$state2.formattedSize,
-          hashInProgress = _this$state2.hashInProgress;
-      return /*#__PURE__*/_react.default.createElement("div", {
-        className: "upload-area"
-      }, /*#__PURE__*/_react.default.createElement(_datapubNocss.Choose, {
+      var _this$state3 = this.state,
+          success = _this$state3.success,
+          fileExists = _this$state3.fileExists,
+          error = _this$state3.error,
+          timeRemaining = _this$state3.timeRemaining,
+          selectedFile = _this$state3.selectedFile,
+          formattedSize = _this$state3.formattedSize,
+          hashInProgress = _this$state3.hashInProgress,
+          uploadInProgress = _this$state3.uploadInProgress;
+      return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_datapubNocss.Choose, {
         onChangeHandler: this.onChangeHandler,
-        onChangeUrl: function onChangeUrl(event) {
-          return console.log("Get url:", event.target.value);
-        }
-      }), /*#__PURE__*/_react.default.createElement("div", {
-        className: "upload-area__info"
-      }, hashInProgress && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("ul", {
-        className: "upload-list"
-      }, /*#__PURE__*/_react.default.createElement("li", {
-        className: "list-item"
-      }, /*#__PURE__*/_react.default.createElement("div", {
-        className: "upload-list-item"
-      }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
+        onChangeUrl: this.onChangeHandler
+      }), hashInProgress && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
         className: "upload-file-name"
-      }, "Computing file hash...")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_ProgressBar.default, {
+      }, "Computing file hash...")), /*#__PURE__*/_react.default.createElement(_ProgressBar.default, {
         progress: Math.round(this.state.hashLoaded),
         size: 100,
         strokeWidth: 5,
         circleOneStroke: "#d9edfe",
         circleTwoStroke: "#7ea9e1"
-      }))))))), /*#__PURE__*/_react.default.createElement("div", {
-        className: "upload-area__info"
-      }, selectedFile && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("ul", {
-        className: "upload-list"
-      }, /*#__PURE__*/_react.default.createElement("li", {
-        className: "list-item"
-      }, /*#__PURE__*/_react.default.createElement("div", {
-        className: "upload-list-item"
-      }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
+      }))), uploadInProgress && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
         className: "upload-file-name"
-      }, "Uploading ", selectedFile.name), /*#__PURE__*/_react.default.createElement("p", {
-        className: "upload-file-size"
-      }, formattedSize)), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_ProgressBar.default, {
-        progress: Math.round(this.state.loaded),
+      }, "Uploading ", selectedFile.name, "..."), /*#__PURE__*/_react.default.createElement("p", {
+        className: "upload-file-name"
+      }, "Size: ", formattedSize)), /*#__PURE__*/_react.default.createElement(_ProgressBar.default, {
+        progress: this.state.loaded,
         size: 100,
         strokeWidth: 5,
         circleOneStroke: "#d9edfe",
-        circleTwoStroke: "#7ea9e1",
-        timeRemaining: timeRemaining
-      }))))), /*#__PURE__*/_react.default.createElement("h2", {
-        className: "upload-message"
-      }, success && !fileExists && !error && "File uploaded successfully", fileExists && "File uploaded successfully", error && "Upload failed"))));
+        circleTwoStroke: "#7ea9e1" // timeRemaining={timeRemaining}
+
+      }), /*#__PURE__*/_react.default.createElement("h2", null, success && !fileExists && !error && "File uploaded successfully", fileExists && "File uploaded successfully", error && "Upload failed"))));
     }
   }]);
 
