@@ -59,12 +59,23 @@ var TableSchema = function TableSchema(props) {
   var _useState = (0, _react.useState)(props.schema),
       _useState2 = _slicedToArray(_useState, 2),
       schema = _useState2[0],
-      setSchema = _useState2[1];
+      setSchema = _useState2[1]; //add 2 to the length of the schema to take account of description and tittle field
 
-  var _useState3 = (0, _react.useState)(props.schema.fields.length - 1),
+
+  var _useState3 = (0, _react.useState)(props.schema.fields.length + 2 - 1),
       _useState4 = _slicedToArray(_useState3, 2),
       unfilledRichTypes = _useState4[0],
       setUnfilledRichTypes = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      isDescription = _useState6[0],
+      setDescription = _useState6[1];
+
+  var _useState7 = (0, _react.useState)(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      isTitle = _useState8[0],
+      setTittle = _useState8[1];
 
   (0, _react.useEffect)(function () {
     if (resourceHasRichType(props.dataset)) {
@@ -98,19 +109,29 @@ var TableSchema = function TableSchema(props) {
       prepareRow = _useTable.prepareRow;
 
   var handleChange = function handleChange(event, key, index) {
-    setUnfilledRichTypes(unfilledRichTypes - 1);
-
     var newSchema = _objectSpread({}, schema);
 
     if (key == "columnType") {
+      setUnfilledRichTypes(unfilledRichTypes - 1);
       newSchema.fields[index][key] = event.value;
       setSchema(newSchema);
+      props.handleRichType(unfilledRichTypes);
     } else {
+      if (key === "description" && !isDescription) {
+        setDescription(true);
+        setUnfilledRichTypes(unfilledRichTypes - 1);
+        props.handleRichType(unfilledRichTypes);
+      }
+
+      if (key === "title" && !isTitle) {
+        setTittle(true);
+        setUnfilledRichTypes(unfilledRichTypes - 1);
+        props.handleRichType(unfilledRichTypes);
+      }
+
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
-
-    props.handleRichType(unfilledRichTypes);
   };
 
   var resourceHasRichType = function resourceHasRichType(dataset) {
