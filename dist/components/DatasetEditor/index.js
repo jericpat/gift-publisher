@@ -161,7 +161,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
         (0, _axios.default)({
           method: "post",
-          url: "/api/dataset/".concat(_this.state.datasetId),
+          url: "/api/dataset/".concat(_this.state.dataset.name),
           data: {
             metadata: _this.state.dataset,
             description: _this.state.dataset.description
@@ -260,7 +260,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
               (0, _axios.default)({
                 method: "post",
-                url: "/api/dataset/".concat(_this.state.datasetId),
+                url: "/api/dataset/".concat(_this.state.dataset.name),
                 data: {
                   metadata: _this.state.dataset,
                   description: _this.state.dataset.description

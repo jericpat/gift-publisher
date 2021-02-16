@@ -59,7 +59,7 @@ var ResourceList = function ResourceList(_ref) {
       className: "ml-4"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "text-sm font-medium text-gray-900"
-    }, resource.title)))), /*#__PURE__*/_react.default.createElement("td", {
+    }, resource.title || resource.name)))), /*#__PURE__*/_react.default.createElement("td", {
       className: "px-6 py-4 whitespace-nowrap"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: "flex items-center"
