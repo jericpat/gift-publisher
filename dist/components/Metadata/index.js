@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = require("react");
+var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
@@ -44,11 +44,11 @@ var Metadata = function Metadata(_ref) {
     handleChange(customEvent);
   };
 
-  return /*#__PURE__*/_react.React.createElement(_react.React.Fragment, null, /*#__PURE__*/_react.React.createElement("h2", null, "Mandatory fields are marked with an asterisks(", /*#__PURE__*/_react.React.createElement("span", {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("h2", null, "Mandatory fields are marked with an asterisks(", /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), ")"), /*#__PURE__*/_react.React.createElement("div", {
+  }, "*"), ")"), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "text",
     name: "title",
@@ -57,14 +57,14 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "title"
-  }, /*#__PURE__*/_react.React.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Title of the dataset")), /*#__PURE__*/_react.React.createElement("div", {
+  }, "*"), "Title of the dataset")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("textarea", {
+  }, /*#__PURE__*/_react.default.createElement("textarea", {
     className: "metadata-input__textarea",
     type: "text",
     name: "description",
@@ -74,16 +74,16 @@ var Metadata = function Metadata(_ref) {
       handleChange(e);
     },
     rows: 5
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "description"
-  }, /*#__PURE__*/_react.React.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Description of the dataset")), /*#__PURE__*/_react.React.createElement("div", {
+  }, "*"), "Description of the dataset")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
-  }, /*#__PURE__*/_react.React.createElement("div", null, /*#__PURE__*/_react.React.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("select", {
+  }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
     name: "continent",
     id: "continent",
@@ -92,26 +92,26 @@ var Metadata = function Metadata(_ref) {
       handleChange(e);
     },
     required: true
-  }, /*#__PURE__*/_react.React.createElement("option", {
+  }, /*#__PURE__*/_react.default.createElement("option", {
     value: ""
-  }, "Select"), /*#__PURE__*/_react.React.createElement("option", {
+  }, "Select"), /*#__PURE__*/_react.default.createElement("option", {
     value: "Europe"
-  }, "Europe"), /*#__PURE__*/_react.React.createElement("option", {
+  }, "Europe"), /*#__PURE__*/_react.default.createElement("option", {
     value: "Africa"
-  }, "Africa"), /*#__PURE__*/_react.React.createElement("option", {
+  }, "Africa"), /*#__PURE__*/_react.default.createElement("option", {
     value: "Asia"
-  }, "Asia"), /*#__PURE__*/_react.React.createElement("option", {
+  }, "Asia"), /*#__PURE__*/_react.default.createElement("option", {
     value: "North America"
-  }, "North America"), /*#__PURE__*/_react.React.createElement("option", {
+  }, "North America"), /*#__PURE__*/_react.default.createElement("option", {
     value: "South America"
-  }, "South America"), /*#__PURE__*/_react.React.createElement("option", {
+  }, "South America"), /*#__PURE__*/_react.default.createElement("option", {
     value: "Australia"
-  }, "Australia")), /*#__PURE__*/_react.React.createElement("label", {
+  }, "Australia")), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "continent"
-  }, "Continent")), /*#__PURE__*/_react.React.createElement("div", {
+  }, "Continent")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("select", {
+  }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
     name: "country",
     id: "country",
@@ -120,19 +120,19 @@ var Metadata = function Metadata(_ref) {
       handleChange(e);
     },
     required: true
-  }, /*#__PURE__*/_react.React.createElement("option", {
+  }, /*#__PURE__*/_react.default.createElement("option", {
     value: ""
   }, "Select"), _countries.default.map(function (item) {
-    return /*#__PURE__*/_react.React.createElement("option", {
+    return /*#__PURE__*/_react.default.createElement("option", {
       key: "format-".concat(item.text),
       value: item.text
     }, item.text);
-  })), /*#__PURE__*/_react.React.createElement("label", {
+  })), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "encoding"
-  }, "Country"))), /*#__PURE__*/_react.React.createElement("div", {
+  }, "Country"))), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement(_react2.default, {
+  }, /*#__PURE__*/_react.default.createElement(_react2.default, {
     mode: "textarea",
     className: "tags",
     name: "tags",
@@ -141,14 +141,14 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       return e.persist(), handleTagChange(e.target.value);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "tags"
-  }, "Tags"))), /*#__PURE__*/_react.React.createElement("div", {
+  }, "Tags"))), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
-  }, /*#__PURE__*/_react.React.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "text",
     name: "region",
@@ -157,12 +157,12 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "region"
-  }, "Region")), /*#__PURE__*/_react.React.createElement("div", {
+  }, "Region")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "text",
     name: "author_website",
@@ -171,14 +171,14 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "author_website"
-  }, "Author's Website"))), /*#__PURE__*/_react.React.createElement("div", {
+  }, "Author's Website"))), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
-  }, /*#__PURE__*/_react.React.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "text",
     name: "city",
@@ -187,12 +187,12 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "city"
-  }, "City")), /*#__PURE__*/_react.React.createElement("div", {
+  }, "City")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "text",
     name: "author_email",
@@ -201,14 +201,14 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "author_email"
-  }, "Author's Email Address"))), /*#__PURE__*/_react.React.createElement("br", null), /*#__PURE__*/_react.React.createElement("div", {
+  }, "Author's Email Address"))), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
-  }, /*#__PURE__*/_react.React.createElement("div", null, /*#__PURE__*/_react.React.createElement("h1", null, /*#__PURE__*/_react.React.createElement("b", null, "Fiscal Period")), /*#__PURE__*/_react.React.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", null, /*#__PURE__*/_react.default.createElement("b", null, "Fiscal Period")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "date",
     name: "start_date",
@@ -217,14 +217,14 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "start_date"
-  }, /*#__PURE__*/_react.React.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Starting date (month-day-year)")), /*#__PURE__*/_react.React.createElement("div", {
+  }, "*"), "Starting date (month-day-year)")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.React.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "date",
     name: "end_date",
@@ -233,12 +233,12 @@ var Metadata = function Metadata(_ref) {
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.React.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "end_date"
-  }, /*#__PURE__*/_react.React.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Ending date (month-day-year)"))), /*#__PURE__*/_react.React.createElement("div", null, /*#__PURE__*/_react.React.createElement("h1", null, /*#__PURE__*/_react.React.createElement("b", null, "Encoding and file format")), /*#__PURE__*/_react.React.createElement("div", null, /*#__PURE__*/_react.React.createElement("select", {
+  }, "*"), "Ending date (month-day-year)"))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", null, /*#__PURE__*/_react.default.createElement("b", null, "Encoding and file format")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
     name: "encoding",
     id: "encoding",
@@ -247,23 +247,23 @@ var Metadata = function Metadata(_ref) {
       handleChange(e);
     },
     required: true
-  }, /*#__PURE__*/_react.React.createElement("option", {
+  }, /*#__PURE__*/_react.default.createElement("option", {
     value: "utf_8"
   }, "UTF-8"), _datapubNocss.encodeData.map(function (item) {
-    return /*#__PURE__*/_react.React.createElement("option", {
+    return /*#__PURE__*/_react.default.createElement("option", {
       key: "format-".concat(item.value),
       value: item.value
     }, item.label);
-  })), /*#__PURE__*/_react.React.createElement("label", {
+  })), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "encoding"
-  }, "File encoding: If you're unsure about this setting, please use UTF-8")), /*#__PURE__*/_react.React.createElement("div", null, /*#__PURE__*/_react.React.createElement("select", {
+  }, "File encoding: If you're unsure about this setting, please use UTF-8")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
     name: "format",
     id: "format"
-  }, /*#__PURE__*/_react.React.createElement("option", {
+  }, /*#__PURE__*/_react.default.createElement("option", {
     value: "csv"
-  }, "CSV"))), /*#__PURE__*/_react.React.createElement("label", {
+  }, "CSV"))), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "format"
   }, "File format"))));
