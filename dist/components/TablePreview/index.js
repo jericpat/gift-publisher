@@ -27,7 +27,7 @@ var TablePreview = function TablePreview(_ref) {
 
   var _useTable = (0, _reactTable.useTable)({
     columns: columns,
-    data: data
+    data: data.slice(0, 5)
   }),
       getTableProps = _useTable.getTableProps,
       headerGroups = _useTable.headerGroups,
