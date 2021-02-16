@@ -15,10 +15,6 @@ var _countries = _interopRequireDefault(require("../../db/countries.json"));
 
 var _react2 = _interopRequireDefault(require("@yaireo/tagify/dist/react.tagify"));
 
-require("@yaireo/tagify/dist/tagify.css");
-
-require("./Metadata.css");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Metadata = function Metadata(_ref) {
