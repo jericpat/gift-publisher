@@ -10,7 +10,10 @@ import osTypesDesc from "../../db/os-type-descriptions.json";
 
 const TableSchema = (props) => {
   const [schema, setSchema] = useState(props.schema);
-  const [unfilledRichTypes, setUnfilledRichTypes] = useState(props.schema.fields.length - 1);
+  //add 2 to the length of the schema to take account of description and tittle field
+  const [unfilledRichTypes, setUnfilledRichTypes] = useState((props.schema.fields.length+2) - 1);
+  const [isDescription, setDescription] = useState(false);
+  const [isTitle, setTittle] = useState(false);
 
   useEffect(() => {
     if (resourceHasRichType(props.dataset)) {
@@ -38,16 +41,29 @@ const TableSchema = (props) => {
 
 
   const handleChange = (event, key, index) => {
-    setUnfilledRichTypes(unfilledRichTypes - 1)
+    
     const newSchema = { ...schema };
     if (key == "columnType") {
+      setUnfilledRichTypes(unfilledRichTypes - 1)
       newSchema.fields[index][key] = event.value;
       setSchema(newSchema);
+      props.handleRichType(unfilledRichTypes)
     } else {
+      if (key === "description" && !isDescription) {
+        setDescription(true);
+        setUnfilledRichTypes(unfilledRichTypes - 1)
+        props.handleRichType(unfilledRichTypes)
+      }
+
+      if (key === "title" && !isTitle) {
+        setTittle(true);
+        setUnfilledRichTypes(unfilledRichTypes - 1)
+        props.handleRichType(unfilledRichTypes)
+      }
+      
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
-    props.handleRichType(unfilledRichTypes)
 
   };
 
