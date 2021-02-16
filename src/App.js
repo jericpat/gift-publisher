@@ -15,6 +15,17 @@ export class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
     const dataset = props.config.dataset;
+    dataset.encoding = "utf_8";
+    dataset.format = "csv";
+    if (
+      !("sample" in dataset) &&
+      "resources" in dataset &&
+      dataset["resources"].length > 0
+    ) {
+      dataset["sample"] = dataset["resources"][0]["sample"];
+    } else {
+      dataset["sample"] = [];
+    }
     this.state = {
       dataset,
       resource: {}, //This will hold the uploaded resource metadata
@@ -60,8 +71,9 @@ export class DatasetEditor extends React.Component {
     resource["mediatype"] = fileResource.type;
     resource["name"] = fileResource.name;
     resource["dialect"] = fileResource.dialect;
-    resource["path"] = `data/${fileResource.name}`;
-    resource["title"] = fileResource["name"].split(".")[0];
+    resource["path"] = fileResource.path
+    //   "path" in fileResource ? fileResource.path : `data/${fileResource.name}`;
+    // resource["title"] = fileResource["name"].split(".")[0];
 
     if (Object.keys(dataset).includes("resources")) {
       dataset.resources.push(resource);
@@ -74,6 +86,10 @@ export class DatasetEditor extends React.Component {
     resource["sample"] = fileResource.sample;
     resource["columns"] = fileResource.columns;
 
+    if (dataset["sample"].length == 0) {
+      dataset["sample"] = fileResource.sample;
+    }
+
     return { dataset, resource };
   }
 
@@ -85,8 +101,7 @@ export class DatasetEditor extends React.Component {
         richTypeFilled: true,
       });
     }
-  }
-
+  };
 
   handleChangeMetadata = (event) => {
     const target = event.target;
@@ -132,30 +147,26 @@ export class DatasetEditor extends React.Component {
 
   deleteResource = (hash) => {
     const { dataset } = { ...this.state };
-    if (window.confirm("Are you sure to delete this resource?")) {
-      if (dataset.resources.length == 1) {
-        dataset.resources = [];
-        this.setState({ dataset, resource: {} });
+    if (window.confirm("Are you sure you want to delete this resource?")) {
+      const temp_dataset = { ...dataset };
+      if (temp_dataset.resources.length == 1) {
+        temp_dataset.resources = [];
       } else {
-        const newResource = dataset.resources.filter(
+        const newResource = temp_dataset.resources.filter(
           (resource) => resource.hash != hash
         );
-        dataset.resources = newResource;
-        this.setState({
-          dataset,
-          resource: {},
-        });
+        temp_dataset.resources = newResource;
       }
-
       axios({
         method: "post",
-        url: `/api/dataset/${this.state.datasetId}`,
+        url: `/api/dataset/${temp_dataset.name}`,
         data: {
-          metadata: this.state.dataset,
-          description: this.state.dataset.description,
+          metadata: temp_dataset,
+          description: temp_dataset.description,
         },
       }).then(
         (response) => {
+          this.setState({ temp_dataset, resource: {} });
           alert("Resource has been removed sucessfully");
         },
         (error) => {
@@ -184,15 +195,19 @@ export class DatasetEditor extends React.Component {
     this.setState({ ui: newUiState });
     if (status.success && !status.loading) {
       this.nextScreen();
-    }
-    if (!status.success && status.error) {
+    } else if (!status.success && status.error) {
+      const dataset = { ...this.state.dataset };
+      if ("resources" in dataset && dataset["resources"].length > 0) {
+        dataset.resources.pop();
+      }
+      this.setState({ dataset });
       this.prevScreen();
     }
 
     //clears error message after 6 seconds
     setTimeout(() => {
       this.setState({ ui: { ...this.state.ui, errorMsg: "" } });
-    }, 6000);
+    }, 10000);
   };
 
   onChangeResourceId = (resourceId) => {
@@ -223,7 +238,7 @@ export class DatasetEditor extends React.Component {
 
     axios({
       method: "post",
-      url: `/api/dataset/${this.state.datasetId}`,
+      url: `/api/dataset/${this.state.dataset.name}`,
       data: {
         metadata: this.state.dataset,
         description: this.state.dataset.description,
@@ -268,7 +283,7 @@ export class DatasetEditor extends React.Component {
                   Provide your data file
                 </h1>
                 <h2 className="upload-header__title_h2">
-                  Supported formats: csv, xlsx, xls
+                  Supported format: CSV
                 </h2>
               </div>
 
@@ -319,7 +334,7 @@ export class DatasetEditor extends React.Component {
             {this.state.currentStep == 4 && !this.state.savedDataset && (
               <>
                 <div className="upload-header">
-                  <h1 className="upload-header__title_h1">Provide Metadata</h1>
+                  <h1 className="upload-header__title_h1">Describe Metadata</h1>
                 </div>
                 <Metadata
                   dataset={this.state.dataset}
@@ -329,18 +344,22 @@ export class DatasetEditor extends React.Component {
             )}
           </div>
         </form>
+
         <div className="resource-edit-actions">
           {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
             this.state.resource && (
-              <button className="btn" onClick={this.handleSaveDataset}>
+              <button className="btn-save" onClick={this.handleSaveDataset}>
                 {this.state.saveButtonText}
               </button>
             )}
           {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
             this.state.resource && (
-              <button className="btn" onClick={this.downloadDatapackage}>
+              <button
+                className="btn-download"
+                onClick={this.downloadDatapackage}
+              >
                 Download Package
               </button>
             )}
