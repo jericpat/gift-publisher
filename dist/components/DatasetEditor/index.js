@@ -139,34 +139,31 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       var _this$state = _objectSpread({}, _this.state),
           dataset = _this$state.dataset;
 
-      if (window.confirm("Are you sure to delete this resource?")) {
-        if (dataset.resources.length == 1) {
-          dataset.resources = [];
+      if (window.confirm("Are you sure you want to delete this resource?")) {
+        var temp_dataset = _objectSpread({}, dataset);
 
-          _this.setState({
-            dataset: dataset,
-            resource: {}
-          });
+        if (temp_dataset.resources.length == 1) {
+          temp_dataset.resources = [];
         } else {
-          var newResource = dataset.resources.filter(function (resource) {
+          var newResource = temp_dataset.resources.filter(function (resource) {
             return resource.hash != hash;
           });
-          dataset.resources = newResource;
-
-          _this.setState({
-            dataset: dataset,
-            resource: {}
-          });
+          temp_dataset.resources = newResource;
         }
 
         (0, _axios.default)({
           method: "post",
-          url: "/api/dataset/".concat(_this.state.dataset.name),
+          url: "/api/dataset/".concat(temp_dataset.name),
           data: {
-            metadata: _this.state.dataset,
-            description: _this.state.dataset.description
+            metadata: temp_dataset,
+            description: temp_dataset.description
           }
         }).then(function (response) {
+          _this.setState({
+            temp_dataset: temp_dataset,
+            resource: {}
+          });
+
           alert("Resource has been removed sucessfully");
         }, function (error) {
           console.log(error);
@@ -199,9 +196,17 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
       if (status.success && !status.loading) {
         _this.nextScreen();
-      }
+      } else if (!status.success && status.error) {
+        var dataset = _objectSpread({}, _this.state.dataset);
 
-      if (!status.success && status.error) {
+        if ("resources" in dataset && dataset["resources"].length > 0) {
+          dataset.resources.pop();
+        }
+
+        _this.setState({
+          dataset: dataset
+        });
+
         _this.prevScreen();
       } //clears error message after 6 seconds
 
@@ -212,7 +217,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
             errorMsg: ""
           })
         });
-      }, 6000);
+      }, 10000);
     });
 
     _defineProperty(_assertThisInitialized(_this), "onChangeResourceId", function (resourceId) {
@@ -289,6 +294,15 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
     })));
 
     var _dataset = props.config.dataset;
+    _dataset.encoding = "utf_8";
+    _dataset.format = "csv";
+
+    if (!("sample" in _dataset) && "resources" in _dataset && _dataset["resources"].length > 0) {
+      _dataset["sample"] = _dataset["resources"][0]["sample"];
+    } else {
+      _dataset["sample"] = [];
+    }
+
     _this.state = {
       dataset: _dataset,
       resource: {},
@@ -339,8 +353,8 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       resource["mediatype"] = fileResource.type;
       resource["name"] = fileResource.name;
       resource["dialect"] = fileResource.dialect;
-      resource["path"] = "data/".concat(fileResource.name);
-      resource["title"] = fileResource["name"].split(".")[0];
+      resource["path"] = fileResource.path; //   "path" in fileResource ? fileResource.path : `data/${fileResource.name}`;
+      // resource["title"] = fileResource["name"].split(".")[0];
 
       if (Object.keys(dataset).includes("resources")) {
         dataset.resources.push(resource);
@@ -352,6 +366,11 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
       resource["sample"] = fileResource.sample;
       resource["columns"] = fileResource.columns;
+
+      if (dataset["sample"].length == 0) {
+        dataset["sample"] = fileResource.sample;
+      }
+
       return {
         dataset: dataset,
         resource: resource
@@ -378,7 +397,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         className: "upload-header__title_h1"
       }, "Provide your data file"), /*#__PURE__*/_react.default.createElement("h2", {
         className: "upload-header__title_h2"
-      }, "Supported formats: csv, xlsx, xls")), /*#__PURE__*/_react.default.createElement(_Upload.default, {
+      }, "Supported format: CSV")), /*#__PURE__*/_react.default.createElement(_Upload.default, {
         client: this.state.client,
         resource: this.state.resource,
         metadataHandler: this.metadataHandler,
@@ -410,16 +429,16 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
-      }, "Provide Metadata")), /*#__PURE__*/_react.default.createElement(_Metadata.default, {
+      }, "Describe Metadata")), /*#__PURE__*/_react.default.createElement(_Metadata.default, {
         dataset: this.state.dataset,
         handleChange: this.handleChangeMetadata
       })))), /*#__PURE__*/_react.default.createElement("div", {
         className: "resource-edit-actions"
       }, this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
-        className: "btn",
+        className: "btn-save",
         onClick: this.handleSaveDataset
       }, this.state.saveButtonText), this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
-        className: "btn",
+        className: "btn-download",
         onClick: this.downloadDatapackage
       }, "Download Package"), this.state.ui.success && this.state.currentStep > 1 && this.state.currentStep < 4 && this.state.currentStep !== 3 && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
