@@ -4,7 +4,7 @@ const execSync = require('child_process').execSync
 
 
 const fileToCopy = {
-  Metadata: 'import "./Metadata.css";',
+  Metadata: ['import "@yaireo/tagify/dist/tagify.css"','import "./Metadata.css"'],
   ProgressBar: 'import "./ProgressBar.css";',
   TablePreview:  undefined,
   TableSchema: 'import "./TableSchema.css";',
@@ -21,9 +21,19 @@ for(let keys in fileToCopy){
     .toString()
     .split('\n');
   if (fileToCopy[keys]) {
-    const index = fileContent.indexOf(fileToCopy[keys]);
+    if (Array.isArray(fileToCopy[keys])){
+      const value = fileToCopy[keys]
+      value.forEach((item)=>{
+        const index = fileContent.indexOf(item);
 
-    fileContent.splice(index, 1);
+        fileContent.splice(index, 1);
+      })
+    }else{
+      const index = fileContent.indexOf(fileToCopy[keys]);
+
+      fileContent.splice(index, 1);
+    }
+    
 
   }
   
