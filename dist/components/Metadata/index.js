@@ -13,10 +13,10 @@ var _datapubNocss = require("datapub-nocss");
 
 var _countries = _interopRequireDefault(require("../../db/countries.json"));
 
-var _react2 = _interopRequireDefault(require("@yaireo/tagify/dist/react.tagify"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import Tags from '@yaireo/tagify/dist/react.tagify'
+// import "@yaireo/tagify/dist/tagify.css"
 var Metadata = function Metadata(_ref) {
   var dataset = _ref.dataset,
       handleChange = _ref.handleChange;
@@ -132,7 +132,7 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "encoding"
   }, "Country"))), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.default.createElement(_react2.default, {
+  }, /*#__PURE__*/_react.default.createElement(Tags, {
     mode: "textarea",
     className: "tags",
     name: "tags",
