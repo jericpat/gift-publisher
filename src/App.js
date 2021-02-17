@@ -40,12 +40,13 @@ export class DatasetEditor extends React.Component {
       },
       client: null,
       isResourceEdit: false,
-      currentStep: 0,
+      currentStep: props.config.skipUpload ? 4 : 0,
       richTypeFilled: false,
       saveButtonText: "Save",
     };
     this.metadataHandler = this.metadataHandler.bind(this);
     this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
+
   }
 
   metadataHandler(resource) {
@@ -71,7 +72,7 @@ export class DatasetEditor extends React.Component {
     resource["mediatype"] = fileResource.type;
     resource["name"] = fileResource.name;
     resource["dialect"] = fileResource.dialect;
-    resource["path"] = fileResource.path
+    resource["path"] = fileResource.path;
     //   "path" in fileResource ? fileResource.path : `data/${fileResource.name}`;
     // resource["title"] = fileResource["name"].split(".")[0];
 

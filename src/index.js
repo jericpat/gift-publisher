@@ -13,6 +13,7 @@ if (element) {
     lfsServerUrl: "https://giftless-gift.herokuapp.com",
     dataset: {}, //for test purpose, suppose to be provided by portal
     metastoreApi: "/api/dataset",
+    skipUpload: false //skip to the metadata screen
   };
 
   ReactDOM.render(
