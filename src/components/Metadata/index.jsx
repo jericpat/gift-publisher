@@ -6,8 +6,8 @@ import countries from "../../db/countries.json"
 // import "@yaireo/tagify/dist/tagify.css"
 import "./Metadata.css"
 
-const Metadata = ({ dataset, handleChange }) => {
-
+const Metadata = ({ dataset, handleChange, Tags }) => {
+  console.log(Tags);
   const tagifySettings = {
     whitelist: ["Finance", "Tabular", "Economics", "Trade", "Fiscal"],
     maxTags: 6,

@@ -46,7 +46,6 @@ export class DatasetEditor extends React.Component {
     };
     this.metadataHandler = this.metadataHandler.bind(this);
     this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
-
   }
 
   metadataHandler(resource) {
@@ -340,6 +339,7 @@ export class DatasetEditor extends React.Component {
                 <Metadata
                   dataset={this.state.dataset}
                   handleChange={this.handleChangeMetadata}
+                  Tags={this.props.configs.Tags}
                 />
               </>
             )}
