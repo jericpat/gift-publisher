@@ -11,6 +11,7 @@
   "homepage": "https://datopian.github.io/gift-publisher",
   "dependencies": {
     "@material-ui/core": "^4.11.2",
+    "@yaireo/tagify": "^3.22.1",
     "axios": "^0.21.1",
     "ckan-client": "git+https://github.com/datopian/ckan-client-js.git#v0.4.2",
     "datapub-nocss": "0.1.0  ",
