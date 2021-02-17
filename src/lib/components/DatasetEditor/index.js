@@ -70,7 +70,7 @@ export class DatasetEditor extends React.Component {
     resource["mediatype"] = fileResource.type;
     resource["name"] = fileResource.name;
     resource["dialect"] = fileResource.dialect;
-    resource["path"] = fileResource.path
+    resource["path"] = fileResource.path;
     //   "path" in fileResource ? fileResource.path : `data/${fileResource.name}`;
     // resource["title"] = fileResource["name"].split(".")[0];
 

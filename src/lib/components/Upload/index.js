@@ -2,7 +2,7 @@ import React from "react";
 import { Client } from "giftless-client";
 import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
-import { onFormatBytes, isValidURL } from "../../utils";
+import { onFormatBytes } from "../../utils";
 import { Choose } from "datapub-nocss";
 import toArray from "stream-to-array";
 class Upload extends React.Component {

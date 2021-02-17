@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = require("react");
+var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
@@ -247,10 +247,10 @@ var Metadata = function Metadata(_ref) {
       handleChange(e);
     },
     required: true
-  }, /*#__PURE__*/_react.React.createElement("option", {
+  }, /*#__PURE__*/_react.default.createElement("option", {
     value: "utf_8"
   }, "UTF-8"), _datapubNocss.encodeData.map(function (item) {
-    return /*#__PURE__*/_react.React.createElement("option", {
+    return /*#__PURE__*/_react.default.createElement("option", {
       key: "format-".concat(item.value),
       value: item.value
     }, item.label);
@@ -261,7 +261,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input",
     name: "format",
     id: "format"
-  }, /*#__PURE__*/_react.React.createElement("option", {
+  }, /*#__PURE__*/_react.default.createElement("option", {
     value: "csv"
   }, "CSV"))), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
