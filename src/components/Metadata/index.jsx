@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { encodeData } from "datapub-nocss";
 import countries from "../../db/countries.json"
-import Tags from '@yaireo/tagify/dist/react.tagify'
+// import Tags from '@yaireo/tagify/dist/react.tagify'
 // import "@yaireo/tagify/dist/tagify.css"
 import "./Metadata.css"
 
