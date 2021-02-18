@@ -429,8 +429,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         className: "upload-header__title_h1"
       }, "Describe Metadata")), /*#__PURE__*/_react.default.createElement(_Metadata.default, {
         dataset: this.state.dataset,
-        handleChange: this.handleChangeMetadata,
-        Tags: this.props.configs.Tags
+        handleChange: this.handleChangeMetadata
       })))), /*#__PURE__*/_react.default.createElement("div", {
         className: "resource-edit-actions"
       }, this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {

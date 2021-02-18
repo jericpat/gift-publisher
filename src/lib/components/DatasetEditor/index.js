@@ -9,6 +9,7 @@ import TableSchema from "../TableSchema";
 import ResourceList from "../ResourceList"
 import Metadata from "../Metadata";
 
+
 export class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -332,7 +333,6 @@ export class DatasetEditor extends React.Component {
                 <Metadata
                   dataset={this.state.dataset}
                   handleChange={this.handleChangeMetadata}
-                  Tags={this.props.configs.Tags}
                 />
               </>
             )}
