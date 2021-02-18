@@ -27,7 +27,7 @@ const ProgressBar = (props) => {
   }, [setOffset, progress, circumference, offset]);
 
   return (
-    <>
+    <div>
       <svg className="svg" width={size} height={size}>
         <circle
           className="svg-circle-bg"
@@ -53,7 +53,7 @@ const ProgressBar = (props) => {
         </text>
       </svg>
       {timeRemaining > 0 &&  <span className="time-remaining">{timeRemaining > 60 ? `${Math.floor(timeRemaining /60)} minute${Math.floor(timeRemaining /60) > 1 ? 's' : ''}` : `${Math.floor(timeRemaining)} second${timeRemaining > 1 ? 's' : ''}`} left</span>}
-    </>
+    </div>
   );
 };
 

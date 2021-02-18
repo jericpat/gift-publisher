@@ -181,7 +181,7 @@ const TableSchema = (props) => {
   };
 
   return (
-    <>
+    <div>
       <div className="table-container">
         <table className="table-schema-help">
           <tbody>
@@ -250,7 +250,7 @@ const TableSchema = (props) => {
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
