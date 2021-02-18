@@ -94,7 +94,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
               case 8:
                 selectedFile = event.target.value;
 
-                if (isValidURL(selectedFile)) {
+                if ((0, _utils.isValidURL)(selectedFile)) {
                   _context.next = 12;
                   break;
                 }

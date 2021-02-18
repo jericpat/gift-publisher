@@ -86,7 +86,12 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
       var dataset = _objectSpread({}, _this.state.dataset);
 
-      dataset[name] = value;
+      if (name == "tags") {
+        var newTags = value.split(",");
+        dataset["tags"] = newTags;
+      } else {
+        dataset[name] = value;
+      }
 
       _this.setState({
         dataset: dataset
@@ -256,12 +261,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
             case 0:
               _this.setState({
                 saveButtonText: "Saving..."
-              }); // setTimeout(() => {
-              //   this.setState({ saveButtonText: "Save" });
-              //   alert("Uploaded Sucessfully");
-              //   this.setState({ currentStep: 0 });
-              // }, 2000);
-
+              });
 
               (0, _axios.default)({
                 method: "post",
@@ -296,6 +296,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
     var _dataset = props.config.dataset;
     _dataset.encoding = "utf_8";
     _dataset.format = "csv";
+    _dataset.tags = [];
 
     if (!("sample" in _dataset) && "resources" in _dataset && _dataset["resources"].length > 0) {
       _dataset["sample"] = _dataset["resources"][0]["sample"];
@@ -353,16 +354,13 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       resource["mediatype"] = fileResource.type;
       resource["name"] = fileResource.name;
       resource["dialect"] = fileResource.dialect;
-      resource["path"] = fileResource.path; //   "path" in fileResource ? fileResource.path : `data/${fileResource.name}`;
-      // resource["title"] = fileResource["name"].split(".")[0];
+      resource["path"] = fileResource.path;
 
       if (Object.keys(dataset).includes("resources")) {
         dataset.resources.push(resource);
       } else {
         dataset["resources"] = [resource];
-      } //Add sample and column before saving to resource state.
-      // This is used in resource preview
-
+      }
 
       resource["sample"] = fileResource.sample;
       resource["columns"] = fileResource.columns;
@@ -431,7 +429,8 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         className: "upload-header__title_h1"
       }, "Describe Metadata")), /*#__PURE__*/_react.default.createElement(_Metadata.default, {
         dataset: this.state.dataset,
-        handleChange: this.handleChangeMetadata
+        handleChange: this.handleChangeMetadata,
+        Tags: this.props.configs.Tags
       })))), /*#__PURE__*/_react.default.createElement("div", {
         className: "resource-edit-actions"
       }, this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {

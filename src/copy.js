@@ -4,7 +4,7 @@ const execSync = require('child_process').execSync
 
 
 const fileToCopy = {
-  Metadata: ['import "@yaireo/tagify/dist/tagify.css"','import "./Metadata.css"'],
+  Metadata: ['import "./Metadata.css"'],
   ProgressBar: 'import "./ProgressBar.css";',
   TablePreview:  undefined,
   TableSchema: 'import "./TableSchema.css";',

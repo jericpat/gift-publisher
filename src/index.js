@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./assets/main.css";
 import App from "./App";
-// import Tags from '@yaireo/tagify/dist/react.tagify'
 // import * as data from './data.json';
 // import { metadataEmpty, metadataSingle, metadataDouble } from "./data/metadata";
 
@@ -15,7 +14,6 @@ if (element) {
     dataset: {}, //for test purpose, suppose to be provided by portal
     metastoreApi: "/api/dataset",
     skipUpload: false, //skip to the metadata screen
-    Tags: {}
   };
 
   ReactDOM.render(
