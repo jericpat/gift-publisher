@@ -247,7 +247,7 @@ var TableSchema = function TableSchema(props) {
     });
   };
 
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
     className: "table-container"
   }, /*#__PURE__*/_react.default.createElement("table", {
     className: "table-schema-help"

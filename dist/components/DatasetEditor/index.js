@@ -385,7 +385,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         className: "errorMsg"
       }, this.state.ui.errorMsg)), /*#__PURE__*/_react.default.createElement("form", {
         className: "upload-wrapper"
-      }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ResourceList.default, {
+      }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_ResourceList.default, {
         dataset: this.state.dataset,
         addResourceScreen: this.nextScreen,
         deleteResource: this.deleteResource
@@ -407,14 +407,14 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         dataset: this.state.dataset
       })), /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-edit-area"
-      }, this.state.resource.sample && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      }, this.state.resource.sample && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
       }, "Preview of your dataset")), /*#__PURE__*/_react.default.createElement(_TablePreview.default, {
         columns: this.state.resource.columns,
         data: this.state.resource.sample
-      })), this.state.resource.schema && this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      })), this.state.resource.schema && this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
@@ -423,7 +423,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         schema: this.state.resource.schema,
         data: this.state.resource.sample || [],
         handleRichType: this.handleRichTypeCount
-      })), this.state.currentStep == 4 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      })), this.state.currentStep == 4 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"

@@ -18,7 +18,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Metadata = function Metadata(_ref) {
   var dataset = _ref.dataset,
       handleChange = _ref.handleChange;
-  return /*#__PURE__*/_react.React.createElement(_react.React.Fragment, null, /*#__PURE__*/_react.React.createElement("h2", null, "Mandatory fields are marked with an asterisks(", /*#__PURE__*/_react.React.createElement("span", {
+  return /*#__PURE__*/_react.React.createElement("div", null, /*#__PURE__*/_react.React.createElement("h2", null, "Mandatory fields are marked with an asterisks(", /*#__PURE__*/_react.React.createElement("span", {
     className: "ast-important"
   }, "*"), ")"), /*#__PURE__*/_react.React.createElement("div", {
     className: "metadata-input"

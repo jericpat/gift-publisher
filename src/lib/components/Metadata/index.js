@@ -6,7 +6,7 @@ import countries from "../../db/countries.json"
 const Metadata = ({ dataset, handleChange }) => {
 
   return (
-    <>
+    <div>
       <h2>Mandatory fields are marked with an asterisks(<span className="ast-important" >*</span>)</h2>
       <div className="metadata-input">
         <input
@@ -246,7 +246,7 @@ const Metadata = ({ dataset, handleChange }) => {
         </div>
       </div>
 
-    </>
+    </div>
   );
 };
 
