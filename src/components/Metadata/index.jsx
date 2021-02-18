@@ -1,32 +1,10 @@
-import { React, useEffect, useState } from "react";
+import { React } from "react";
 import PropTypes from "prop-types";
 import { encodeData } from "datapub";
 import countries from "../../db/countries.json"
-import Tags from '@yaireo/tagify/dist/react.tagify'
-import "@yaireo/tagify/dist/tagify.css"
 import "./Metadata.css"
 
 const Metadata = ({ dataset, handleChange }) => {
-
-  const tagifySettings = {
-    whitelist: ["Finance", "Tabular", "Economics", "Trade", "Fiscal"],
-    maxTags: 6,
-    backspace: "edit",
-    addTagOnBlur: false,
-    dropdown: {
-      enabled: 0
-    }
-  }
-
-
-  const handleTagChange = (values) => {
-    values = JSON.parse(values)
-    values = values.map((value) => {
-      return Object.values(value)[0]
-    })
-    const customEvent = { target: { value: values, name: "tags" } }
-    handleChange(customEvent)
-  }
 
   return (
     <>
@@ -121,14 +99,15 @@ const Metadata = ({ dataset, handleChange }) => {
           </div>
         </div>
         <div className="metadata-input">
-          <Tags mode='textarea'
-            className='tags'
-            name='tags'
-            settings={tagifySettings}
-            value={"tags" in dataset ? dataset.tags.toString() : ""}
-            onChange={e => (e.persist(), handleTagChange(e.target.value))}
+          <input
+            className="metadata-input__input"
+            type="text"
+            name="tags"
+            id="tags"
+            placeholder="Finance, Economic, Argentina"
+            value={dataset.tags}
+            onChange={(e) => { handleChange(e) }}
           />
-
           <label className="metadata-label" htmlFor="tags">
             Tags
           </label>

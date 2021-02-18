@@ -17,6 +17,7 @@ export class DatasetEditor extends React.Component {
     const dataset = props.config.dataset;
     dataset.encoding = "utf_8";
     dataset.format = "csv";
+    dataset.tags = [];
     if (
       !("sample" in dataset) &&
       "resources" in dataset &&
@@ -46,7 +47,6 @@ export class DatasetEditor extends React.Component {
     };
     this.metadataHandler = this.metadataHandler.bind(this);
     this.handleRichTypeCount = this.handleRichTypeCount.bind(this);
-
   }
 
   metadataHandler(resource) {
@@ -73,17 +73,12 @@ export class DatasetEditor extends React.Component {
     resource["name"] = fileResource.name;
     resource["dialect"] = fileResource.dialect;
     resource["path"] = fileResource.path;
-    //   "path" in fileResource ? fileResource.path : `data/${fileResource.name}`;
-    // resource["title"] = fileResource["name"].split(".")[0];
 
     if (Object.keys(dataset).includes("resources")) {
       dataset.resources.push(resource);
     } else {
       dataset["resources"] = [resource];
     }
-
-    //Add sample and column before saving to resource state.
-    // This is used in resource preview
     resource["sample"] = fileResource.sample;
     resource["columns"] = fileResource.columns;
 
@@ -109,8 +104,13 @@ export class DatasetEditor extends React.Component {
     const value = target.value;
     const name = target.name;
     const dataset = { ...this.state.dataset };
-    dataset[name] = value;
 
+    if (name == "tags") {
+      const newTags = value.split(",");
+      dataset["tags"] = newTags;
+    } else {
+      dataset[name] = value;
+    }
     this.setState({
       dataset,
     });
@@ -231,11 +231,6 @@ export class DatasetEditor extends React.Component {
 
   handleSaveDataset = async () => {
     this.setState({ saveButtonText: "Saving..." });
-    // setTimeout(() => {
-    //   this.setState({ saveButtonText: "Save" });
-    //   alert("Uploaded Sucessfully");
-    //   this.setState({ currentStep: 0 });
-    // }, 2000);
 
     axios({
       method: "post",
@@ -331,7 +326,6 @@ export class DatasetEditor extends React.Component {
                 />
               </>
             )}
-
             {this.state.currentStep == 4 && !this.state.savedDataset && (
               <>
                 <div className="upload-header">
