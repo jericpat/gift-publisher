@@ -423,7 +423,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         schema: this.state.resource.schema,
         data: this.state.resource.sample || [],
         handleRichType: this.handleRichTypeCount
-      })), this.state.currentStep == 4 && !this.state.savedDataset && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      })), this.state.currentStep == 4 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"

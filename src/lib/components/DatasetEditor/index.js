@@ -325,7 +325,7 @@ export class DatasetEditor extends React.Component {
                 />
               </>
             )}
-            {this.state.currentStep == 4 && !this.state.savedDataset && (
+            {this.state.currentStep == 4 && (
               <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">Describe Metadata</h1>
