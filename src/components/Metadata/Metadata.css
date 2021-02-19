@@ -4,6 +4,12 @@
   column-gap: 20px;
 }
 
+.metadata-form-grp3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 20px;
+}
+
 .metadata-name {
   color: #1a3b5d;
   text-align: left;
@@ -14,6 +20,31 @@
   font-size: 14px;
   margin-bottom: 5px;
   margin-left: 5px;
+  text-align: left;
+  font-weight: 500;
+  color: #1a3b5d;
+  width: 100%;
+  display: block;
+  user-select: none;
+}
+
+.metadata-label-checkbox {
+  font-size: 14px;
+  margin-bottom: 5px;
+  margin-left: 90px;
+  text-align: left;
+  font-weight: 500;
+  color: #1a3b5d;
+  width: 100%;
+  display: block;
+  user-select: none;
+}
+
+.metadata-section-title {
+  font-size: 18px;
+  margin-bottom: 20px;
+  margin-left: 5px;
+  margin-top: 20px;
   text-align: left;
   font-weight: 500;
   color: #1a3b5d;
