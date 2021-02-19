@@ -273,7 +273,13 @@ export class DatasetEditor extends React.Component {
         {this.state.currentStep > 0 && (
           <img src={ReactLogo} width="50%" className="Img" />
         )}
-        <form className="upload-wrapper">
+        <form
+          className="upload-wrapper"
+          onSubmit={(event) => {
+            event.preventDefault();
+            return this.handleSaveDataset();
+          }}
+        >
           {this.state.currentStep == 0 && (
             <>
               <ResourceList
@@ -349,11 +355,30 @@ export class DatasetEditor extends React.Component {
                 />
               </>
             )}
+            <div>
+              {this.state.currentStep == 4 &&
+                !this.state.isResourceEdit &&
+                this.state.resource && (
+                  <button className="btn-save" type="submit">
+                    {this.state.saveButtonText}
+                  </button>
+                )}
+              {this.state.currentStep == 4 &&
+                !this.state.isResourceEdit &&
+                this.state.resource && (
+                  <button
+                    className="btn-download"
+                    onClick={this.downloadDatapackage}
+                  >
+                    Download Package
+                  </button>
+                )}
+            </div>
           </div>
         </form>
 
         <div className="resource-edit-actions">
-          {this.state.currentStep == 4 &&
+          {/* {this.state.currentStep == 4 &&
             !this.state.isResourceEdit &&
             this.state.resource && (
               <button className="btn-save" onClick={this.handleSaveDataset}>
@@ -369,7 +394,7 @@ export class DatasetEditor extends React.Component {
               >
                 Download Package
               </button>
-            )}
+            )} */}
 
           {this.state.ui.success &&
             this.state.currentStep > 1 &&

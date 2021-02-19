@@ -19,6 +19,7 @@ const Metadata = ({ dataset, handleChange }) => {
           id="title"
           placeholder="example_file.csv"
           value={dataset.title}
+          required
           onChange={(e) => { handleChange(e) }}
         />
         <label className="metadata-label" htmlFor="title">
@@ -36,6 +37,7 @@ const Metadata = ({ dataset, handleChange }) => {
           value={dataset.description || ""}
           onChange={(e) => { handleChange(e) }}
           rows={5}
+          required
         ></textarea>
         <label className="metadata-label" htmlFor="description">
           <span className="ast-important" >*</span> Description of the dataset
@@ -246,7 +248,6 @@ const Metadata = ({ dataset, handleChange }) => {
             id="country"
             value={dataset.country || ""}
             onChange={(e) => { handleChange(e) }}
-            required
           >
             <option value="">
               Select
@@ -334,6 +335,7 @@ const Metadata = ({ dataset, handleChange }) => {
             name="start_date"
             id="start_date"
             value={dataset.start_date}
+            required
             onChange={(e) => { handleChange(e) }}
           />
           <label className="metadata-label" htmlFor="start_date">
@@ -348,6 +350,7 @@ const Metadata = ({ dataset, handleChange }) => {
             name="end_date"
             id="end_date"
             value={dataset.end_date}
+            required
             onChange={(e) => { handleChange(e) }}
           />
           <label className="metadata-label" htmlFor="end_date">
