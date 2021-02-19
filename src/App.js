@@ -105,9 +105,21 @@ export class DatasetEditor extends React.Component {
     const name = target.name;
     const dataset = { ...this.state.dataset };
 
-    if (name == "tags") {
-      const newTags = value.split(",");
-      dataset["tags"] = newTags;
+    if (["tags", "years_included"].includes(name)) {
+      const vals = value.split(",");
+      dataset[name] = vals.map((val) => val.trim());
+    } else if (["disaggregation", "budget_stage"].includes(name)) {
+      let currentVals = dataset[name] || [];
+      if (!target.checked) {
+        currentVals = currentVals.filter((val) => val != value); //remove value
+        dataset[name] = currentVals;
+      } else {
+        if (!currentVals.includes(value)) {
+          //only add value if it is unique
+          currentVals.push(value);
+          dataset[name] = currentVals;
+        }
+      }
     } else {
       dataset[name] = value;
     }
