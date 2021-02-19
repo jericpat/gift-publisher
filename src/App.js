@@ -378,32 +378,11 @@ export class DatasetEditor extends React.Component {
         </form>
 
         <div className="resource-edit-actions">
-          {/* {this.state.currentStep == 4 &&
-            !this.state.isResourceEdit &&
-            this.state.resource && (
-              <button className="btn-save" onClick={this.handleSaveDataset}>
-                {this.state.saveButtonText}
-              </button>
-            )}
-          {this.state.currentStep == 4 &&
-            !this.state.isResourceEdit &&
-            this.state.resource && (
-              <button
-                className="btn-download"
-                onClick={this.downloadDatapackage}
-              >
-                Download Package
-              </button>
-            )} */}
-
-          {this.state.ui.success &&
-            this.state.currentStep > 1 &&
-            this.state.currentStep < 4 &&
-            this.state.currentStep !== 3 && (
-              <button className="btn" onClick={this.nextScreen}>
-                Next
-              </button>
-            )}
+          {this.state.ui.success && this.state.currentStep == 2 && (
+            <button className="btn" onClick={this.nextScreen}>
+              Next
+            </button>
+          )}
 
           {this.state.currentStep == 3 ? (
             this.state.richTypeFilled ? (

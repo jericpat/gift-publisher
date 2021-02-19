@@ -9,7 +9,6 @@ const Metadata = ({ dataset, handleChange }) => {
   return (
     <>
       <h3 className="metadata-section-title">Mandatory fields are marked with an asterisks (<span className="ast-important" >*</span>)</h3>
-      <br />
       <h1 className="metadata-section-title" ><b>General</b></h1>
       <div className="metadata-input">
         <input
