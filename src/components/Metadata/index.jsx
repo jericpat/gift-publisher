@@ -8,7 +8,7 @@ const Metadata = ({ dataset, handleChange }) => {
 
   return (
     <>
-      <h3 className="metadata-section-title">Mandatory fields are marked with an asterisks (<span className="ast-important" >*</span>)</h3>
+      <h3 className="metadata-section-title">Mandatory fields are marked with an asterisk (<span className="ast-important" >*</span>).</h3>
       <h1 className="metadata-section-title" ><b>General</b></h1>
       <div className="metadata-input">
         <input
@@ -378,7 +378,7 @@ const Metadata = ({ dataset, handleChange }) => {
             ))}
           </select>
           <label className="metadata-label" htmlFor="encoding">
-            File encoding: If you're unsure about this setting, please use UTF-8
+            File encoding: If you are unsure about this setting, please use UTF-8
           </label>
         </div>
         <div className="metadata-input">
