@@ -104,9 +104,21 @@ export class DatasetEditor extends React.Component {
     const name = target.name;
     const dataset = { ...this.state.dataset };
 
-    if (name == "tags") {
-      const newTags = value.split(",");
-      dataset["tags"] = newTags;
+    if (["tags", "years_included"].includes(name)) {
+      const vals = value.split(",");
+      dataset[name] = vals.map((val) => val.trim());
+    } else if (["disaggregation", "budget_stage"].includes(name)) {
+      let currentVals = dataset[name] || [];
+      if (!target.checked) {
+        currentVals = currentVals.filter((val) => val != value); //remove value
+        dataset[name] = currentVals;
+      } else {
+        if (!currentVals.includes(value)) {
+          //only add value if it is unique
+          currentVals.push(value);
+          dataset[name] = currentVals;
+        }
+      }
     } else {
       dataset[name] = value;
     }
@@ -257,10 +269,16 @@ export class DatasetEditor extends React.Component {
         <div>
           <h1 className="errorMsg">{this.state.ui.errorMsg}</h1>
         </div>
-        {/* {this.state.currentStep > 0 && (
+        {this.state.currentStep > 0 && (
           <img src={ReactLogo} width="50%" className="Img" />
-        )} */}
-        <form className="upload-wrapper">
+        )}
+        <form
+          className="upload-wrapper"
+          onSubmit={(event) => {
+            event.preventDefault();
+            return this.handleSaveDataset();
+          }}
+        >
           {this.state.currentStep == 0 && (
             <div>
               <ResourceList
@@ -336,36 +354,34 @@ export class DatasetEditor extends React.Component {
                 />
               </div>
             )}
+            <div>
+              {this.state.currentStep == 4 &&
+                !this.state.isResourceEdit &&
+                this.state.resource && (
+                  <button className="btn-save" type="submit">
+                    {this.state.saveButtonText}
+                  </button>
+                )}
+              {this.state.currentStep == 4 &&
+                !this.state.isResourceEdit &&
+                this.state.resource && (
+                  <button
+                    className="btn-download"
+                    onClick={this.downloadDatapackage}
+                  >
+                    Download Package
+                  </button>
+                )}
+            </div>
           </div>
         </form>
 
         <div className="resource-edit-actions">
-          {this.state.currentStep == 4 &&
-            !this.state.isResourceEdit &&
-            this.state.resource && (
-              <button className="btn-save" onClick={this.handleSaveDataset}>
-                {this.state.saveButtonText}
-              </button>
-            )}
-          {this.state.currentStep == 4 &&
-            !this.state.isResourceEdit &&
-            this.state.resource && (
-              <button
-                className="btn-download"
-                onClick={this.downloadDatapackage}
-              >
-                Download Package
-              </button>
-            )}
-
-          {this.state.ui.success &&
-            this.state.currentStep > 1 &&
-            this.state.currentStep < 4 &&
-            this.state.currentStep !== 3 && (
-              <button className="btn" onClick={this.nextScreen}>
-                Next
-              </button>
-            )}
+          {this.state.ui.success && this.state.currentStep == 2 && (
+            <button className="btn" onClick={this.nextScreen}>
+              Next
+            </button>
+          )}
 
           {this.state.currentStep == 3 ? (
             this.state.richTypeFilled ? (
