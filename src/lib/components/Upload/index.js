@@ -78,10 +78,10 @@ class Upload extends React.Component {
 
     //get sample
     let sample_stream = await file.rows({ size: 460 });
-    let sample_array = await toArray(sample_stream);
+    let sample = await toArray(sample_stream)
     //get column names for table
-    const column_names = sample_array[0]; //first row is the column names
-    const columns = column_names.map((item) => {
+    const column_names = sample[0]; //first row is the column names
+    const tablePreviewColumns = column_names.map((item) => {
       return {
         Header: item,
         accessor: item,
@@ -89,17 +89,18 @@ class Upload extends React.Component {
     });
 
     //prepare sample for use in table preview component
-    let sample = [];
-    sample_array.slice(1, 11).forEach((item) => {
+    let tablePreviewSample = [];
+    sample.slice(1,11).forEach((item) => {
       let temp_obj = {};
       item.forEach((field, i) => {
         temp_obj[column_names[i]] = field;
       });
-      sample.push(temp_obj);
+      tablePreviewSample.push(temp_obj);
     });
 
+   
     this.props.metadataHandler(
-      Object.assign(file.descriptor, { sample, columns, path })
+      Object.assign(file.descriptor, { sample, tablePreviewSample, tablePreviewColumns, path })
     );
 
     this.setState({

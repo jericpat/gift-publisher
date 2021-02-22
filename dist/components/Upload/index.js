@@ -67,7 +67,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "onChangeHandler", /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
-        var _this$state, formattedSize, selectedFile, path, _yield$_this$validFil, validFile, errorMsg, file, self, hash, sample_stream, sample_array, column_names, columns, sample;
+        var _this$state, formattedSize, selectedFile, path, _yield$_this$validFil, validFile, errorMsg, file, self, hash, sample_stream, sample, column_names, tablePreviewColumns, tablePreviewSample;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -174,29 +174,30 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 return (0, _streamToArray.default)(sample_stream);
 
               case 40:
-                sample_array = _context.sent;
+                sample = _context.sent;
                 //get column names for table
-                column_names = sample_array[0]; //first row is the column names
+                column_names = sample[0]; //first row is the column names
 
-                columns = column_names.map(function (item) {
+                tablePreviewColumns = column_names.map(function (item) {
                   return {
                     Header: item,
                     accessor: item
                   };
                 }); //prepare sample for use in table preview component
 
-                sample = [];
-                sample_array.slice(1, 11).forEach(function (item) {
+                tablePreviewSample = [];
+                sample.slice(1, 11).forEach(function (item) {
                   var temp_obj = {};
                   item.forEach(function (field, i) {
                     temp_obj[column_names[i]] = field;
                   });
-                  sample.push(temp_obj);
+                  tablePreviewSample.push(temp_obj);
                 });
 
                 _this.props.metadataHandler(Object.assign(file.descriptor, {
                   sample: sample,
-                  columns: columns,
+                  tablePreviewSample: tablePreviewSample,
+                  tablePreviewColumns: tablePreviewColumns,
                   path: path
                 }));
 

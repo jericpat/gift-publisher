@@ -55,6 +55,8 @@ export class DatasetEditor extends React.Component {
     this.setState({
       dataset,
       resource: updatedResource,
+      tablePreviewSample: resource.tablePreviewSample,
+      tablePreviewColumns: resource.tablePreviewColumns
     });
   }
 
@@ -78,7 +80,6 @@ export class DatasetEditor extends React.Component {
       dataset["resources"] = [resource];
     }
     resource["sample"] = fileResource.sample;
-    resource["columns"] = fileResource.columns;
 
     if (dataset["sample"].length == 0) {
       dataset["sample"] = fileResource.sample;
@@ -319,8 +320,8 @@ export class DatasetEditor extends React.Component {
                   </h1>
                 </div>
                 <TablePreview
-                  columns={this.state.resource.columns}
-                  data={this.state.resource.sample}
+                  columns={this.state.tablePreviewColumns}
+                  data={this.state.tablePreviewSample}
                 />
               </div>
             )}
@@ -334,7 +335,7 @@ export class DatasetEditor extends React.Component {
                 <TableSchema
                   dataset={this.state.dataset}
                   schema={this.state.resource.schema}
-                  data={this.state.resource.sample || []}
+                  data={this.state.tablePreviewSample || []}
                   handleRichType={this.handleRichTypeCount}
                 />
               </div>
@@ -362,6 +363,7 @@ export class DatasetEditor extends React.Component {
                 !this.state.isResourceEdit &&
                 this.state.resource && (
                   <button
+                    type="button"
                     className="btn-download"
                     onClick={this.downloadDatapackage}
                   >

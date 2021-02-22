@@ -355,7 +355,9 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
       this.setState({
         dataset: dataset,
-        resource: updatedResource
+        resource: updatedResource,
+        tablePreviewSample: resource.tablePreviewSample,
+        tablePreviewColumns: resource.tablePreviewColumns
       });
     }
   }, {
@@ -381,7 +383,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       }
 
       resource["sample"] = fileResource.sample;
-      resource["columns"] = fileResource.columns;
 
       if (dataset["sample"].length == 0) {
         dataset["sample"] = fileResource.sample;
@@ -436,8 +437,8 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
       }, "Preview of your dataset")), /*#__PURE__*/_react.default.createElement(_TablePreview.default, {
-        columns: this.state.resource.columns,
-        data: this.state.resource.sample
+        columns: this.state.tablePreviewColumns,
+        data: this.state.tablePreviewSample
       })), this.state.resource.schema && this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
@@ -445,7 +446,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       }, "Describe your dataset")), /*#__PURE__*/_react.default.createElement(_TableSchema.default, {
         dataset: this.state.dataset,
         schema: this.state.resource.schema,
-        data: this.state.resource.sample || [],
+        data: this.state.tablePreviewSample || [],
         handleRichType: this.handleRichTypeCount
       })), this.state.currentStep == 4 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
@@ -458,6 +459,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         className: "btn-save",
         type: "submit"
       }, this.state.saveButtonText), this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
+        type: "button",
         className: "btn-download",
         onClick: this.downloadDatapackage
       }, "Download Package")))), /*#__PURE__*/_react.default.createElement("div", {
