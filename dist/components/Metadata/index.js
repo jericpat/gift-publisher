@@ -18,16 +18,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Metadata = function Metadata(_ref) {
   var dataset = _ref.dataset,
       handleChange = _ref.handleChange;
-  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Mandatory fields are marked with an asterisks(", /*#__PURE__*/_react.default.createElement("span", {
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("h3", {
+    className: "metadata-section-title"
+  }, "Mandatory fields are marked with an asterisk (", /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), ")"), /*#__PURE__*/_react.default.createElement("div", {
+  }, "*"), ")."), /*#__PURE__*/_react.default.createElement("h1", {
+    className: "metadata-section-title"
+  }, /*#__PURE__*/_react.default.createElement("b", null, "General")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "text",
     name: "title",
     id: "title",
+    placeholder: "example_file.csv",
     value: dataset.title,
+    required: true,
     onChange: function onChange(e) {
       handleChange(e);
     }
@@ -36,26 +42,221 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "title"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Title of the dataset")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "*"), " Title of the dataset")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("textarea", {
     className: "metadata-input__textarea",
     type: "text",
     name: "description",
     id: "description",
+    placeholder: "Enter a description for your dataset",
     value: dataset.description || "",
     onChange: function onChange(e) {
       handleChange(e);
     },
-    rows: 5
+    rows: 5,
+    required: true
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "description"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Description of the dataset")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "*"), " Description of the dataset")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("textarea", {
+    className: "metadata-input__textarea",
+    type: "text",
+    name: "tags",
+    id: "tags",
+    placeholder: "Finance, Budget",
+    value: dataset.tags || "",
+    onChange: function onChange(e) {
+      handleChange(e);
+    },
+    rows: 2
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label",
+    htmlFor: "tags"
+  }, " Tags")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-form-grp3"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("select", {
+    className: "metadata-input__input",
+    name: "govt_level",
+    id: "govt_level",
+    value: dataset.govt_level || "",
+    onChange: function onChange(e) {
+      handleChange(e);
+    },
+    required: true
+  }, /*#__PURE__*/_react.default.createElement("option", {
+    value: ""
+  }, "Select"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "National"
+  }, "National"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Regional"
+  }, "Regional"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Provincial"
+  }, "Provincial"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "State-level"
+  }, "State-level")), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label",
+    htmlFor: "govt_level"
+  }, "Level of government")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "dgg_state",
+    name: "disaggregation",
+    value: "State own enterprises",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "dgg_state"
+  }, " State own enterprises")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "dgg_pub_inv",
+    name: "disaggregation",
+    value: "Public investments",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "dgg_pub_inv"
+  }, " Public investments")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "dgg_pub_prog",
+    name: "disaggregation",
+    value: "Public programs",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "dgg_pub_prog"
+  }, " Public programs")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "dgg_line",
+    name: "disaggregation",
+    value: "Line item",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "dgg_line"
+  }, " Line item")), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label-checkbox"
+  }, "Disaggregation")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "budget_qt",
+    name: "budget_stage",
+    value: "Quarterly Reports",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "budget_qt"
+  }, " Quarterly Reports")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "budget_yr",
+    name: "budget_stage",
+    value: "Year-end",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "budget_yr"
+  }, " Year-end")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "budget_prop",
+    name: "budget_stage",
+    value: "Proposed",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "budget_prop"
+  }, " Proposed")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input__input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "checkbox",
+    id: "budget_st",
+    name: "budget_stage",
+    value: "Enacted",
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    htmlFor: "budget_st"
+  }, " Enacted")), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label-checkbox"
+  }, "Budget Stage"))), /*#__PURE__*/_react.default.createElement("h1", {
+    className: "metadata-section-title"
+  }, /*#__PURE__*/_react.default.createElement("b", null, "Owner")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
-  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    className: "metadata-input__input",
+    type: "url",
+    name: "author_website",
+    id: "author_website",
+    value: dataset.author_website,
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label",
+    htmlFor: "author_website"
+  }, "Author's Website")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    className: "metadata-input__input",
+    type: "email",
+    name: "author_email",
+    id: "author_email",
+    value: dataset.author_email,
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label",
+    htmlFor: "author_email"
+  }, "Author's Email Address"))), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    className: "metadata-input__input",
+    type: "text",
+    name: "pub_institutional_name",
+    id: "pub_institutional_name",
+    value: dataset.pub_institutional_name,
+    onChange: function onChange(e) {
+      handleChange(e);
+    },
+    required: true
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label",
+    htmlFor: "pub_institutional_name"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "ast-important"
+  }, "*"), " Publishers' institutional name")), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("h1", {
+    className: "metadata-section-title"
+  }, /*#__PURE__*/_react.default.createElement("b", null, "Location")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-form"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
@@ -85,44 +286,6 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "continent"
   }, "Continent")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.default.createElement("select", {
-    className: "metadata-input__input",
-    name: "country",
-    id: "country",
-    value: dataset.country || "",
-    onChange: function onChange(e) {
-      handleChange(e);
-    },
-    required: true
-  }, /*#__PURE__*/_react.default.createElement("option", {
-    value: ""
-  }, "Select"), _countries.default.map(function (item) {
-    return /*#__PURE__*/_react.default.createElement("option", {
-      key: "format-".concat(item.text),
-      value: item.text
-    }, item.text);
-  })), /*#__PURE__*/_react.default.createElement("label", {
-    className: "metadata-label",
-    htmlFor: "encoding"
-  }, "Country"))), /*#__PURE__*/_react.default.createElement("div", {
-    className: "metadata-input"
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    className: "metadata-input__input",
-    type: "text",
-    name: "tags",
-    id: "tags",
-    placeholder: "Finance, Economic, Argentina",
-    value: dataset.tags,
-    onChange: function onChange(e) {
-      handleChange(e);
-    }
-  }), /*#__PURE__*/_react.default.createElement("label", {
-    className: "metadata-label",
-    htmlFor: "tags"
-  }, "Tags"))), /*#__PURE__*/_react.default.createElement("div", {
-    className: "metadata-form"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
     type: "text",
@@ -135,23 +298,29 @@ var Metadata = function Metadata(_ref) {
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "region"
-  }, "Region")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "Region"))), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-form"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.default.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
-    type: "text",
-    name: "author_website",
-    id: "author_website",
-    value: dataset.author_website,
+    name: "country",
+    id: "country",
+    value: dataset.country || "",
     onChange: function onChange(e) {
       handleChange(e);
     }
-  }), /*#__PURE__*/_react.default.createElement("label", {
+  }, /*#__PURE__*/_react.default.createElement("option", {
+    value: ""
+  }, "Select"), _countries.default.map(function (item) {
+    return /*#__PURE__*/_react.default.createElement("option", {
+      key: "format-".concat(item.text),
+      value: item.text
+    }, item.text);
+  })), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
-    htmlFor: "author_website"
-  }, "Author's Website"))), /*#__PURE__*/_react.default.createElement("div", {
-    className: "metadata-form"
-  }, /*#__PURE__*/_react.default.createElement("div", {
+    htmlFor: "encoding"
+  }, "Country")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
@@ -165,23 +334,59 @@ var Metadata = function Metadata(_ref) {
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "city"
-  }, "City")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "City"))), /*#__PURE__*/_react.default.createElement("h1", {
+    className: "metadata-section-title"
+  }, /*#__PURE__*/_react.default.createElement("b", null, "Time")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-form"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
-  }, /*#__PURE__*/_react.default.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
-    type: "text",
-    name: "author_email",
-    id: "author_email",
-    value: dataset.author_email,
+    name: "periodicity",
+    id: "periodicity",
+    value: dataset.periodicity || "",
     onChange: function onChange(e) {
       handleChange(e);
-    }
+    },
+    required: true
+  }, /*#__PURE__*/_react.default.createElement("option", {
+    value: ""
+  }, "Select"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Yearly"
+  }, "Yearly"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Biannual"
+  }, "Biannual"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Quarterly"
+  }, "Quarterly"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Monthly"
+  }, "Monthly"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Daily"
+  }, "Daily")), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label",
+    htmlFor: "periodicity"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "ast-important"
+  }, "*"), " Periodicity")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("textarea", {
+    className: "metadata-input__textarea",
+    type: "text",
+    name: "years_included",
+    id: "years_included",
+    placeholder: "2015, 2016, 2017, 2005",
+    value: dataset.years_included || "",
+    onChange: function onChange(e) {
+      handleChange(e);
+    },
+    rows: 1
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
-    htmlFor: "author_email"
-  }, "Author's Email Address"))), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("div", {
+    htmlFor: "years_included"
+  }, " Years included"))), /*#__PURE__*/_react.default.createElement("h1", {
+    className: "metadata-section-title"
+  }, /*#__PURE__*/_react.default.createElement("b", null, "Fiscal Period")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
-  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", null, /*#__PURE__*/_react.default.createElement("b", null, "Fiscal Period")), /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
@@ -189,6 +394,7 @@ var Metadata = function Metadata(_ref) {
     name: "start_date",
     id: "start_date",
     value: dataset.start_date,
+    required: true,
     onChange: function onChange(e) {
       handleChange(e);
     }
@@ -197,7 +403,7 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "start_date"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Starting date (month-day-year)")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "*"), " Starting date (month-day-year)")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
@@ -205,6 +411,7 @@ var Metadata = function Metadata(_ref) {
     name: "end_date",
     id: "end_date",
     value: dataset.end_date,
+    required: true,
     onChange: function onChange(e) {
       handleChange(e);
     }
@@ -213,7 +420,13 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "end_date"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), "Ending date (month-day-year)"))), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", null, /*#__PURE__*/_react.default.createElement("b", null, "Encoding and file format")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("select", {
+  }, "*"), " Ending date (month-day-year)"))), /*#__PURE__*/_react.default.createElement("h1", {
+    className: "metadata-section-title"
+  }, /*#__PURE__*/_react.default.createElement("b", null, "Encoding and file format")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-form"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
     name: "encoding",
     id: "encoding",
@@ -232,13 +445,15 @@ var Metadata = function Metadata(_ref) {
   })), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "encoding"
-  }, "File encoding: If you're unsure about this setting, please use UTF-8")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("select", {
+  }, "File encoding: If you are unsure about this setting, please use UTF-8")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
     name: "format",
     id: "format"
   }, /*#__PURE__*/_react.default.createElement("option", {
     value: "csv"
-  }, "CSV"))), /*#__PURE__*/_react.default.createElement("label", {
+  }, "CSV")), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "format"
   }, "File format"))));

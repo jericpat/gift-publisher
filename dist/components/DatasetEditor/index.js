@@ -86,9 +86,27 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
       var dataset = _objectSpread({}, _this.state.dataset);
 
-      if (name == "tags") {
-        var newTags = value.split(",");
-        dataset["tags"] = newTags;
+      if (["tags", "years_included"].includes(name)) {
+        var vals = value.split(",");
+        dataset[name] = vals.map(function (val) {
+          return val.trim();
+        });
+      } else if (["disaggregation", "budget_stage"].includes(name)) {
+        var currentVals = dataset[name] || [];
+
+        if (!target.checked) {
+          currentVals = currentVals.filter(function (val) {
+            return val != value;
+          }); //remove value
+
+          dataset[name] = currentVals;
+        } else {
+          if (!currentVals.includes(value)) {
+            //only add value if it is unique
+            currentVals.push(value);
+            dataset[name] = currentVals;
+          }
+        }
       } else {
         dataset[name] = value;
       }
@@ -379,12 +397,18 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "App"
       }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", {
         className: "errorMsg"
       }, this.state.ui.errorMsg)), /*#__PURE__*/_react.default.createElement("form", {
-        className: "upload-wrapper"
+        className: "upload-wrapper",
+        onSubmit: function onSubmit(event) {
+          event.preventDefault();
+          return _this2.handleSaveDataset();
+        }
       }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_ResourceList.default, {
         dataset: this.state.dataset,
         addResourceScreen: this.nextScreen,
@@ -430,15 +454,15 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       }, "Describe Metadata")), /*#__PURE__*/_react.default.createElement(_Metadata.default, {
         dataset: this.state.dataset,
         handleChange: this.handleChangeMetadata
-      })))), /*#__PURE__*/_react.default.createElement("div", {
-        className: "resource-edit-actions"
-      }, this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
+      })), /*#__PURE__*/_react.default.createElement("div", null, this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn-save",
-        onClick: this.handleSaveDataset
+        type: "submit"
       }, this.state.saveButtonText), this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn-download",
         onClick: this.downloadDatapackage
-      }, "Download Package"), this.state.ui.success && this.state.currentStep > 1 && this.state.currentStep < 4 && this.state.currentStep !== 3 && /*#__PURE__*/_react.default.createElement("button", {
+      }, "Download Package")))), /*#__PURE__*/_react.default.createElement("div", {
+        className: "resource-edit-actions"
+      }, this.state.ui.success && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.nextScreen
       }, "Next"), this.state.currentStep == 3 ? this.state.richTypeFilled ? /*#__PURE__*/_react.default.createElement("button", {
