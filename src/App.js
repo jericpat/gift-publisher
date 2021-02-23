@@ -17,7 +17,7 @@ export class DatasetEditor extends React.Component {
     const dataset = props.config.dataset;
     dataset.encoding = "utf_8";
     dataset.format = "csv";
-    dataset.tags = [];
+    
     if (
       !("sample" in dataset) &&
       "resources" in dataset &&
