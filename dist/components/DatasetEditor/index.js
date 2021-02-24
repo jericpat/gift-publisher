@@ -165,30 +165,37 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       if (window.confirm("Are you sure you want to delete this resource?")) {
         var temp_dataset = _objectSpread({}, dataset);
 
+        var path;
+
         if (temp_dataset.resources.length == 1) {
+          path = temp_dataset.resources[0].path;
           temp_dataset.resources = [];
         } else {
           var newResource = temp_dataset.resources.filter(function (resource) {
+            if (resource.hash == hash) {
+              path = resource.path;
+            }
+
             return resource.hash != hash;
           });
           temp_dataset.resources = newResource;
         }
 
         (0, _axios.default)({
-          method: "post",
+          method: "delete",
           url: "/api/dataset/".concat(temp_dataset.name),
           data: {
             metadata: temp_dataset,
-            description: temp_dataset.description
+            path: path
           }
         }).then(function (response) {
           _this.setState({
-            temp_dataset: temp_dataset,
+            dataset: temp_dataset,
             resource: {}
           });
 
           alert("Resource has been removed sucessfully");
-        }, function (error) {
+        }).catch(function (error) {
           console.log(error);
           alert("Error when removing resource!");
         });
@@ -298,7 +305,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
                 _this.setState({
                   currentStep: 0
                 });
-              }, function (error) {
+              }).catch(function (error) {
                 console.log(error);
                 alert("Error on upload dataset!");
               });
@@ -314,7 +321,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
     var _dataset = props.config.dataset;
     _dataset.encoding = "utf_8";
     _dataset.format = "csv";
-    _dataset.tags = [];
 
     if (!("sample" in _dataset) && "resources" in _dataset && _dataset["resources"].length > 0) {
       _dataset["sample"] = _dataset["resources"][0]["sample"];

@@ -18,6 +18,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Metadata = function Metadata(_ref) {
   var dataset = _ref.dataset,
       handleChange = _ref.handleChange;
+
+  var isCheck = function isCheck(val, field) {
+    return dataset[field] && dataset[field].includes(val);
+  };
+
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("h3", {
     className: "metadata-section-title"
   }, "Mandatory fields are marked with an asterisk (", /*#__PURE__*/_react.default.createElement("span", {
@@ -103,10 +108,13 @@ var Metadata = function Metadata(_ref) {
   }, "State-level")), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "govt_level"
-  }, "Level of government")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "ast-important"
+  }, "*"), " Level of government")), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("State own enterprises", "disaggregation"),
     id: "dgg_state",
     name: "disaggregation",
     value: "State own enterprises",
@@ -119,6 +127,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("Public investments", "disaggregation"),
     id: "dgg_pub_inv",
     name: "disaggregation",
     value: "Public investments",
@@ -131,6 +140,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("Public programs", "disaggregation"),
     id: "dgg_pub_prog",
     name: "disaggregation",
     value: "Public programs",
@@ -143,6 +153,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("Line item", "disaggregation"),
     id: "dgg_line",
     name: "disaggregation",
     value: "Line item",
@@ -157,6 +168,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("Quarterly Reports", "budget_stage"),
     id: "budget_qt",
     name: "budget_stage",
     value: "Quarterly Reports",
@@ -169,6 +181,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("Year-end", "budget_stage"),
     id: "budget_yr",
     name: "budget_stage",
     value: "Year-end",
@@ -181,6 +194,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("Proposed", "budget_stage"),
     id: "budget_prop",
     name: "budget_stage",
     value: "Proposed",
@@ -193,6 +207,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
+    checked: isCheck("Enacted", "budget_stage"),
     id: "budget_st",
     name: "budget_stage",
     value: "Enacted",
@@ -445,7 +460,9 @@ var Metadata = function Metadata(_ref) {
   })), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "encoding"
-  }, "File encoding: If you are unsure about this setting, please use UTF-8")), /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "ast-important"
+  }, "*"), " File encoding: If you are unsure about this setting, please use UTF-8")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("select", {
     className: "metadata-input__input",
