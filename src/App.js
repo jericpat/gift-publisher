@@ -17,7 +17,7 @@ export class DatasetEditor extends React.Component {
     const dataset = props.config.dataset;
     dataset.encoding = "utf_8";
     dataset.format = "csv";
-    
+
     if (
       !("sample" in dataset) &&
       "resources" in dataset &&
@@ -163,31 +163,34 @@ export class DatasetEditor extends React.Component {
     const { dataset } = { ...this.state };
     if (window.confirm("Are you sure you want to delete this resource?")) {
       const temp_dataset = { ...dataset };
+      let path;
       if (temp_dataset.resources.length == 1) {
+        path = temp_dataset.resources[0].path
         temp_dataset.resources = [];
       } else {
-        const newResource = temp_dataset.resources.filter(
-          (resource) => resource.hash != hash
-        );
+        const newResource = temp_dataset.resources.filter((resource) => {
+          if (resource.hash == hash){
+            path = resource.path
+          }
+          return resource.hash != hash
+        }
+        )
         temp_dataset.resources = newResource;
       }
       axios({
-        method: "post",
+        method: "delete",
         url: `/api/dataset/${temp_dataset.name}`,
         data: {
           metadata: temp_dataset,
-          description: temp_dataset.description,
+          path,
         },
-      }).then(
-        (response) => {
-          this.setState({ temp_dataset, resource: {} });
-          alert("Resource has been removed sucessfully");
-        },
-        (error) => {
-          console.log(error);
-          alert("Error when removing resource!");
-        }
-      );
+      }).then((response) => {
+        this.setState({ dataset: temp_dataset, resource: {} });
+        alert("Resource has been removed sucessfully");
+      }).catch((error) => {
+        console.log(error);
+        alert("Error when removing resource!");
+      })
     }
   };
 
@@ -252,17 +255,14 @@ export class DatasetEditor extends React.Component {
         metadata: this.state.dataset,
         description: this.state.dataset.description,
       },
-    }).then(
-      (response) => {
-        this.setState({ saveButtonText: "Save" });
-        alert("Uploaded Sucessfully");
-        this.setState({ currentStep: 0 });
-      },
-      (error) => {
-        console.log(error);
-        alert("Error on upload dataset!");
-      }
-    );
+    }).then((response) => {
+      this.setState({ saveButtonText: "Save" });
+      alert("Uploaded Sucessfully");
+      this.setState({ currentStep: 0 });
+    }).catch((error) => {
+      console.log(error);
+      alert("Error on upload dataset!");
+    })
   };
 
   render() {
@@ -392,13 +392,13 @@ export class DatasetEditor extends React.Component {
                 Next
               </button>
             ) : (
-              <button disabled={true} className="btn">
-                Next
-              </button>
-            )
+                <button disabled={true} className="btn">
+                  Next
+                </button>
+              )
           ) : (
-            ""
-          )}
+              ""
+            )}
         </div>
       </div>
     );
