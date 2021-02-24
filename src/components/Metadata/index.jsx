@@ -6,6 +6,10 @@ import "./Metadata.css"
 
 const Metadata = ({ dataset, handleChange }) => {
 
+  const isCheck = (val, field) => {
+    return dataset[field] && dataset[field].includes(val)
+  }
+
   return (
     <>
       <h3 className="metadata-section-title">Mandatory fields are marked with an asterisk (<span className="ast-important" >*</span>).</h3>
@@ -84,27 +88,43 @@ const Metadata = ({ dataset, handleChange }) => {
             </option>
           </select>
           <label className="metadata-label" htmlFor="govt_level">
-            Level of government
+          <span className="ast-important" >*</span> Level of government
           </label>
         </div>
         <div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="dgg_state" name="disaggregation" value="State own enterprises"
+            <input type="checkbox"
+              checked={isCheck("State own enterprises", "disaggregation")}
+              id="dgg_state"
+              name="disaggregation"
+              value="State own enterprises"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="dgg_state"> State own enterprises</label>
           </div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="dgg_pub_inv" name="disaggregation" value="Public investments"
+            <input type="checkbox"
+              checked={isCheck("Public investments", "disaggregation")}
+              id="dgg_pub_inv"
+              name="disaggregation"
+              value="Public investments"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="dgg_pub_inv"> Public investments</label>
           </div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="dgg_pub_prog" name="disaggregation" value="Public programs"
+            <input type="checkbox"
+              checked={isCheck("Public programs", "disaggregation")}
+              id="dgg_pub_prog"
+              name="disaggregation"
+              value="Public programs"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="dgg_pub_prog"> Public programs</label>
           </div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="dgg_line" name="disaggregation" value="Line item"
+            <input type="checkbox"
+              checked={isCheck("Line item", "disaggregation")}
+              id="dgg_line"
+              name="disaggregation"
+              value="Line item"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="dgg_line"> Line item</label>
           </div>
@@ -115,22 +135,38 @@ const Metadata = ({ dataset, handleChange }) => {
 
         <div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="budget_qt" name="budget_stage" value="Quarterly Reports"
+            <input type="checkbox"
+              checked={isCheck("Quarterly Reports", "budget_stage")}
+              id="budget_qt"
+              name="budget_stage"
+              value="Quarterly Reports"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="budget_qt"> Quarterly Reports</label>
           </div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="budget_yr" name="budget_stage" value="Year-end"
+            <input type="checkbox"
+              checked={isCheck("Year-end", "budget_stage")}
+              id="budget_yr"
+              name="budget_stage"
+              value="Year-end"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="budget_yr"> Year-end</label>
           </div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="budget_prop" name="budget_stage" value="Proposed"
+            <input type="checkbox"
+              checked={isCheck("Proposed", "budget_stage")}
+              id="budget_prop"
+              name="budget_stage"
+              value="Proposed"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="budget_prop"> Proposed</label>
           </div>
           <div className="metadata-input__input">
-            <input type="checkbox" id="budget_st" name="budget_stage" value="Enacted"
+            <input type="checkbox"
+              checked={isCheck("Enacted", "budget_stage")}
+              id="budget_st"
+              name="budget_stage"
+              value="Enacted"
               onChange={(e) => { handleChange(e) }} />
             <label htmlFor="budget_st"> Enacted</label>
           </div>
@@ -378,7 +414,7 @@ const Metadata = ({ dataset, handleChange }) => {
             ))}
           </select>
           <label className="metadata-label" htmlFor="encoding">
-            File encoding: If you are unsure about this setting, please use UTF-8
+          <span className="ast-important" >*</span> File encoding: If you are unsure about this setting, please use UTF-8
           </label>
         </div>
         <div className="metadata-input">
