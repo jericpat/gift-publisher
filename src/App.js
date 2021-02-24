@@ -163,12 +163,18 @@ export class DatasetEditor extends React.Component {
     const { dataset } = { ...this.state };
     if (window.confirm("Are you sure you want to delete this resource?")) {
       const temp_dataset = { ...dataset };
+      let path;
       if (temp_dataset.resources.length == 1) {
+        path = temp_dataset.resources[0].path
         temp_dataset.resources = [];
       } else {
-        const newResource = temp_dataset.resources.filter(
-          (resource) => resource.hash != hash
-        );
+        const newResource = temp_dataset.resources.filter((resource) => {
+          if (resource.hash == hash){
+            path = resource.path
+          }
+          return resource.hash != hash
+        }
+        )
         temp_dataset.resources = newResource;
       }
       axios({
@@ -176,7 +182,7 @@ export class DatasetEditor extends React.Component {
         url: `/api/dataset/${temp_dataset.name}`,
         data: {
           metadata: temp_dataset,
-          description: temp_dataset.description,
+          path,
         },
       }).then((response) => {
         this.setState({ dataset: temp_dataset, resource: {} });
@@ -250,13 +256,13 @@ export class DatasetEditor extends React.Component {
         description: this.state.dataset.description,
       },
     }).then((response) => {
-        this.setState({ saveButtonText: "Save" });
-        alert("Uploaded Sucessfully");
-        this.setState({ currentStep: 0 });
-      }).catch((error) => {
-        console.log(error);
-        alert("Error on upload dataset!");
-      })
+      this.setState({ saveButtonText: "Save" });
+      alert("Uploaded Sucessfully");
+      this.setState({ currentStep: 0 });
+    }).catch((error) => {
+      console.log(error);
+      alert("Error on upload dataset!");
+    })
   };
 
   render() {
