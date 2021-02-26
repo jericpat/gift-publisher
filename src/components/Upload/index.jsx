@@ -1,11 +1,11 @@
-import React from "react";
-import { Client } from "giftless-client";
-import * as data from "frictionless.js";
-import ProgressBar from "../ProgressBar";
-import { onFormatBytes, isValidURL } from "../../utils";
-import { Choose } from "datapub-nocss";
-import toArray from "stream-to-array";
-import "./Upload.css"
+import React from 'react';
+import { Client } from 'giftless-client';
+import * as data from 'frictionless.js';
+import ProgressBar from '../ProgressBar';
+import { onFormatBytes, isValidURL } from '../../utils';
+import { Choose } from 'datapub-nocss';
+import toArray from 'stream-to-array';
+import './Upload.css';
 class Upload extends React.Component {
   constructor(props) {
     super(props);
@@ -15,8 +15,8 @@ class Upload extends React.Component {
       dataset: props.dataset,
       selectedFile: null,
       fileSize: 0,
-      formattedSize: "0 KB",
-      start: "",
+      formattedSize: '0 KB',
+      start: '',
       loaded: 0,
       success: false,
       error: false,
@@ -26,60 +26,65 @@ class Upload extends React.Component {
       hashInProgress: false,
       hashLoaded: 0,
       uploadInProgress: false,
-      uploadedFileType: null
+      uploadedFileType: null,
     };
   }
 
-
   onChangeHandler = async (event) => {
     let { formattedSize, selectedFile } = this.state;
-    let path = ""
-    if (event.target.type == "file" && event.target.files.length > 0) {
+    let path = '';
+    if (event.target.type == 'file' && event.target.files.length > 0) {
       selectedFile = event.target.files[0];
-      path = `data/${selectedFile.name}`
-      this.setState({ uploadedFileType: "file" })
+      path = `data/${selectedFile.name}`;
+      this.setState({ uploadedFileType: 'file' });
     } else {
-      selectedFile = event.target.value
+      selectedFile = event.target.value;
       if (!isValidURL(selectedFile)) {
-        this.setErrorState("Invalid URL! Please ensure entered URL is correct")
-        return
+        this.setErrorState(
+          'Invalid URL! Please make sure the URL you entered is correct.'
+        );
+        return;
       }
-      this.setState({ uploadedFileType: "url" })
-      path = selectedFile
+      this.setState({ uploadedFileType: 'url' });
+      path = selectedFile;
     }
 
-    const { validFile, errorMsg, file } = await this.validFileSelected(selectedFile, event.target.type)
+    const { validFile, errorMsg, file } = await this.validFileSelected(
+      selectedFile,
+      event.target.type
+    );
 
     if (!validFile) {
-      this.setErrorState(errorMsg)
-      return
+      this.setErrorState(errorMsg);
+      return;
     }
 
     formattedSize = onFormatBytes(file.size);
 
     let self = this;
-    const hash = await file.hash("sha256", (progress) => {
+    const hash = await file.hash('sha256', (progress) => {
       self.onHashProgress(progress);
     });
 
-
-    Object.assign(file.descriptor, { hash })
+    Object.assign(file.descriptor, { hash });
 
     //check if file has the same schema
     if (!this.hasSameSchema(file._descriptor)) {
-      this.setErrorState("Schema of uploaded resource does not match existing one!")
-      return
+      this.setErrorState(
+        'The schema for the uploaded resource does not match the existing one!'
+      );
+      return;
     }
 
     //check if file already exists in resource
     if (this.hasSameHash(file._descriptor)) {
-      this.setErrorState("Possible duplicate, the resource already exists!")
-      return
+      this.setErrorState('Possible duplicate: the resource already exists!');
+      return;
     }
 
     //get sample
     let sample_stream = await file.rows({ size: 460 });
-    let sample = await toArray(sample_stream)
+    let sample = await toArray(sample_stream);
     //get column names for table
     const column_names = sample[0]; //first row is the column names
     const tablePreviewColumns = column_names.map((item) => {
@@ -91,7 +96,7 @@ class Upload extends React.Component {
 
     //prepare sample for use in table preview component
     let tablePreviewSample = [];
-    sample.slice(1,11).forEach((item) => {
+    sample.slice(1, 11).forEach((item) => {
       let temp_obj = {};
       item.forEach((field, i) => {
         temp_obj[column_names[i]] = field;
@@ -99,9 +104,13 @@ class Upload extends React.Component {
       tablePreviewSample.push(temp_obj);
     });
 
-   
     this.props.metadataHandler(
-      Object.assign(file.descriptor, { sample, tablePreviewSample, tablePreviewColumns, path })
+      Object.assign(file.descriptor, {
+        sample,
+        tablePreviewSample,
+        tablePreviewColumns,
+        path,
+      })
     );
 
     this.setState({
@@ -114,75 +123,83 @@ class Upload extends React.Component {
     });
 
     await this.onClickHandler();
-
-
   };
 
   validFileSelected = (selectedFile, fileType) => {
     return new Promise(async (resolve, reject) => {
-      if (fileType == "url") {
-        const fileExt = selectedFile.split(".").pop()
-        if (fileExt != "csv") {
-          resolve({ validFile: false, errorMsg: "File Type not supported! Please upload a CSV file", file: undefined })
-          return
+      if (fileType == 'url') {
+        const fileExt = selectedFile.split('.').pop();
+        if (fileExt != 'csv') {
+          resolve({
+            validFile: false,
+            errorMsg: 'File type not supported! Please upload a CSV file.',
+            file: undefined,
+          });
+          return;
         }
-        fetch(selectedFile).then(async (resp) => {
-          let file;
-          try {
-            file = data.open(selectedFile)
-            await file.addSchema()
-            resolve({
-              validFile: true,
-              errorMsg: "", file
-            })
-          } catch (error) {
+        fetch(selectedFile)
+          .then(async (resp) => {
+            let file;
+            try {
+              file = data.open(selectedFile);
+              await file.addSchema();
+              resolve({
+                validFile: true,
+                errorMsg: '',
+                file,
+              });
+            } catch (error) {
+              console.log(error);
+              resolve({
+                validFile: false,
+                errorMsg: 'An error occurred when trying to load the file!',
+                file,
+              });
+            }
+          })
+          .catch((error) => {
             console.log(error);
             resolve({
               validFile: false,
-              errorMsg: "An error occured when trying to load the file!", file
-            })
-          }
-        }).catch((error) => {
-          console.log(error);
-          resolve({
-            validFile: false,
-            errorMsg: "An error occured when trying to load the file!"
-          })
-        })
+              errorMsg: 'An error occurred when trying to load the file!',
+            });
+          });
       } else {
-        const fileExt = selectedFile.type.split("/").pop()
+        const fileExt = selectedFile.type.split('/').pop();
 
-        if (fileExt != "csv") {
+        if (fileExt != 'csv') {
           resolve({
             validFile: false,
-            errorMsg: "File Type not supported! Please upload a CSV file",
-            file: {}
-          })
-          return
+            errorMsg: 'File type not supported! Please upload a CSV file.',
+            file: {},
+          });
+          return;
         }
         if (selectedFile.size == 0) {
           resolve({
             validFile: false,
-            errorMsg: "CSV file is empty! Please upload a CSV file with contents",
-            file: {}
-          })
-          return
+            errorMsg:
+              'The CSV file is empty! Please upload a CSV file with content.',
+            file: {},
+          });
+          return;
         }
 
         try {
-          const file = data.open(selectedFile)
-          await file.addSchema()
-          resolve({ validFile: true, errorMsg: "", file })
+          const file = data.open(selectedFile);
+          await file.addSchema();
+          resolve({ validFile: true, errorMsg: '', file });
         } catch (error) {
           console.log(error);
           resolve({
             validFile: false,
-            errorMsg: "An error occured when trying to load the file!", file: {}
-          })
+            errorMsg: 'An error occurred when trying to load the file!',
+            file: {},
+          });
         }
       }
-    })
-  }
+    });
+  };
 
   setErrorState(errorMsg) {
     this.setState({ error: true, loading: false });
@@ -190,7 +207,7 @@ class Upload extends React.Component {
       loading: false,
       success: false,
       error: true,
-      errorMsg
+      errorMsg,
     });
   }
 
@@ -203,11 +220,13 @@ class Upload extends React.Component {
   };
 
   onUploadProgress = (progressEvent) => {
-    const loaded = Number(((progressEvent.loaded / progressEvent.total) * 100).toFixed())
+    const loaded = Number(
+      ((progressEvent.loaded / progressEvent.total) * 100).toFixed()
+    );
     this.onTimeRemaining(progressEvent.loaded);
     this.setState({
       loaded,
-      uploadInProgress: true
+      uploadInProgress: true,
     });
   };
 
@@ -223,36 +242,42 @@ class Upload extends React.Component {
   };
 
   hasSameSchema = (resource) => {
-    if (Object.keys(this.state.dataset).includes("resources") && this.state.dataset.resources.length > 0) {
-
+    if (
+      Object.keys(this.state.dataset).includes('resources') &&
+      this.state.dataset.resources.length > 0
+    ) {
       const newFields = resource.schema.fields.map((field) => {
-        return field.name
-      })
-      const oldFields = this.state.dataset.resources[0].schema.fields.map((field) => {
-        return field.name
-      })
+        return field.name;
+      });
+      const oldFields = this.state.dataset.resources[0].schema.fields.map(
+        (field) => {
+          return field.name;
+        }
+      );
       return JSON.stringify(newFields) === JSON.stringify(oldFields);
     } else {
-      return true
+      return true;
     }
-  }
+  };
 
   hasSameHash(newResource) {
-    if (Object.keys(this.state.dataset).includes("resources")
-      && this.state.dataset.resources.length > 0) {
-      const { resources } = this.state.dataset
+    if (
+      Object.keys(this.state.dataset).includes('resources') &&
+      this.state.dataset.resources.length > 0
+    ) {
+      const { resources } = this.state.dataset;
       const sameHashes = resources.map((resource) => {
-        return resource.hash == newResource.hash
-      })
-      return sameHashes.includes(true)
+        return resource.hash == newResource.hash;
+      });
+      return sameHashes.includes(true);
     } else {
-      return false
+      return false;
     }
   }
 
   onClickHandler = async () => {
     const { selectedFile, uploadedFileType } = this.state;
-    if (uploadedFileType == "url") {
+    if (uploadedFileType == 'url') {
       this.setState({
         success: true,
         loading: false,
@@ -282,7 +307,12 @@ class Upload extends React.Component {
       });
 
       client
-        .upload(resource, organizationId, this.state.datasetId, this.onUploadProgress)
+        .upload(
+          resource,
+          organizationId,
+          this.state.datasetId,
+          this.onUploadProgress
+        )
         .then((response) => {
           this.setState({
             success: true,
@@ -297,18 +327,17 @@ class Upload extends React.Component {
           });
         })
         .catch((error) => {
-          console.error("Upload failed with error: " + error);
+          console.error('The upload failed with the following error: ' + error);
           this.setState({ error: true, loading: false });
           this.props.handleUploadStatus({
             loading: false,
             success: false,
             error: true,
-            errorMsg: `Upload failed with error: ${error.message}`
+            errorMsg: `The upload failed with the following error: ${error.message}`,
           });
         });
     }
-  }
-
+  };
 
   render() {
     const {
@@ -322,8 +351,7 @@ class Upload extends React.Component {
       uploadInProgress,
     } = this.state;
     return (
-
-      <div >
+      <div>
         <Choose
           onChangeHandler={this.onChangeHandler}
           onChangeUrl={this.onChangeHandler}
@@ -333,46 +361,44 @@ class Upload extends React.Component {
           <div>
             <>
               <div>
-                <p className="upload-file-name">Computing file hash...</p>
+                <p className='upload-file-name'>Computing file hash...</p>
               </div>
               <ProgressBar
                 progress={Math.round(this.state.hashLoaded)}
                 size={100}
                 strokeWidth={5}
-                circleOneStroke="#d9edfe"
-                circleTwoStroke={"#7ea9e1"}
+                circleOneStroke='#d9edfe'
+                circleTwoStroke={'#7ea9e1'}
               />
             </>
-
           </div>
         )}
         {uploadInProgress && (
           <div>
             <>
               <div>
-                <p className="upload-file-name">
+                <p className='upload-file-name'>
                   Uploading {selectedFile.name}...
                 </p>
-                <p className="upload-file-name">Size: {formattedSize}</p>
+                <p className='upload-file-name'>Size: {formattedSize}</p>
               </div>
               <ProgressBar
                 progress={this.state.loaded}
                 size={100}
                 strokeWidth={5}
-                circleOneStroke="#d9edfe"
-                circleTwoStroke={"#7ea9e1"}
-              // timeRemaining={timeRemaining}
+                circleOneStroke='#d9edfe'
+                circleTwoStroke={'#7ea9e1'}
+                // timeRemaining={timeRemaining}
               />
               <h2>
                 {success &&
                   !fileExists &&
                   !error &&
-                  "File uploaded successfully"}
-                {fileExists && "File uploaded successfully"}
-                {error && "Upload failed"}
+                  'File uploaded successfully.'}
+                {fileExists && 'File uploaded successfully.'}
+                {error && 'Upload failed.'}
               </h2>
             </>
-
           </div>
         )}
       </div>
