@@ -44,7 +44,7 @@ var ResourceList = function ResourceList(_ref) {
 
   return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
     className: "justify-center"
-  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", null, "Available Resources in Dataset"), /*#__PURE__*/_react.default.createElement("table", {
+  }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", null, "Available resources in the dataset"), /*#__PURE__*/_react.default.createElement("table", {
     className: "min-w-full divide-y divide-gray-200"
   }, /*#__PURE__*/_react.default.createElement("tbody", {
     className: "bg-white divide-y divide-gray-200"

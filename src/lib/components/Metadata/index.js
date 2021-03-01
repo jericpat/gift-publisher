@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { encodeData } from 'datapub-nocss';
-import countries from '../../db/countries.json';
+import React from "react";
+import PropTypes from "prop-types";
+import { encodeData } from "datapub-nocss";
+import countries from "../../db/countries.json"
 
 const Metadata = ({ dataset, handleChange }) => {
   const isCheck = (val, field) => {

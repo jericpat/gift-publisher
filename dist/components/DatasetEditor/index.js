@@ -194,10 +194,10 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
             resource: {}
           });
 
-          alert("Resource has been removed sucessfully");
+          alert("The resource has been removed successfully.");
         }).catch(function (error) {
           console.log(error);
-          alert("Error when removing resource!");
+          alert("Error when removing the resource!");
         });
       }
     });
@@ -300,14 +300,14 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
                   saveButtonText: "Save"
                 });
 
-                alert("Uploaded Sucessfully");
+                alert("Uploaded successfully.");
 
                 _this.setState({
                   currentStep: 0
                 });
               }).catch(function (error) {
                 console.log(error);
-                alert("Error on upload dataset!");
+                alert("An Error occurred when uploading the dataset!");
               });
 
             case 2:
