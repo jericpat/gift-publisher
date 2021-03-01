@@ -25,7 +25,7 @@ const ResourceList = ({ dataset, deleteResource, addResourceScreen }) => {
       <div className="justify-center">
         <div>
           <h1>
-            Available Resources in Dataset
+            Available resources in the dataset
           </h1>
           <table className="min-w-full divide-y divide-gray-200">
             <tbody className="bg-white divide-y divide-gray-200">
