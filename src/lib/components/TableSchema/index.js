@@ -157,7 +157,7 @@ const TableSchema = (props) => {
             <Select
               styles={customStyles}
               options={columnTypeOptions}
-              width='200px'
+              width='350px'
               menuColor='red'
               onChange={(event) => handleChange(event, key, index)}
             />

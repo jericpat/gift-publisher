@@ -223,7 +223,7 @@ var TableSchema = function TableSchema(props) {
           }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
             styles: customStyles,
             options: columnTypeOptions,
-            width: "200px",
+            width: "350px",
             menuColor: "red",
             onChange: function onChange(event) {
               return handleChange(event, key, index);
