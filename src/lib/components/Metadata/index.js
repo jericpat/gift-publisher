@@ -286,7 +286,7 @@ const Metadata = ({ dataset, handleChange }) => {
             <option value='Australia'>Australia</option>
           </select>
           <label className='metadata-label' htmlFor='continent'>
-            Continent
+            <span className='ast-important'>*</span> Continent
           </label>
         </div>
         <div className='metadata-input'>

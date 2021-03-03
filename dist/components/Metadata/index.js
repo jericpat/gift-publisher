@@ -299,7 +299,9 @@ var Metadata = function Metadata(_ref) {
   }, "Australia")), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "continent"
-  }, "Continent")), /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "ast-important"
+  }, "*"), " Continent")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
