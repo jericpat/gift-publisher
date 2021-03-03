@@ -83,7 +83,8 @@ textarea + .metadata-label {
 }
 
 .ast-important {
-  color: #ff0000;
+  color: #e81f76;
+  font-weight: bold;
 }
 
 .metadata-input__input {
