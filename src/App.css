@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+.MuiTable-root {
+  margin-top: 1em;
+}
+
 .App {
   text-align: center;
   min-height: 100vh;
@@ -174,7 +178,7 @@ code {
   border-radius: 5px;
   padding: 10px 25px;
   height: 45px;
-  width: 230px;
+  min-width: 230px;
   font-size: 1.2rem;
   font-weight: bold;
   outline: none;
