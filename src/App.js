@@ -180,7 +180,7 @@ export class DatasetEditor extends React.Component {
       })
         .then((response) => {
           this.setState({ dataset: temp_dataset, resource: {} });
-          alert("Resource has been removed sucessfully");
+          alert("Resource has been removed successfully");
         })
         .catch((error) => {
           console.log(error);
