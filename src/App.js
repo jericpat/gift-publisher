@@ -117,18 +117,27 @@ export class DatasetEditor extends React.Component {
 
   mapDatasetToFiscalFormat = (resource) => {
     const dataset = { ...this.state.dataset };
+    let model;
+    let schema;
+    if (dataset.resources.length > 0) {
+      //There's and existing resource, get schema and model
+      model = dataset.resources[0].model;
+      schema = dataset.resources[0].schema;
+      resource.schema = schema;
+      resource.model = model;
+    } else {
+      //first resource, generate schema and model
+      resource.schema.fields.forEach((f) => {
+        f.type = f.columnType;
+        delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
+      });
+      let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
+      resource.schema.fields = Object.values(fdp.schema.fields);
+      resource.model = fdp.model;
+    }
+
     const resources = dataset.resources.map((res) => {
       if (res.hash == resource.hash) {
-        resource.schema.fields.forEach((f) => {
-          f.type = f.columnType;
-          delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
-        });
-        let fdp = new TypeProcessor().fieldsToModel(
-          resource["schema"]["fields"]
-        );
-
-        resource.schema.fields = Object.values(fdp.schema.fields);
-        resource.model = fdp.model;
         return resource;
       } else {
         return res;
@@ -199,11 +208,13 @@ export class DatasetEditor extends React.Component {
     if (status.success && !status.loading) {
       this.nextScreen();
     } else if (!status.success && status.error) {
-      const dataset = { ...this.state.dataset };
-      if ("resources" in dataset && dataset["resources"].length > 0) {
-        dataset.resources.pop();
-      }
-      this.setState({ dataset });
+      // const dataset = { ...this.state.dataset };
+      // if ("resources" in dataset && dataset["resources"].length > 0) {
+      //   dataset.resources.pop();
+      // }
+      // console.log("Here", dataset);
+
+      // this.setState({ dataset });
       this.prevScreen();
     }
 
