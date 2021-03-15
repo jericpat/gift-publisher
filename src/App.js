@@ -119,8 +119,8 @@ export class DatasetEditor extends React.Component {
     const dataset = { ...this.state.dataset };
     let model;
     let schema;
-    if (dataset.resources.length > 0) {
-      //There's and existing resource, get schema and model
+    if (dataset.resources.length > 1) {
+      //There's an existing resource, get schema and model
       model = dataset.resources[0].model;
       schema = dataset.resources[0].schema;
       resource.schema = schema;
