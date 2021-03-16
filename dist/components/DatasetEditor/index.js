@@ -2,6 +2,11 @@
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DatasetEditor = void 0;
+
 var _react = _interopRequireDefault(require("react"));
 
 var _axios = _interopRequireDefault(require("axios"));
@@ -481,6 +486,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
  * */
 
 
+exports.DatasetEditor = DatasetEditor;
 DatasetEditor.defaultProps = {
   config: {
     authorizedApi: "/api/authorize/",
