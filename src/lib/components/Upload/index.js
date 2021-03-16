@@ -5,7 +5,6 @@ import ProgressBar from '../ProgressBar';
 import { onFormatBytes, isValidURL } from '../../utils';
 import { Choose } from 'datapub-nocss';
 import toArray from 'stream-to-array';
-import './Upload.css';
 class Upload extends React.Component {
   constructor(props) {
     super(props);

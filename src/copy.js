@@ -7,8 +7,8 @@ const fileToCopy = {
   Metadata: ['import "./Metadata.css"'],
   ProgressBar: 'import "./ProgressBar.css";',
   TablePreview:  undefined,
-  TableSchema: 'import "./TableSchema.css";',
-  Upload: 'import "./Upload.css"',
+  TableSchema: "import './TableSchema.css';",
+  Upload: "import './Upload.css';",
   ResourceList: undefined
 }
 
