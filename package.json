@@ -12,7 +12,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "axios": "^0.21.1",
-    "datapub": "0.2.2",
+    "datapub": "^0.2.2",
     "giftless-client": "git+https://github.com/datopian/giftless-client-js.git",
     "js-file-download": "^0.4.12",
     "os-types": "^1.17.0",

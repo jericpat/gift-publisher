@@ -227,7 +227,6 @@ class Upload extends React.Component {
                   !fileExists &&
                   !error &&
                   "File uploaded successfully"}
-                {fileExists && "File uploaded successfully"}
                 {error && "Upload failed"}
               </h2>
             </>
