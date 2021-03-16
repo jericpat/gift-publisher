@@ -9,7 +9,7 @@ import TableSchema from "../TableSchema";
 import ResourceList from "../ResourceList"
 import Metadata from "../Metadata";
 
-export class DatasetEditor extends React.Component {
+class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
     const dataset = props.config.dataset;

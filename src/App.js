@@ -10,7 +10,7 @@ import ResourceList from "./components/ResourceList";
 import Metadata from "./components/Metadata";
 import "./App.css";
 
-export class DatasetEditor extends React.Component {
+class DatasetEditor extends React.Component {
   constructor(props) {
     super(props);
     const dataset = props.config.dataset;
