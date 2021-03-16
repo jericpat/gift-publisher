@@ -21,6 +21,8 @@ var _datapubNocss = require("datapub-nocss");
 
 var _streamToArray = _interopRequireDefault(require("stream-to-array"));
 
+require("./Upload.css");
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -174,7 +176,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 return (0, _streamToArray.default)(sample_stream);
 
               case 40:
-                sample = _context.sent;
+                sample = _context.sent.slice(0, 30);
                 //get column names for table
                 column_names = sample[0]; //first row is the column names
 
@@ -282,7 +284,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                               console.log(_context2.t0);
                               resolve({
                                 validFile: false,
-                                errorMsg: "An error occured when trying to load the file!",
+                                errorMsg: "An error occurred when trying to load the file!",
                                 file: file
                               });
 
@@ -356,7 +358,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   console.log(_context3.t0);
                   resolve({
                     validFile: false,
-                    errorMsg: "An error occured when trying to load the file!",
+                    errorMsg: "An error occurred when trying to load the file!",
                     file: {}
                   });
 

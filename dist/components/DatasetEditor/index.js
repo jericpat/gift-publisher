@@ -119,18 +119,27 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
     _defineProperty(_assertThisInitialized(_this), "mapDatasetToFiscalFormat", function (resource) {
       var dataset = _objectSpread({}, _this.state.dataset);
 
-      resource.schema.fields.forEach(function (f) {
-        f.type = f.columnType;
-        delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
-      });
-      var fdp = new _index.default().fieldsToModel(resource["schema"]["fields"]);
+      var model;
+      var schema;
 
-      if (!Object.keys(dataset).includes("model")) {
-        dataset.model = fdp.model;
+      if (dataset.resources.length > 1) {
+        //There's an existing resource, get schema and model
+        model = dataset.resources[0].model;
+        schema = dataset.resources[0].schema;
+        resource.schema = schema;
+        resource.model = model;
+      } else {
+        //first resource, generate schema and model
+        resource.schema.fields.forEach(function (f) {
+          f.type = f.columnType;
+          delete f.columnType; //os-types requires type to be of rich type and will not accept the property columnType
+        });
+        var fdp = new _index.default().fieldsToModel(resource["schema"]["fields"]);
+        resource.schema.fields = Object.values(fdp.schema.fields);
+        resource.model = fdp.model;
       }
 
-      resource.schema.fields = Object.values(fdp.schema.fields);
-      dataset.resources.map(function (res) {
+      var resources = dataset.resources.map(function (res) {
         if (res.hash == resource.hash) {
           return resource;
         } else {
@@ -139,7 +148,9 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       });
 
       _this.setState({
-        dataset: dataset
+        dataset: _objectSpread(_objectSpread({}, dataset), {}, {
+          resources: resources
+        })
       });
     });
 
@@ -194,7 +205,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
             resource: {}
           });
 
-          alert("Resource has been removed sucessfully");
+          alert("Resource has been removed successfully");
         }).catch(function (error) {
           console.log(error);
           alert("Error when removing resource!");
@@ -227,16 +238,12 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       if (status.success && !status.loading) {
         _this.nextScreen();
       } else if (!status.success && status.error) {
-        var dataset = _objectSpread({}, _this.state.dataset);
-
-        if ("resources" in dataset && dataset["resources"].length > 0) {
-          dataset.resources.pop();
-        }
-
-        _this.setState({
-          dataset: dataset
-        });
-
+        // const dataset = { ...this.state.dataset };
+        // if ("resources" in dataset && dataset["resources"].length > 0) {
+        //   dataset.resources.pop();
+        // }
+        // console.log("Here", dataset);
+        // this.setState({ dataset });
         _this.prevScreen();
       } //clears error message after 6 seconds
 
@@ -321,13 +328,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
     var _dataset = props.config.dataset;
     _dataset.encoding = "utf_8";
     _dataset.format = "csv";
-
-    if (!("sample" in _dataset) && "resources" in _dataset && _dataset["resources"].length > 0) {
-      _dataset["sample"] = _dataset["resources"][0]["sample"];
-    } else {
-      _dataset["sample"] = [];
-    }
-
     _this.state = {
       dataset: _dataset,
       resource: {},
@@ -389,11 +389,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       }
 
       resource["sample"] = fileResource.sample;
-
-      if (dataset["sample"].length == 0) {
-        dataset["sample"] = fileResource.sample;
-      }
-
       return {
         dataset: dataset,
         resource: resource
