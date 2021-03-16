@@ -14,5 +14,11 @@ const removeHyphen = (id) => {
   return id.replace(/-/g, "");
 };
 
-export { removeHyphen,
-        onFormatBytes };
+const isValidURL = (val) => {
+  const res = val.match(
+    /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
+  );
+  return res !== null;
+};
+
+export { removeHyphen, onFormatBytes, isValidURL };

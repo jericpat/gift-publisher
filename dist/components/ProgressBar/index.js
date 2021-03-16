@@ -50,7 +50,7 @@ var ProgressBar = function ProgressBar(props) {
     setOffset(progressOffset);
     circleRef.current.style = "transition: stroke-dashoffset 850ms ease-in-out";
   }, [setOffset, progress, circumference, offset]);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("svg", {
+  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("svg", {
     className: "svg",
     width: size,
     height: size

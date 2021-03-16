@@ -1,6 +1,6 @@
 {
   "name": "giftpub",
-  "version": "0.1.0",
+  "version": "1.0.6",
   "private": true,
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -12,7 +12,9 @@
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "axios": "^0.21.1",
-    "datapub": "0.2.2",
+    "ckan-client": "git+https://github.com/datopian/ckan-client-js.git#v0.4.2",
+    "datapub-nocss": "^0.1.0",
+    "frictionless-ckan-mapper-js": "^1.0.0",
     "giftless-client": "git+https://github.com/datopian/giftless-client-js.git",
     "js-file-download": "^0.4.12",
     "os-types": "^1.17.0",

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.onFormatBytes = exports.removeHyphen = void 0;
+exports.isValidURL = exports.onFormatBytes = exports.removeHyphen = void 0;
 
 var onFormatBytes = function onFormatBytes(bytes) {
   var decimals = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -22,3 +22,10 @@ var removeHyphen = function removeHyphen(id) {
 };
 
 exports.removeHyphen = removeHyphen;
+
+var isValidURL = function isValidURL(val) {
+  var res = val.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+  return res !== null;
+};
+
+exports.isValidURL = isValidURL;

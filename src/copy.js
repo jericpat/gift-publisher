@@ -4,11 +4,12 @@ const execSync = require('child_process').execSync
 
 
 const fileToCopy = {
-  Metadata: 'import "./Metadata.css";',
+  Metadata: ['import "./Metadata.css"'],
   ProgressBar: 'import "./ProgressBar.css";',
   TablePreview:  undefined,
   TableSchema: 'import "./TableSchema.css";',
-  Upload: undefined
+  Upload: 'import "./Upload.css"',
+  ResourceList: undefined
 }
 
 
@@ -20,9 +21,19 @@ for(let keys in fileToCopy){
     .toString()
     .split('\n');
   if (fileToCopy[keys]) {
-    const index = fileContent.indexOf(fileToCopy[keys]);
+    if (Array.isArray(fileToCopy[keys])){
+      const value = fileToCopy[keys]
+      value.forEach((item)=>{
+        const index = fileContent.indexOf(item);
 
-    fileContent.splice(index, 1);
+        fileContent.splice(index, 1);
+      })
+    }else{
+      const index = fileContent.indexOf(fileToCopy[keys]);
+
+      fileContent.splice(index, 1);
+    }
+    
 
   }
   
@@ -47,6 +58,7 @@ const appComponents = [
   'import Upload from "../Upload";',
   'import TablePreview from "../TablePreview";',
   'import TableSchema from "../TableSchema";',
+  'import ResourceList from "../ResourceList"',
   'import Metadata from "../Metadata";'
 ];
 

@@ -17,19 +17,15 @@ var _jsFileDownload = _interopRequireDefault(require("js-file-download"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _frictionlessCkanMapperJs = _interopRequireDefault(require("frictionless-ckan-mapper-js"));
-
-var _uuid = require("uuid");
-
 var _Upload = _interopRequireDefault(require("../Upload"));
 
 var _TablePreview = _interopRequireDefault(require("../TablePreview"));
 
 var _TableSchema = _interopRequireDefault(require("../TableSchema"));
 
-var _Metadata = _interopRequireDefault(require("../Metadata"));
+var _ResourceList = _interopRequireDefault(require("../ResourceList"));
 
-var _utils = require("../../utils");
+var _Metadata = _interopRequireDefault(require("../Metadata"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75,71 +71,97 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
     _this = _super.call(this, props);
 
+    _defineProperty(_assertThisInitialized(_this), "handleRichTypeCount", function (unfilledRichTypes) {
+      if (unfilledRichTypes == 0) {
+        _this.setState({
+          richTypeFilled: true
+        });
+      }
+    });
+
     _defineProperty(_assertThisInitialized(_this), "handleChangeMetadata", function (event) {
       var target = event.target;
       var value = target.value;
       var name = target.name;
 
-      var resourceCopy = _objectSpread({}, _this.state.resource);
+      var dataset = _objectSpread({}, _this.state.dataset);
 
-      var datapackageCopy = _objectSpread({}, _this.state.dataset.metadata);
+      if (["tags", "years_included"].includes(name)) {
+        var vals = value.split(",");
+        dataset[name] = vals.map(function (val) {
+          return val.trim();
+        });
+      } else if (["disaggregation", "budget_stage"].includes(name)) {
+        var currentVals = dataset[name] || [];
 
-      if (["format", "encoding"].includes(name)) {
-        //changes shopuld be made to datapackage resource
-        datapackageCopy.resources[0][name] = value;
+        if (!target.checked) {
+          currentVals = currentVals.filter(function (val) {
+            return val != value;
+          }); //remove value
+
+          dataset[name] = currentVals;
+        } else {
+          if (!currentVals.includes(value)) {
+            //only add value if it is unique
+            currentVals.push(value);
+            dataset[name] = currentVals;
+          }
+        }
       } else {
-        datapackageCopy[name] = value;
+        dataset[name] = value;
       }
 
-      resourceCopy[name] = value;
-
       _this.setState({
-        resource: resourceCopy,
-        datapackage: datapackageCopy
+        dataset: dataset
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleSubmitMetadata", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var _this$state, resource, client, isResourceCreate, datasetMetadata, result;
+    _defineProperty(_assertThisInitialized(_this), "mapDatasetToFiscalFormat", function (resource) {
+      var dataset = _objectSpread({}, _this.state.dataset);
 
+      var model;
+      var schema;
+
+      if (dataset.resources.length > 1) {
+        //There's an existing resource, get schema and model
+        model = dataset.resources[0].model;
+        schema = dataset.resources[0].schema;
+        resource.schema = schema;
+        resource.model = model;
+      } else {
+        //first resource, generate schema and model
+        resource.schema.fields.forEach(function (f) {
+          f.type = f.columnType;
+          delete f.columnType; //os-types requires type to be of rich type and will not accept the property columnType
+        });
+        var fdp = new _index.default().fieldsToModel(resource["schema"]["fields"]);
+        resource.schema.fields = Object.values(fdp.schema.fields);
+        resource.model = fdp.model;
+      }
+
+      var resources = dataset.resources.map(function (res) {
+        if (res.hash == resource.hash) {
+          return resource;
+        } else {
+          return res;
+        }
+      });
+
+      _this.setState({
+        dataset: _objectSpread(_objectSpread({}, dataset), {}, {
+          resources: resources
+        })
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "downloadDatapackage", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _this$state = _this.state, resource = _this$state.resource, client = _this$state.client;
-              _context.next = 3;
-              return _this.createResource(resource);
+              (0, _jsFileDownload.default)(JSON.stringify(_this.state.dataset), "datapackage.json");
 
-            case 3:
-              isResourceCreate = true;
-
-              if (!isResourceCreate) {
-                _context.next = 13;
-                break;
-              }
-
-              _context.next = 7;
-              return client.action("package_show", {
-                id: _this.state.datasetId
-              });
-
-            case 7:
-              datasetMetadata = _context.sent;
-              result = datasetMetadata.result;
-
-              if (!(result.state === "draft")) {
-                _context.next = 13;
-                break;
-              }
-
-              result.state = "active";
-              _context.next = 13;
-              return client.action("package_update", result);
-
-            case 13:
-              return _context.abrupt("return", window.location.href = "/dataset/".concat(_this.state.datasetId));
-
-            case 14:
+            case 1:
             case "end":
               return _context.stop();
           }
@@ -147,131 +169,59 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       }, _callee);
     })));
 
-    _defineProperty(_assertThisInitialized(_this), "downloadDatapackage", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var datapackage, resource, fdp;
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              datapackage = _objectSpread({}, _this.state.dataset.metadata);
-              resource = _objectSpread({}, datapackage.resources[0]);
-              resource.schema.fields.forEach(function (f) {
-                f.type = f.columnType;
-                delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
-              });
-              fdp = new _index.default().fieldsToModel(resource["schema"]["fields"]);
-              resource.schema = fdp.schema;
-              datapackage.model = fdp.model;
-              datapackage.resources[0] = resource;
+    _defineProperty(_assertThisInitialized(_this), "deleteResource", function (hash) {
+      var _this$state = _objectSpread({}, _this.state),
+          dataset = _this$state.dataset;
 
-              _this.setState({
-                datapackage: datapackage
-              });
+      if (window.confirm("Are you sure you want to delete this resource?")) {
+        var temp_dataset = _objectSpread({}, dataset);
 
-              (0, _jsFileDownload.default)(JSON.stringify(datapackage), "datapackage.json");
+        var path;
 
-            case 9:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    })));
-
-    _defineProperty(_assertThisInitialized(_this), "createResource", /*#__PURE__*/function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(resource) {
-        var client, config, organizationId, datasetId, resourceId, ckanResource, data, bqTableName, ckanResourceCopy;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                client = _this.state.client;
-                config = _this.props.config;
-                organizationId = config.organizationId, datasetId = config.datasetId, resourceId = config.resourceId;
-                ckanResource = _frictionlessCkanMapperJs.default.resourceFrictionlessToCkan(resource); //create a valid format from sample
-
-                data = _objectSpread({}, ckanResource.sample); //delete sample because is an invalid format
-
-                delete ckanResource.sample; //generate an unique id for bq_table_name property
-
-                bqTableName = (0, _utils.removeHyphen)(ckanResource.bq_table_name ? ckanResource.bq_table_name : (0, _uuid.v4)()); // create a copy from ckanResource to add package_id, name, url, sha256,size, lfs_prefix, url, url_type
-                // without this properties ckan-blob-storage doesn't work properly
-
-                ckanResourceCopy = _objectSpread(_objectSpread({}, ckanResource), {}, {
-                  package_id: _this.state.datasetId,
-                  name: bqTableName,
-                  title: resource.title,
-                  sha256: resource.hash,
-                  size: resource.size,
-                  lfs_prefix: "".concat(organizationId, "/").concat(datasetId),
-                  url: resource.name,
-                  url_type: "upload",
-                  bq_table_name: bqTableName,
-                  sample: data
-                }); //Check if the user is editing resource, call resource_update and redirect to the dataset page
-
-                if (!resourceId) {
-                  _context3.next = 13;
-                  break;
-                }
-
-                ckanResourceCopy = _objectSpread(_objectSpread({}, ckanResourceCopy), {}, {
-                  id: resourceId
-                });
-                _context3.next = 12;
-                return client.action("resource_update", ckanResourceCopy);
-
-              case 12:
-                return _context3.abrupt("return", window.location.href = "/dataset/".concat(datasetId));
-
-              case 13:
-                _context3.next = 15;
-                return client.action("resource_create", ckanResourceCopy).then(function (response) {
-                  _this.onChangeResourceId(response.result.id);
-                });
-
-              case 15:
-              case "end":
-                return _context3.stop();
+        if (temp_dataset.resources.length == 1) {
+          path = temp_dataset.resources[0].path;
+          temp_dataset.resources = [];
+        } else {
+          var newResource = temp_dataset.resources.filter(function (resource) {
+            if (resource.hash == hash) {
+              path = resource.path;
             }
-          }
-        }, _callee3);
-      }));
 
-      return function (_x) {
-        return _ref3.apply(this, arguments);
-      };
-    }());
-
-    _defineProperty(_assertThisInitialized(_this), "deleteResource", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-      var _this$state2, resource, client, datasetId;
-
-      return regeneratorRuntime.wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _this$state2 = _this.state, resource = _this$state2.resource, client = _this$state2.client, datasetId = _this$state2.datasetId;
-
-              if (!window.confirm("Are you sure to delete this resource?")) {
-                _context4.next = 5;
-                break;
-              }
-
-              _context4.next = 4;
-              return client.action("resource_delete", {
-                id: resource.id
-              });
-
-            case 4:
-              return _context4.abrupt("return", window.location.href = "/dataset/".concat(datasetId));
-
-            case 5:
-            case "end":
-              return _context4.stop();
-          }
+            return resource.hash != hash;
+          });
+          temp_dataset.resources = newResource;
         }
-      }, _callee4);
-    })));
+
+        (0, _axios.default)({
+          method: "delete",
+          url: "/api/dataset/".concat(temp_dataset.name),
+          data: {
+            metadata: temp_dataset,
+            path: path
+          }
+        }).then(function (response) {
+          _this.setState({
+            dataset: temp_dataset,
+            resource: {}
+          });
+
+          alert("The resource has been removed successfully.");
+        }).catch(function (error) {
+          console.log(error);
+          alert("Error when removing the resource!");
+        }).then(function (response) {
+          _this.setState({
+            dataset: temp_dataset,
+            resource: {}
+          });
+
+          alert("Resource has been removed successfully");
+        }).catch(function (error) {
+          console.log(error);
+          alert("Error when removing resource!");
+        });
+      }
+    });
 
     _defineProperty(_assertThisInitialized(_this), "setLoading", function (isLoading) {
       _this.setState({
@@ -287,12 +237,34 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       var newUiState = _objectSpread(_objectSpread({}, ui), {}, {
         success: status.success,
         error: status.error,
-        loading: status.loading
+        loading: status.loading,
+        errorMsg: status.errorMsg
       });
 
       _this.setState({
         ui: newUiState
       });
+
+      if (status.success && !status.loading) {
+        _this.nextScreen();
+      } else if (!status.success && status.error) {
+        // const dataset = { ...this.state.dataset };
+        // if ("resources" in dataset && dataset["resources"].length > 0) {
+        //   dataset.resources.pop();
+        // }
+        // console.log("Here", dataset);
+        // this.setState({ dataset });
+        _this.prevScreen();
+      } //clears error message after 6 seconds
+
+
+      setTimeout(function () {
+        _this.setState({
+          ui: _objectSpread(_objectSpread({}, _this.state.ui), {}, {
+            errorMsg: ""
+          })
+        });
+      }, 10000);
     });
 
     _defineProperty(_assertThisInitialized(_this), "onChangeResourceId", function (resourceId) {
@@ -301,149 +273,12 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "onSchemaSelected", /*#__PURE__*/function () {
-      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(resourceId) {
-        var _yield$_this$getSchem, sample, schema;
-
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                _this.setLoading(true);
-
-                _context5.next = 3;
-                return _this.getSchemaWithSample(resourceId);
-
-              case 3:
-                _yield$_this$getSchem = _context5.sent;
-                sample = _yield$_this$getSchem.sample;
-                schema = _yield$_this$getSchem.schema;
-
-                _this.setLoading(false);
-
-                _this.setState({
-                  resource: Object.assign(_this.state.resource, {
-                    schema: schema,
-                    sample: sample
-                  })
-                });
-
-              case 8:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5);
-      }));
-
-      return function (_x2) {
-        return _ref5.apply(this, arguments);
-      };
-    }());
-
-    _defineProperty(_assertThisInitialized(_this), "getSchemaWithSample", /*#__PURE__*/function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(resourceId) {
-        var client, resourceSchema, resourceSample, sample, schema, property;
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                client = _this.state.client;
-                _context6.next = 3;
-                return client.action("resource_schema_show", {
-                  id: resourceId
-                });
-
-              case 3:
-                resourceSchema = _context6.sent;
-                _context6.next = 6;
-                return client.action("resource_sample_show", {
-                  id: resourceId
-                });
-
-              case 6:
-                resourceSample = _context6.sent;
-                sample = [];
-                schema = resourceSchema.result || {
-                  fields: []
-                };
-
-                try {
-                  // push the values to an array
-                  for (property in resourceSample.result) {
-                    sample.push(resourceSample.result[property]);
-                  }
-                } catch (e) {
-                  console.error(e); //generate empty values not to break the tableschema component
-                }
-
-                return _context6.abrupt("return", {
-                  schema: schema,
-                  sample: sample
-                });
-
-              case 11:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6);
-      }));
-
-      return function (_x3) {
-        return _ref6.apply(this, arguments);
-      };
-    }());
-
-    _defineProperty(_assertThisInitialized(_this), "setResource", /*#__PURE__*/function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(resourceId) {
-        var client, _yield$client$action, result, resourceCopy;
-
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                client = _this.state.client;
-                _context7.next = 3;
-                return client.action("resource_show", {
-                  id: resourceId
-                });
-
-              case 3:
-                _yield$client$action = _context7.sent;
-                result = _yield$client$action.result;
-                _context7.t0 = _objectSpread;
-                _context7.t1 = _objectSpread({}, result);
-                _context7.next = 9;
-                return _this.getSchemaWithSample(resourceId);
-
-              case 9:
-                _context7.t2 = _context7.sent;
-                resourceCopy = (0, _context7.t0)(_context7.t1, _context7.t2);
-                return _context7.abrupt("return", _this.setState({
-                  client: client,
-                  resourceId: resourceId,
-                  resource: resourceCopy,
-                  isResourceEdit: true
-                }));
-
-              case 12:
-              case "end":
-                return _context7.stop();
-            }
-          }
-        }, _callee7);
-      }));
-
-      return function (_x4) {
-        return _ref7.apply(this, arguments);
-      };
-    }());
-
     _defineProperty(_assertThisInitialized(_this), "nextScreen", function () {
       var currentStep = _this.state.currentStep;
 
-      if (currentStep == 2) {//TODO: check if all rich type has been added
+      if (currentStep == 3) {
+        _this.mapDatasetToFiscalFormat(_objectSpread({}, _this.state.resource)); //generate model and fiscal schema as soon as richtypes have been updated.
+
       }
 
       var newStep = currentStep + 1;
@@ -461,47 +296,79 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "handleUpload", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-      return regeneratorRuntime.wrap(function _callee8$(_context8) {
+    _defineProperty(_assertThisInitialized(_this), "handleSaveDataset", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context8.prev = _context8.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              (0, _axios.default)({
-                method: 'post',
-                url: "".concat(_this.props.config.metastoreApi + _this.state.datasetId),
-                data: {
-                  metadata: _this.state.dataset.metadata,
-                  description: _this.state.dataset.metadata.description
-                }
-              }).then(function (response) {
-                return alert('Uploaded Sucessfully');
-              }, function (error) {
-                return alert('Error on upload dataset');
+              _this.setState({
+                saveButtonText: "Saving..."
               });
 
-            case 1:
+              (0, _axios.default)({
+                method: "post",
+                url: "/api/dataset/".concat(_this.state.dataset.name),
+                data: {
+                  metadata: _this.state.dataset,
+                  description: _this.state.dataset.description
+                }
+              }).then(function (response) {
+                _this.setState({
+                  saveButtonText: "Save"
+                });
+
+                alert("Uploaded successfully.");
+
+                _this.setState({
+                  currentStep: 0
+                });
+              }).catch(function (error) {
+                console.log(error);
+                alert("An Error occurred when uploading the dataset!");
+              }).then(function (response) {
+                _this.setState({
+                  saveButtonText: "Save"
+                });
+
+                alert("Uploaded Sucessfully");
+
+                _this.setState({
+                  currentStep: 0
+                });
+              }).catch(function (error) {
+                console.log(error);
+                alert("Error on upload dataset!");
+              });
+
+            case 2:
             case "end":
-              return _context8.stop();
+              return _context2.stop();
           }
         }
-      }, _callee8);
+      }, _callee2);
     })));
 
+    var _dataset = props.config.dataset;
+    _dataset.encoding = "utf_8";
+    _dataset.format = "csv";
     _this.state = {
-      dataset: _this.props.config.dataset,
-      resource: _this.props.config.dataset.resources[0] || {},
-      datasetId: _this.props.config.dataset.id,
+      dataset: _dataset,
+      resource: {},
+      //This will hold the uploaded resource metadata
+      datasetId: _dataset.id,
       ui: {
         fileOrLink: "",
         uploadComplete: false,
         success: false,
         error: false,
-        loading: false
+        loading: false,
+        errorMsg: ""
       },
       client: null,
       isResourceEdit: false,
-      currentStep: 1,
-      richTypeFilled: false
+      currentStep: props.config.skipUpload ? 4 : 0,
+      richTypeFilled: false,
+      saveButtonText: "Save"
     };
     _this.metadataHandler = _this.metadataHandler.bind(_assertThisInitialized(_this));
     _this.handleRichTypeCount = _this.handleRichTypeCount.bind(_assertThisInitialized(_this));
@@ -509,46 +376,23 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
   }
 
   _createClass(DatasetEditor, [{
-    key: "componentDidMount",
-    value: function () {
-      var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
-        var config, authToken, api, lfsServerUrl, organizationId, datasetId, resourceId;
-        return regeneratorRuntime.wrap(function _callee9$(_context9) {
-          while (1) {
-            switch (_context9.prev = _context9.next) {
-              case 0:
-                config = this.props.config;
-                authToken = config.authToken, api = config.api, lfsServerUrl = config.lfsServerUrl, organizationId = config.organizationId, datasetId = config.datasetId, resourceId = config.resourceId;
-
-              case 2:
-              case "end":
-                return _context9.stop();
-            }
-          }
-        }, _callee9, this);
-      }));
-
-      function componentDidMount() {
-        return _componentDidMount.apply(this, arguments);
-      }
-
-      return componentDidMount;
-    }()
-  }, {
     key: "metadataHandler",
     value: function metadataHandler(resource) {
-      var datapackage = this.mapResourceToDatapackageResource(resource);
+      var _this$mapResourceToDa = this.mapResourceToDatapackageResource(resource),
+          dataset = _this$mapResourceToDa.dataset,
+          updatedResource = _this$mapResourceToDa.resource;
+
       this.setState({
-        resource: _objectSpread(_objectSpread({}, resource), {}, {
-          title: resource.name
-        }),
-        datapackage: datapackage
+        dataset: dataset,
+        resource: updatedResource,
+        tablePreviewSample: resource.tablePreviewSample,
+        tablePreviewColumns: resource.tablePreviewColumns
       });
     }
   }, {
     key: "mapResourceToDatapackageResource",
     value: function mapResourceToDatapackageResource(fileResource) {
-      var datapackage = _objectSpread({}, this.state.dataset.metadata);
+      var dataset = _objectSpread({}, this.state.dataset);
 
       var resource = {};
       resource["bytes"] = fileResource.size;
@@ -559,101 +403,95 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       resource["mediatype"] = fileResource.type;
       resource["name"] = fileResource.name;
       resource["dialect"] = fileResource.dialect;
-      datapackage["resources"] = [resource];
-      datapackage["title"] = fileResource.name;
-      datapackage["name"] = fileResource.name;
-      return datapackage;
+      resource["path"] = fileResource.path;
+
+      if (Object.keys(dataset).includes("resources")) {
+        dataset.resources.push(resource);
+      } else {
+        dataset["resources"] = [resource];
+      }
+
+      resource["sample"] = fileResource.sample;
+      return {
+        dataset: dataset,
+        resource: resource
+      };
     } //set state of rich type field. If all rich type fields have been filled,
     // then activate the next button in the Table Schema screen
 
-  }, {
-    key: "handleRichTypeCount",
-    value: function handleRichTypeCount(unfilledRichTypes) {
-      if (unfilledRichTypes == 0) {
-        this.setState({
-          richTypeFilled: true
-        });
-      }
-    }
   }, {
     key: "render",
     value: function render() {
       var _this2 = this;
 
-      var _this$state$ui = this.state.ui,
-          success = _this$state$ui.success,
-          loading = _this$state$ui.loading;
-      console.log(this.state.dataset.name);
       return /*#__PURE__*/_react.default.createElement("div", {
         className: "App"
-      }, /*#__PURE__*/_react.default.createElement("form", {
+      }, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h1", {
+        className: "errorMsg"
+      }, this.state.ui.errorMsg)), /*#__PURE__*/_react.default.createElement("form", {
         className: "upload-wrapper",
         onSubmit: function onSubmit(event) {
           event.preventDefault();
-
-          if (_this2.state.isResourceEdit) {
-            return _this2.createResource(_this2.state.resource);
-          }
-
-          return _this2.handleSubmitMetadata();
+          return _this2.handleSaveDataset();
         }
-      }, !this.state.ui.success && this.state.currentStep == 1 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_ResourceList.default, {
+        dataset: this.state.dataset,
+        addResourceScreen: this.nextScreen,
+        deleteResource: this.deleteResource
+      })), this.state.currentStep == 1 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
       }, "Provide your data file"), /*#__PURE__*/_react.default.createElement("h2", {
         className: "upload-header__title_h2"
-      }, "Supported formats: csv, xlsx, xls")), /*#__PURE__*/_react.default.createElement(_Upload.default, {
+      }, "Supported format: CSV")), /*#__PURE__*/_react.default.createElement(_Upload.default, {
         client: this.state.client,
         resource: this.state.resource,
         metadataHandler: this.metadataHandler,
         datasetId: this.state.datasetId,
         handleUploadStatus: this.handleUploadStatus,
-        onChangeResourceId: this.onChangeResourceId,
-        organizationId: 'gift-data',
+        organizationId: "gift-data",
         authToken: this.props.config.authToken,
-        lfsServerUrl: this.props.config.lfsServerUrl
-      }), /*#__PURE__*/_react.default.createElement("div", {
-        className: "resource-edit-actions"
-      }, this.state.currentStep == 1 && Object.keys(this.state.resource).length != 0 && /*#__PURE__*/_react.default.createElement("button", {
-        className: "btn",
-        onClick: this.nextScreen
-      }, "Next"))), /*#__PURE__*/_react.default.createElement("div", {
+        lfsServerUrl: this.props.config.lfsServerUrl,
+        dataset: this.state.dataset
+      })), /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-edit-area"
-      }, this.state.ui.success && this.state.currentStep == 1 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      }, this.state.resource.sample && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
       }, "Preview of your dataset")), /*#__PURE__*/_react.default.createElement(_TablePreview.default, {
-        columns: this.state.resource.columns,
-        data: this.state.resource.sample
-      })), this.state.resource.schema && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+        columns: this.state.tablePreviewColumns,
+        data: this.state.tablePreviewSample
+      })), this.state.resource.schema && this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
       }, "Describe your dataset")), /*#__PURE__*/_react.default.createElement(_TableSchema.default, {
+        dataset: this.state.dataset,
         schema: this.state.resource.schema,
-        data: this.state.resource.sample || [],
+        data: this.state.tablePreviewSample || [],
         handleRichType: this.handleRichTypeCount
-      })), this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+      })), this.state.currentStep == 4 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
-      }, "Provide Metadata")), /*#__PURE__*/_react.default.createElement(_Metadata.default, {
-        metadata: this.state.resource,
+      }, "Describe Metadata")), /*#__PURE__*/_react.default.createElement(_Metadata.default, {
+        dataset: this.state.dataset,
         handleChange: this.handleChangeMetadata
-      })))), /*#__PURE__*/_react.default.createElement("div", {
-        className: "resource-edit-actions"
-      }, this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
-        className: "btn",
-        onClick: this.handleUpload
-      }, "Save"), this.state.currentStep == 3 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
-        className: "btn",
+      })), /*#__PURE__*/_react.default.createElement("div", null, this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
+        className: "btn-save",
+        type: "submit"
+      }, this.state.saveButtonText), this.state.currentStep == 4 && !this.state.isResourceEdit && this.state.resource && /*#__PURE__*/_react.default.createElement("button", {
+        type: "button",
+        className: "btn-download",
         onClick: this.downloadDatapackage
-      }, "Download Package"), this.state.ui.success && this.state.currentStep > 0 && this.state.currentStep < 3 && this.state.currentStep !== 2 && /*#__PURE__*/_react.default.createElement("button", {
+      }, "Download Package")))), /*#__PURE__*/_react.default.createElement("div", {
+        className: "resource-edit-actions"
+      }, this.state.ui.success && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.nextScreen
-      }, "Next"), this.state.currentStep == 2 ? this.state.richTypeFilled ? /*#__PURE__*/_react.default.createElement("button", {
+      }, "Next"), this.state.currentStep == 3 ? this.state.richTypeFilled ? /*#__PURE__*/_react.default.createElement("button", {
         className: "btn",
         onClick: this.nextScreen
       }, "Next") : /*#__PURE__*/_react.default.createElement("button", {
@@ -677,7 +515,7 @@ DatasetEditor.defaultProps = {
     authorizedApi: "/api/authorize/",
     lfsServerUrl: "https://localhost:6000",
     dataset: {},
-    metastoreApi: '/api/dataset/'
+    metastoreApi: "/api/dataset/"
   }
 };
 DatasetEditor.propTypes = {
