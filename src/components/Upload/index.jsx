@@ -150,7 +150,7 @@ class Upload extends React.Component {
               console.log(error);
               resolve({
                 validFile: false,
-                errorMsg: "An error occured when trying to load the file!",
+                errorMsg: "An error occurred when trying to load the file!",
                 file,
               });
             }
@@ -191,7 +191,7 @@ class Upload extends React.Component {
           console.log(error);
           resolve({
             validFile: false,
-            errorMsg: "An error occured when trying to load the file!",
+            errorMsg: "An error occurred when trying to load the file!",
             file: {},
           });
         }
