@@ -17,15 +17,6 @@ export class DatasetEditor extends React.Component {
     dataset.encoding = "utf_8";
     dataset.format = "csv";
 
-    if (
-      !("sample" in dataset) &&
-      "resources" in dataset &&
-      dataset["resources"].length > 0
-    ) {
-      dataset["sample"] = dataset["resources"][0]["sample"];
-    } else {
-      dataset["sample"] = [];
-    }
     this.state = {
       dataset,
       resource: {}, //This will hold the uploaded resource metadata
@@ -57,7 +48,7 @@ export class DatasetEditor extends React.Component {
       dataset,
       resource: updatedResource,
       tablePreviewSample: resource.tablePreviewSample,
-      tablePreviewColumns: resource.tablePreviewColumns
+      tablePreviewColumns: resource.tablePreviewColumns,
     });
   }
 
@@ -81,11 +72,6 @@ export class DatasetEditor extends React.Component {
       dataset["resources"] = [resource];
     }
     resource["sample"] = fileResource.sample;
-
-    if (dataset["sample"].length == 0) {
-      dataset["sample"] = fileResource.sample;
-    }
-
     return { dataset, resource };
   }
 
@@ -130,27 +116,35 @@ export class DatasetEditor extends React.Component {
 
   mapDatasetToFiscalFormat = (resource) => {
     const dataset = { ...this.state.dataset };
-
-    resource.schema.fields.forEach((f) => {
-      f.type = f.columnType;
-      delete f.columnType; //os-types requires type to be of rich type and will not accept the property colunmType
-    });
-    let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
-
-    if (!Object.keys(dataset).includes("model")) {
-      dataset.model = fdp.model;
+    let model;
+    let schema;
+    if (dataset.resources.length > 1) {
+      //There's an existing resource, get schema and model
+      model = dataset.resources[0].model;
+      schema = dataset.resources[0].schema;
+      resource.schema = schema;
+      resource.model = model;
+    } else {
+      //first resource, generate schema and model
+      resource.schema.fields.forEach((f) => {
+        f.type = f.columnType;
+        delete f.columnType; //os-types requires type to be of rich type and will not accept the property columnType
+      });
+      let fdp = new TypeProcessor().fieldsToModel(resource["schema"]["fields"]);
+      resource.schema.fields = Object.values(fdp.schema.fields);
+      resource.model = fdp.model;
     }
-    resource.schema.fields = Object.values(fdp.schema.fields);
 
-    dataset.resources.map((res) => {
+    const resources = dataset.resources.map((res) => {
       if (res.hash == resource.hash) {
         return resource;
       } else {
         return res;
       }
     });
+
     this.setState({
-      dataset,
+      dataset: { ...dataset, resources },
     });
   };
 
@@ -164,16 +158,15 @@ export class DatasetEditor extends React.Component {
       const temp_dataset = { ...dataset };
       let path;
       if (temp_dataset.resources.length == 1) {
-        path = temp_dataset.resources[0].path
+        path = temp_dataset.resources[0].path;
         temp_dataset.resources = [];
       } else {
         const newResource = temp_dataset.resources.filter((resource) => {
-          if (resource.hash == hash){
-            path = resource.path
+          if (resource.hash == hash) {
+            path = resource.path;
           }
-          return resource.hash != hash
-        }
-        )
+          return resource.hash != hash;
+        });
         temp_dataset.resources = newResource;
       }
       axios({
@@ -183,13 +176,15 @@ export class DatasetEditor extends React.Component {
           metadata: temp_dataset,
           path,
         },
-      }).then((response) => {
-        this.setState({ dataset: temp_dataset, resource: {} });
-        alert("Resource has been removed sucessfully");
-      }).catch((error) => {
-        console.log(error);
-        alert("Error when removing resource!");
       })
+        .then((response) => {
+          this.setState({ dataset: temp_dataset, resource: {} });
+          alert("Resource has been removed successfully");
+        })
+        .catch((error) => {
+          console.log(error);
+          alert("Error when removing resource!");
+        });
     }
   };
 
@@ -212,11 +207,13 @@ export class DatasetEditor extends React.Component {
     if (status.success && !status.loading) {
       this.nextScreen();
     } else if (!status.success && status.error) {
-      const dataset = { ...this.state.dataset };
-      if ("resources" in dataset && dataset["resources"].length > 0) {
-        dataset.resources.pop();
-      }
-      this.setState({ dataset });
+      // const dataset = { ...this.state.dataset };
+      // if ("resources" in dataset && dataset["resources"].length > 0) {
+      //   dataset.resources.pop();
+      // }
+      // console.log("Here", dataset);
+
+      // this.setState({ dataset });
       this.prevScreen();
     }
 
@@ -254,14 +251,16 @@ export class DatasetEditor extends React.Component {
         metadata: this.state.dataset,
         description: this.state.dataset.description,
       },
-    }).then((response) => {
-      this.setState({ saveButtonText: "Save" });
-      alert("Uploaded Sucessfully");
-      this.setState({ currentStep: 0 });
-    }).catch((error) => {
-      console.log(error);
-      alert("Error on upload dataset!");
     })
+      .then((response) => {
+        this.setState({ saveButtonText: "Save" });
+        alert("Uploaded Sucessfully");
+        this.setState({ currentStep: 0 });
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Error on upload dataset!");
+      });
   };
 
   render() {
@@ -388,13 +387,13 @@ export class DatasetEditor extends React.Component {
                 Next
               </button>
             ) : (
-                <button disabled={true} className="btn">
-                  Next
-                </button>
-              )
+              <button disabled={true} className="btn">
+                Next
+              </button>
+            )
           ) : (
-              ""
-            )}
+            ""
+          )}
         </div>
       </div>
     );
