@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./assets/main.css";
-import App from "./App";
+import DatasetEditor from "./App";
 // import * as data from './data.json';
 // import { metadataEmpty, metadataSingle, metadataDouble } from "./data/metadata";
 
@@ -18,7 +18,7 @@ if (element) {
 
   ReactDOM.render(
     <React.StrictMode>
-      <App config={config} />
+      <DatasetEditor config={config} />
     </React.StrictMode>,
     element
   );
