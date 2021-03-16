@@ -9,7 +9,6 @@ import TableSchema from "./components/TableSchema";
 import ResourceList from "./components/ResourceList";
 import Metadata from "./components/Metadata";
 import "./App.css";
-import ReactLogo from "./progressBar.svg";
 
 export class DatasetEditor extends React.Component {
   constructor(props) {
@@ -270,9 +269,6 @@ export class DatasetEditor extends React.Component {
         <div>
           <h1 className="errorMsg">{this.state.ui.errorMsg}</h1>
         </div>
-        {this.state.currentStep > 0 && (
-          <img src={ReactLogo} width="50%" className="Img" />
-        )}
         <form
           className="upload-wrapper"
           onSubmit={(event) => {

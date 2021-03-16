@@ -39,9 +39,7 @@ class Upload extends React.Component {
     } else {
       selectedFile = event.target.value;
       if (!isValidURL(selectedFile)) {
-        this.setErrorState(
-          'Invalid URL! Please make sure the URL you entered is correct.'
-        );
+        this.setErrorState('Invalid URL! Please ensure entered URL is correct');
         return;
       }
       this.setState({ uploadedFileType: 'url' });
@@ -70,20 +68,20 @@ class Upload extends React.Component {
     //check if file has the same schema
     if (!this.hasSameSchema(file._descriptor)) {
       this.setErrorState(
-        'The schema for the uploaded resource does not match the existing one!'
+        'Schema of uploaded resource does not match existing one!'
       );
       return;
     }
 
     //check if file already exists in resource
     if (this.hasSameHash(file._descriptor)) {
-      this.setErrorState('Possible duplicate: the resource already exists!');
+      this.setErrorState('Possible duplicate, the resource already exists!');
       return;
     }
 
     //get sample
     let sample_stream = await file.rows({ size: 460 });
-    let sample = await toArray(sample_stream);
+    let sample = (await toArray(sample_stream)).slice(0, 30);
     //get column names for table
     const column_names = sample[0]; //first row is the column names
     const tablePreviewColumns = column_names.map((item) => {
@@ -131,7 +129,7 @@ class Upload extends React.Component {
         if (fileExt != 'csv') {
           resolve({
             validFile: false,
-            errorMsg: 'File type not supported! Please upload a CSV file.',
+            errorMsg: 'File Type not supported! Please upload a CSV file',
             file: undefined,
           });
           return;
@@ -160,7 +158,7 @@ class Upload extends React.Component {
             console.log(error);
             resolve({
               validFile: false,
-              errorMsg: 'An error occurred when trying to load the file!',
+              errorMsg: 'An error occured when trying to load the file!',
             });
           });
       } else {
@@ -169,7 +167,7 @@ class Upload extends React.Component {
         if (fileExt != 'csv') {
           resolve({
             validFile: false,
-            errorMsg: 'File type not supported! Please upload a CSV file.',
+            errorMsg: 'File Type not supported! Please upload a CSV file',
             file: {},
           });
           return;
@@ -178,7 +176,7 @@ class Upload extends React.Component {
           resolve({
             validFile: false,
             errorMsg:
-              'The CSV file is empty! Please upload a CSV file with content.',
+              'CSV file is empty! Please upload a CSV file with contents',
             file: {},
           });
           return;
@@ -326,13 +324,13 @@ class Upload extends React.Component {
           });
         })
         .catch((error) => {
-          console.error('The upload failed with the following error: ' + error);
+          console.error('Upload failed with error: ' + error);
           this.setState({ error: true, loading: false });
           this.props.handleUploadStatus({
             loading: false,
             success: false,
             error: true,
-            errorMsg: `The upload failed with the following error: ${error.message}`,
+            errorMsg: `Upload failed with error: ${error.message}`,
           });
         });
     }
@@ -393,9 +391,9 @@ class Upload extends React.Component {
                 {success &&
                   !fileExists &&
                   !error &&
-                  'File uploaded successfully.'}
-                {fileExists && 'File uploaded successfully.'}
-                {error && 'Upload failed.'}
+                  'File uploaded successfully'}
+                {/* {fileExists && 'File uploaded successfully'} */}
+                {error && 'Upload failed'}
               </h2>
             </>
           </div>

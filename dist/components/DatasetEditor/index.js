@@ -5,7 +5,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.DatasetEditor = void 0;
+exports.DatasetEditor = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
@@ -53,7 +53,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
@@ -205,16 +205,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
             resource: {}
           });
 
-          alert("The resource has been removed successfully.");
-        }).catch(function (error) {
-          console.log(error);
-          alert("Error when removing the resource!");
-        }).then(function (response) {
-          _this.setState({
-            dataset: temp_dataset,
-            resource: {}
-          });
-
           alert("Resource has been removed successfully");
         }).catch(function (error) {
           console.log(error);
@@ -312,19 +302,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
                   metadata: _this.state.dataset,
                   description: _this.state.dataset.description
                 }
-              }).then(function (response) {
-                _this.setState({
-                  saveButtonText: "Save"
-                });
-
-                alert("Uploaded successfully.");
-
-                _this.setState({
-                  currentStep: 0
-                });
-              }).catch(function (error) {
-                console.log(error);
-                alert("An Error occurred when uploading the dataset!");
               }).then(function (response) {
                 _this.setState({
                   saveButtonText: "Save"
@@ -434,7 +411,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
           event.preventDefault();
           return _this2.handleSaveDataset();
         }
-      }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_ResourceList.default, {
+      }, this.state.currentStep == 0 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ResourceList.default, {
         dataset: this.state.dataset,
         addResourceScreen: this.nextScreen,
         deleteResource: this.deleteResource
@@ -456,14 +433,14 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         dataset: this.state.dataset
       })), /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-edit-area"
-      }, this.state.resource.sample && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+      }, this.state.resource.sample && this.state.currentStep == 2 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
       }, "Preview of your dataset")), /*#__PURE__*/_react.default.createElement(_TablePreview.default, {
         columns: this.state.tablePreviewColumns,
         data: this.state.tablePreviewSample
-      })), this.state.resource.schema && this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+      })), this.state.resource.schema && this.state.currentStep == 3 && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
@@ -472,7 +449,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         schema: this.state.resource.schema,
         data: this.state.tablePreviewSample || [],
         handleRichType: this.handleRichTypeCount
-      })), this.state.currentStep == 4 && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("div", {
+      })), this.state.currentStep == 4 && !this.state.savedDataset && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
         className: "upload-header"
       }, /*#__PURE__*/_react.default.createElement("h1", {
         className: "upload-header__title_h1"
@@ -521,5 +498,3 @@ DatasetEditor.defaultProps = {
 DatasetEditor.propTypes = {
   config: _propTypes.default.object.isRequired
 };
-var _default = DatasetEditor;
-exports.default = _default;

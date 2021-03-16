@@ -175,12 +175,6 @@ export class DatasetEditor extends React.Component {
           metadata: temp_dataset,
           path,
         },
-      }).then((response) => {
-        this.setState({ dataset: temp_dataset, resource: {} });
-        alert("The resource has been removed successfully.");
-      }).catch((error) => {
-        console.log(error);
-        alert("Error when removing the resource!");
       })
         .then((response) => {
           this.setState({ dataset: temp_dataset, resource: {} });
@@ -256,13 +250,6 @@ export class DatasetEditor extends React.Component {
         metadata: this.state.dataset,
         description: this.state.dataset.description,
       },
-    }).then((response) => {
-      this.setState({ saveButtonText: "Save" });
-      alert("Uploaded successfully.");
-      this.setState({ currentStep: 0 });
-    }).catch((error) => {
-      console.log(error);
-      alert("An Error occurred when uploading the dataset!");
     })
       .then((response) => {
         this.setState({ saveButtonText: "Save" });
@@ -289,13 +276,13 @@ export class DatasetEditor extends React.Component {
           }}
         >
           {this.state.currentStep == 0 && (
-            <div>
+            <>
               <ResourceList
                 dataset={this.state.dataset}
                 addResourceScreen={this.nextScreen}
                 deleteResource={this.deleteResource}
               />
-             </div>
+            </>
           )}
 
           {this.state.currentStep == 1 && (
@@ -325,7 +312,7 @@ export class DatasetEditor extends React.Component {
 
           <div className="upload-edit-area">
             {this.state.resource.sample && this.state.currentStep == 2 && (
-              <div>
+              <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
                     Preview of your dataset
@@ -335,10 +322,10 @@ export class DatasetEditor extends React.Component {
                   columns={this.state.tablePreviewColumns}
                   data={this.state.tablePreviewSample}
                 />
-              </div>
+              </>
             )}
             {this.state.resource.schema && this.state.currentStep == 3 && (
-              <div>
+              <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">
                     Describe your dataset
@@ -350,10 +337,10 @@ export class DatasetEditor extends React.Component {
                   data={this.state.tablePreviewSample || []}
                   handleRichType={this.handleRichTypeCount}
                 />
-              </div>
+              </>
             )}
-            {this.state.currentStep == 4 && (
-              <div>
+            {this.state.currentStep == 4 && !this.state.savedDataset && (
+              <>
                 <div className="upload-header">
                   <h1 className="upload-header__title_h1">Describe Metadata</h1>
                 </div>
@@ -361,7 +348,7 @@ export class DatasetEditor extends React.Component {
                   dataset={this.state.dataset}
                   handleChange={this.handleChangeMetadata}
                 />
-              </div>
+              </>
             )}
             <div>
               {this.state.currentStep == 4 &&
@@ -428,5 +415,3 @@ DatasetEditor.defaultProps = {
 DatasetEditor.propTypes = {
   config: PropTypes.object.isRequired,
 };
-
-export default DatasetEditor;

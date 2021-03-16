@@ -47,7 +47,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
@@ -99,7 +99,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   break;
                 }
 
-                _this.setErrorState('Invalid URL! Please make sure the URL you entered is correct.');
+                _this.setErrorState('Invalid URL! Please ensure entered URL is correct');
 
                 return _context.abrupt("return");
 
@@ -148,7 +148,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   break;
                 }
 
-                _this.setErrorState('The schema for the uploaded resource does not match the existing one!');
+                _this.setErrorState('Schema of uploaded resource does not match existing one!');
 
                 return _context.abrupt("return");
 
@@ -158,7 +158,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   break;
                 }
 
-                _this.setErrorState('Possible duplicate: the resource already exists!');
+                _this.setErrorState('Possible duplicate, the resource already exists!');
 
                 return _context.abrupt("return");
 
@@ -174,7 +174,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 return (0, _streamToArray.default)(sample_stream);
 
               case 40:
-                sample = _context.sent;
+                sample = _context.sent.slice(0, 30);
                 //get column names for table
                 column_names = sample[0]; //first row is the column names
 
@@ -249,7 +249,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
                   resolve({
                     validFile: false,
-                    errorMsg: 'File type not supported! Please upload a CSV file.',
+                    errorMsg: 'File Type not supported! Please upload a CSV file',
                     file: undefined
                   });
                   return _context3.abrupt("return");
@@ -301,7 +301,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                     console.log(error);
                     resolve({
                       validFile: false,
-                      errorMsg: 'An error occurred when trying to load the file!'
+                      errorMsg: 'An error occured when trying to load the file!'
                     });
                   });
                   _context3.next = 26;
@@ -317,7 +317,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
                   resolve({
                     validFile: false,
-                    errorMsg: 'File type not supported! Please upload a CSV file.',
+                    errorMsg: 'File Type not supported! Please upload a CSV file',
                     file: {}
                   });
                   return _context3.abrupt("return");
@@ -330,7 +330,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
                   resolve({
                     validFile: false,
-                    errorMsg: 'The CSV file is empty! Please upload a CSV file with content.',
+                    errorMsg: 'CSV file is empty! Please upload a CSV file with contents',
                     file: {}
                   });
                   return _context3.abrupt("return");
@@ -477,7 +477,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                     success: true
                   });
                 }).catch(function (error) {
-                  console.error('The upload failed with the following error: ' + error);
+                  console.error('Upload failed with error: ' + error);
 
                   _this.setState({
                     error: true,
@@ -488,7 +488,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                     loading: false,
                     success: false,
                     error: true,
-                    errorMsg: "The upload failed with the following error: ".concat(error.message)
+                    errorMsg: "Upload failed with error: ".concat(error.message)
                   });
                 });
               }
@@ -584,7 +584,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
         circleOneStroke: "#d9edfe",
         circleTwoStroke: '#7ea9e1' // timeRemaining={timeRemaining}
 
-      }), /*#__PURE__*/_react.default.createElement("h2", null, success && !fileExists && !error && 'File uploaded successfully.', fileExists && 'File uploaded successfully.', error && 'Upload failed.'))));
+      }), /*#__PURE__*/_react.default.createElement("h2", null, success && !fileExists && !error && 'File uploaded successfully', error && 'Upload failed'))));
     }
   }]);
 
