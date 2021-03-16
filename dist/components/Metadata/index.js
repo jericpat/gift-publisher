@@ -55,7 +55,7 @@ var Metadata = function Metadata(_ref) {
     name: "description",
     id: "description",
     placeholder: "Enter a description for your dataset",
-    value: dataset.description || "",
+    value: dataset.description || '',
     onChange: function onChange(e) {
       handleChange(e);
     },
@@ -74,7 +74,7 @@ var Metadata = function Metadata(_ref) {
     name: "tags",
     id: "tags",
     placeholder: "Finance, Budget",
-    value: dataset.tags || "",
+    value: dataset.tags || '',
     onChange: function onChange(e) {
       handleChange(e);
     },
@@ -82,7 +82,7 @@ var Metadata = function Metadata(_ref) {
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "tags"
-  }, " Tags")), /*#__PURE__*/_react.default.createElement("div", {
+  }, ' ', "Tags")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form-grp3"
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
@@ -90,7 +90,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input",
     name: "govt_level",
     id: "govt_level",
-    value: dataset.govt_level || "",
+    value: dataset.govt_level || '',
     onChange: function onChange(e) {
       handleChange(e);
     },
@@ -114,7 +114,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("State own enterprises", "disaggregation"),
+    checked: isCheck('State own enterprises', 'disaggregation'),
     id: "dgg_state",
     name: "disaggregation",
     value: "State own enterprises",
@@ -127,7 +127,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("Public investments", "disaggregation"),
+    checked: isCheck('Public investments', 'disaggregation'),
     id: "dgg_pub_inv",
     name: "disaggregation",
     value: "Public investments",
@@ -140,7 +140,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("Public programs", "disaggregation"),
+    checked: isCheck('Public programs', 'disaggregation'),
     id: "dgg_pub_prog",
     name: "disaggregation",
     value: "Public programs",
@@ -153,7 +153,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("Line item", "disaggregation"),
+    checked: isCheck('Line item', 'disaggregation'),
     id: "dgg_line",
     name: "disaggregation",
     value: "Line item",
@@ -168,20 +168,20 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("Quarterly Reports", "budget_stage"),
+    checked: isCheck('Quarterly reports', 'budget_stage'),
     id: "budget_qt",
     name: "budget_stage",
-    value: "Quarterly Reports",
+    value: "Quarterly reports",
     onChange: function onChange(e) {
       handleChange(e);
     }
   }), /*#__PURE__*/_react.default.createElement("label", {
     htmlFor: "budget_qt"
-  }, " Quarterly Reports")), /*#__PURE__*/_react.default.createElement("div", {
+  }, " Quarterly reports")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("Year-end", "budget_stage"),
+    checked: isCheck('Year-end', 'budget_stage'),
     id: "budget_yr",
     name: "budget_stage",
     value: "Year-end",
@@ -194,7 +194,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("Proposed", "budget_stage"),
+    checked: isCheck('Proposed', 'budget_stage'),
     id: "budget_prop",
     name: "budget_stage",
     value: "Proposed",
@@ -207,7 +207,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck("Enacted", "budget_stage"),
+    checked: isCheck('Enacted', 'budget_stage'),
     id: "budget_st",
     name: "budget_stage",
     value: "Enacted",
@@ -236,7 +236,7 @@ var Metadata = function Metadata(_ref) {
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "author_website"
-  }, "Author's Website")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "Author's website")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
@@ -250,7 +250,7 @@ var Metadata = function Metadata(_ref) {
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "author_email"
-  }, "Author's Email Address"))), /*#__PURE__*/_react.default.createElement("div", {
+  }, "Author's email address"))), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
@@ -267,7 +267,7 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "pub_institutional_name"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), " Publishers' institutional name")), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("h1", {
+  }, "*"), " Publisher's institutional name")), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("h1", {
     className: "metadata-section-title"
   }, /*#__PURE__*/_react.default.createElement("b", null, "Location")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
@@ -277,7 +277,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input",
     name: "continent",
     id: "continent",
-    value: dataset.continent || "",
+    value: dataset.continent || '',
     onChange: function onChange(e) {
       handleChange(e);
     },
@@ -299,7 +299,9 @@ var Metadata = function Metadata(_ref) {
   }, "Australia")), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "continent"
-  }, "Continent")), /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "ast-important"
+  }, "*"), " Continent")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
@@ -321,7 +323,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input",
     name: "country",
     id: "country",
-    value: dataset.country || "",
+    value: dataset.country || '',
     onChange: function onChange(e) {
       handleChange(e);
     }
@@ -359,7 +361,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input",
     name: "periodicity",
     id: "periodicity",
-    value: dataset.periodicity || "",
+    value: dataset.periodicity || '',
     onChange: function onChange(e) {
       handleChange(e);
     },
@@ -389,7 +391,7 @@ var Metadata = function Metadata(_ref) {
     name: "years_included",
     id: "years_included",
     placeholder: "2015, 2016, 2017, 2005",
-    value: dataset.years_included || "",
+    value: dataset.years_included || '',
     onChange: function onChange(e) {
       handleChange(e);
     },
@@ -397,7 +399,7 @@ var Metadata = function Metadata(_ref) {
   }), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "years_included"
-  }, " Years included"))), /*#__PURE__*/_react.default.createElement("h1", {
+  }, ' ', "Years included"))), /*#__PURE__*/_react.default.createElement("h1", {
     className: "metadata-section-title"
   }, /*#__PURE__*/_react.default.createElement("b", null, "Fiscal Period")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
@@ -418,7 +420,7 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "start_date"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), " Starting date (month-day-year)")), /*#__PURE__*/_react.default.createElement("div", {
+  }, "*"), " Starting date (month/day/year)")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     className: "metadata-input__input",
@@ -435,7 +437,7 @@ var Metadata = function Metadata(_ref) {
     htmlFor: "end_date"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "ast-important"
-  }, "*"), " Ending date (month-day-year)"))), /*#__PURE__*/_react.default.createElement("h1", {
+  }, "*"), " Ending date (month/day/year)"))), /*#__PURE__*/_react.default.createElement("h1", {
     className: "metadata-section-title"
   }, /*#__PURE__*/_react.default.createElement("b", null, "Encoding and file format")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form"
@@ -445,7 +447,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input",
     name: "encoding",
     id: "encoding",
-    value: dataset.encoding || "",
+    value: dataset.encoding || '',
     onChange: function onChange(e) {
       handleChange(e);
     },

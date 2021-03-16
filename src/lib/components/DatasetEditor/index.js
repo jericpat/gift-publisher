@@ -175,6 +175,12 @@ export class DatasetEditor extends React.Component {
           metadata: temp_dataset,
           path,
         },
+      }).then((response) => {
+        this.setState({ dataset: temp_dataset, resource: {} });
+        alert("The resource has been removed successfully.");
+      }).catch((error) => {
+        console.log(error);
+        alert("Error when removing the resource!");
       })
         .then((response) => {
           this.setState({ dataset: temp_dataset, resource: {} });
@@ -250,6 +256,13 @@ export class DatasetEditor extends React.Component {
         metadata: this.state.dataset,
         description: this.state.dataset.description,
       },
+    }).then((response) => {
+      this.setState({ saveButtonText: "Save" });
+      alert("Uploaded successfully.");
+      this.setState({ currentStep: 0 });
+    }).catch((error) => {
+      console.log(error);
+      alert("An Error occurred when uploading the dataset!");
     })
       .then((response) => {
         this.setState({ saveButtonText: "Save" });

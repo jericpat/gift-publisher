@@ -205,6 +205,16 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
             resource: {}
           });
 
+          alert("The resource has been removed successfully.");
+        }).catch(function (error) {
+          console.log(error);
+          alert("Error when removing the resource!");
+        }).then(function (response) {
+          _this.setState({
+            dataset: temp_dataset,
+            resource: {}
+          });
+
           alert("Resource has been removed successfully");
         }).catch(function (error) {
           console.log(error);
@@ -302,6 +312,19 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
                   metadata: _this.state.dataset,
                   description: _this.state.dataset.description
                 }
+              }).then(function (response) {
+                _this.setState({
+                  saveButtonText: "Save"
+                });
+
+                alert("Uploaded successfully.");
+
+                _this.setState({
+                  currentStep: 0
+                });
+              }).catch(function (error) {
+                console.log(error);
+                alert("An Error occurred when uploading the dataset!");
               }).then(function (response) {
                 _this.setState({
                   saveButtonText: "Save"
