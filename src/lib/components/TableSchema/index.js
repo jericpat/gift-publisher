@@ -6,6 +6,7 @@ import types from '../../db/types.json';
 import osTypes from '../../db/os-types.json';
 import osTypesDesc from '../../db/os-type-descriptions.json';
 
+import './TableSchema.css';
 
 const TableSchema = (props) => {
   const [schema, setSchema] = useState(props.schema);
