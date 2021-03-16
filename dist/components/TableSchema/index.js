@@ -21,8 +21,6 @@ var _osTypes = _interopRequireDefault(require("../../db/os-types.json"));
 
 var _osTypeDescriptions = _interopRequireDefault(require("../../db/os-type-descriptions.json"));
 
-require("./TableSchema.css");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
