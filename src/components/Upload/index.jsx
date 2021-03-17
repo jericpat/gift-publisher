@@ -35,7 +35,7 @@ class Upload extends React.Component {
     let path = "";
     if (event.target.type == "file" && event.target.files.length > 0) {
       selectedFile = event.target.files[0];
-      path = `data/${selectedFile.name}`;
+      path = `data/${selectedFile.name}`; //path property in data package resource
       this.setState({ uploadedFileType: "file" });
     } else {
       selectedFile = event.target.value;
@@ -57,10 +57,11 @@ class Upload extends React.Component {
       return;
     }
 
-    formattedSize = onFormatBytes(file.size);
+    formattedSize = onFormatBytes(file.size || 0);
 
     let self = this;
     const hash = await file.hash("sha256", (progress) => {
+      progress = progress || 0
       self.onHashProgress(progress);
     });
 
@@ -130,13 +131,15 @@ class Upload extends React.Component {
         if (fileExt != "csv") {
           resolve({
             validFile: false,
-            errorMsg: "File Type not supported! Please upload a CSV file",
+            errorMsg:
+              "File Type not supported! Please ensure specified url links to a CSV file",
             file: undefined,
           });
           return;
         }
         fetch(selectedFile)
           .then(async (resp) => {
+            console.log(resp);
             let file;
             try {
               file = data.open(selectedFile);
@@ -150,7 +153,7 @@ class Upload extends React.Component {
               console.log(error);
               resolve({
                 validFile: false,
-                errorMsg: "An error occurred when trying to load the file!",
+                errorMsg: "An error occurred when trying to download the file!",
                 file,
               });
             }
@@ -159,7 +162,7 @@ class Upload extends React.Component {
             console.log(error);
             resolve({
               validFile: false,
-              errorMsg: "An error occured when trying to load the file!",
+              errorMsg: "An error occured when trying to download the file!",
             });
           });
       } else {
@@ -303,7 +306,6 @@ class Upload extends React.Component {
         error: false,
         success: false,
       });
-
       client
         .upload(
           resource,
