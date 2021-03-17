@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from "react";
-import Select from 'react-select'
+import Select from "react-select";
 import PropTypes from "prop-types";
 import { useTable } from "react-table";
 import types from "../../db/types.json";
 import osTypes from "../../db/os-types.json";
 import osTypesDesc from "../../db/os-type-descriptions.json";
 
-
 import "./TableSchema.css";
 
 const TableSchema = (props) => {
   const [schema, setSchema] = useState(props.schema);
   //add 2 to the length of the schema to take account of description and tittle field
-  const [unfilledRichTypes, setUnfilledRichTypes] = useState((props.schema.fields.length+2) - 1);
-  const [isDescription, setDescription] = useState(false);
-  const [isTitle, setTittle] = useState(false);
+  const [unfilledRichTypes, setUnfilledRichTypes] = useState(
+    props.schema.fields.length * 3
+  );
 
   useEffect(() => {
-    if (resourceHasRichType(props.dataset)) {
-      props.handleRichType(0)
+    if (
+      props.dataset.resources.length > 1 &&
+      resourceHasRichType(props.dataset)
+    ) {
+      props.handleRichType(0);
     }
-  }, [])
+  }, []);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const data = React.useMemo(() => [...props.data], [schema]);
 
@@ -40,48 +42,40 @@ const TableSchema = (props) => {
     prepareRow,
   } = useTable({ columns, data });
 
-
   const handleChange = (event, key, index) => {
-    
     const newSchema = { ...schema };
     if (key == "columnType") {
-      setUnfilledRichTypes(unfilledRichTypes - 1)
+      setUnfilledRichTypes(unfilledRichTypes - 1);
+      props.handleRichType(unfilledRichTypes - 1);
       newSchema.fields[index][key] = event.value;
       setSchema(newSchema);
-      props.handleRichType(unfilledRichTypes)
-    } else {
-      if (key === "description" && !isDescription) {
-        setDescription(true);
-        setUnfilledRichTypes(unfilledRichTypes - 1)
-        props.handleRichType(unfilledRichTypes)
-      }
-
-      if (key === "title" && !isTitle) {
-        setTittle(true);
-        setUnfilledRichTypes(unfilledRichTypes - 1)
-        props.handleRichType(unfilledRichTypes)
-      }
-      
+    } else if (key == "description") {
+      setUnfilledRichTypes(unfilledRichTypes - 1);
+      props.handleRichType(unfilledRichTypes - 1);
+      newSchema.fields[index][key] = event.target.value;
+      setSchema(newSchema);
+    } else if (key == "title") {
+      setUnfilledRichTypes(unfilledRichTypes - 1);
+      props.handleRichType(unfilledRichTypes - 1);
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
-
   };
 
   const resourceHasRichType = (dataset) => {
-    if (Object.keys(dataset).includes("resources") && dataset.resources.length > 0) {
-      const fields = dataset.resources[0].schema.fields
+    if (
+      Object.keys(dataset).includes("resources") &&
+      dataset.resources.length > 0
+    ) {
+      const fields = dataset.resources[0].schema.fields;
       const columnTypes = fields.filter((field) => {
-        return Object.keys(field).includes("columnType")
-      })
+        return Object.keys(field).includes("columnType");
+      });
 
-      const hasRichTypes = columnTypes.length == fields.length ? true : false
-      return hasRichTypes
+      const hasRichTypes = columnTypes.length == fields.length ? true : false;
+      return hasRichTypes;
     }
-
-
-  }
-
+  };
 
   //if the the user upload a new file, will update the state
   //and render with the new values
@@ -90,16 +84,14 @@ const TableSchema = (props) => {
   }, [props.schema]);
 
   //set column types search input box
-  let ctypeKeys = Object.keys(osTypes)
+  let ctypeKeys = Object.keys(osTypes);
   const columnTypeOptions = ctypeKeys.map((key) => {
-    let value = key
-    let label = value + " " + "➜" + " " + osTypesDesc[key].description
-    return { label, value }
-  })
-
+    let value = key;
+    let label = value + " " + "➜" + " " + osTypesDesc[key].description;
+    return { label, value };
+  });
 
   const renderEditSchemaField = (key) => {
-
     if (key === "type") {
       return schema.fields.map((item, index) => (
         <td key={`schema-type-field-${key}-${index}`}>
@@ -127,21 +119,26 @@ const TableSchema = (props) => {
       menu: (provided, state) => ({
         ...provided,
         width: state.selectProps.width,
-        borderBottom: '1px dotted pink',
+        borderBottom: "1px dotted pink",
         color: state.selectProps.menuColor,
       }),
       singleValue: (provided, state) => {
         const opacity = state.isDisabled ? 0.5 : 1;
-        const transition = 'opacity 300ms';
+        const transition = "opacity 300ms";
         return { ...provided, opacity, transition };
-      }
-    }
+      },
+    };
 
     if (key === "columnType") {
-      if (resourceHasRichType(props.dataset)) {
-        const existingRichTypes = props.dataset.resources[0].schema.fields.map((field) => {
-          return field.columnType
-        })
+      if (
+        props.dataset.resources.length > 1 &&
+        resourceHasRichType(props.dataset)
+      ) {
+        const existingRichTypes = props.dataset.resources[0].schema.fields.map(
+          (field) => {
+            return field.columnType;
+          }
+        );
         //The schema already exists, and we assume columns have the same richTypes. Prefill and set to uneditable
         return existingRichTypes.map((item, index) => (
           <td key={`schema-type-field-${key}-${index}`}>
@@ -153,19 +150,19 @@ const TableSchema = (props) => {
             />
           </td>
         ));
-
       } else {
         return schema.fields.map((item, index) => (
           <td key={`schema-type-field-${key}-${index}`}>
-            <Select styles={customStyles}
+            <Select
+              styles={customStyles}
               options={columnTypeOptions}
-              width='200px'
-              menuColor='red'
-              onChange={(event) => handleChange(event, key, index)} />
+              width="200px"
+              menuColor="red"
+              onChange={(event) => handleChange(event, key, index)}
+            />
           </td>
         ));
       }
-
     }
 
     return schema.fields.map((item, index) => (

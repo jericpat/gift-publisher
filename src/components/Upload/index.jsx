@@ -61,7 +61,6 @@ class Upload extends React.Component {
 
     let self = this;
     const hash = await file.hash("sha256", (progress) => {
-      progress = progress || 0
       self.onHashProgress(progress);
     });
 
@@ -344,11 +343,11 @@ class Upload extends React.Component {
       success,
       fileExists,
       error,
-      timeRemaining,
       selectedFile,
       formattedSize,
       hashInProgress,
       uploadInProgress,
+      uploadedFileType,
     } = this.state;
     return (
       <div>
@@ -356,22 +355,27 @@ class Upload extends React.Component {
           onChangeHandler={this.onChangeHandler}
           onChangeUrl={this.onChangeHandler}
         />
-
-        {hashInProgress && (
+        {uploadedFileType == "url" ? (
           <div>
-            <>
-              <div>
-                <p className="upload-file-name">Computing file hash...</p>
-              </div>
-              <ProgressBar
-                progress={Math.round(this.state.hashLoaded)}
-                size={100}
-                strokeWidth={5}
-                circleOneStroke="#d9edfe"
-                circleTwoStroke={"#7ea9e1"}
-              />
-            </>
+            <p className="upload-file-name">Retrieving file from url...</p>
           </div>
+        ) : (
+          hashInProgress && (
+            <div>
+              <>
+                <div>
+                  <p className="upload-file-name">Computing file hash...</p>
+                </div>
+                <ProgressBar
+                  progress={Math.round(this.state.hashLoaded)}
+                  size={100}
+                  strokeWidth={5}
+                  circleOneStroke="#d9edfe"
+                  circleTwoStroke={"#7ea9e1"}
+                />
+              </>
+            </div>
+          )
         )}
         {uploadInProgress && (
           <div>

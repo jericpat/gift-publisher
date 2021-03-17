@@ -208,13 +208,6 @@ export class DatasetEditor extends React.Component {
     if (status.success && !status.loading) {
       this.nextScreen();
     } else if (!status.success && status.error) {
-      // const dataset = { ...this.state.dataset };
-      // if ("resources" in dataset && dataset["resources"].length > 0) {
-      //   dataset.resources.pop();
-      // }
-      // console.log("Here", dataset);
-
-      // this.setState({ dataset });
       this.prevScreen();
     }
 
