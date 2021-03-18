@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import './InputFile.css'
-
+import upload from "../../assets/upload.png"
 const InputFile = ({ onChangeHandler }) => {
 
       return (
@@ -14,7 +14,7 @@ const InputFile = ({ onChangeHandler }) => {
                 />
                 <img
                     className="upload-area__drop__icon"
-                    src="https://www.shareicon.net/data/256x256/2015/09/05/96087_cloud_512x512.png"
+                    src={upload}
                     alt="upload-icon"
                 />
                 <span className="upload-area__drop__text">
