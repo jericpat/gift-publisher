@@ -17,7 +17,7 @@ const TableSchema = (props) => {
 
   useEffect(() => {
     if (
-      props.dataset.resources.length > 1 &&
+      props.dataset.resources && props.dataset.resources.length > 1 &&
       resourceHasRichType(props.dataset)
     ) {
       props.handleRichType(0);
@@ -131,7 +131,7 @@ const TableSchema = (props) => {
 
     if (key === "columnType") {
       if (
-        props.dataset.resources.length > 1 &&
+        props.dataset.resources && props.dataset.resources.length > 1 &&
         resourceHasRichType(props.dataset)
       ) {
         const existingRichTypes = props.dataset.resources[0].schema.fields.map(

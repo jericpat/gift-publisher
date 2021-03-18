@@ -138,7 +138,6 @@ class Upload extends React.Component {
         }
         fetch(selectedFile)
           .then(async (resp) => {
-            console.log(resp);
             let file;
             try {
               file = data.open(selectedFile);
