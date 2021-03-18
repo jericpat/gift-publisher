@@ -3,7 +3,7 @@ import { Client } from "giftless-client";
 import * as data from "frictionless.js";
 import ProgressBar from "../ProgressBar";
 import { onFormatBytes, isValidURL } from "../../utils";
-import { Choose } from "datapub";
+import Choose from "../Choose";
 import toArray from "stream-to-array";
 import "./Upload.css";
 class Upload extends React.Component {
@@ -352,7 +352,6 @@ class Upload extends React.Component {
       <div>
         <Choose
           onChangeHandler={this.onChangeHandler}
-          onChangeUrl={this.onChangeHandler}
         />
         {uploadedFileType == "url" ? (
           <div>
