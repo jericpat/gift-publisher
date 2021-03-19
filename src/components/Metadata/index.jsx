@@ -47,6 +47,20 @@ const Metadata = ({ dataset, handleChange }) => {
       </label>
       </div>
       <div className="metadata-input">
+        <input
+          className="metadata-input__input"
+          type="url"
+          name="image"
+          id="image"
+          placeholder="https://mylogo.png"
+          value={dataset.image}
+          onChange={(e) => { handleChange(e) }}
+        />
+        <label className="metadata-label" htmlFor="title">
+         Logo Url
+        </label>
+      </div>
+      <div className="metadata-input">
         <textarea
           className="metadata-input__textarea"
           type="text"
