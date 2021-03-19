@@ -8,7 +8,9 @@ const fileToCopy = {
   ProgressBar: 'import "./ProgressBar.css";',
   TablePreview:  undefined,
   TableSchema: "import './TableSchema.css';",
-  Upload: "import './Upload.css';",
+  Upload: 'import "./Upload.css";',
+  Choose: 'import "./Choose.css";',
+  InputFile: '"./InputFile.css";',
   ResourceList: undefined
 }
 
@@ -52,14 +54,17 @@ const stringIndex = ['import Upload from "./components/Upload";',
                     'import Metadata from "./components/Metadata";',
                     'import "./App.css";',
                     'import ReactLogo from "./progressBar.svg";',
-                    '<img src={ReactLogo} width="50%" className="Img" />'];
+                    '<img src={ReactLogo} width="50%" className="Img" />',
+                  'import upload from "../../assets/upload.png"'];
 
 const appComponents = [
   'import Upload from "../Upload";',
   'import TablePreview from "../TablePreview";',
   'import TableSchema from "../TableSchema";',
   'import ResourceList from "../ResourceList"',
-  'import Metadata from "../Metadata";'
+  'import Metadata from "../Metadata";',
+  'import InputFile from "../InputFile";',
+  'import Choose from "../Choose";'
 ];
 
 const startIndex = appContent.indexOf(stringIndex[0]);

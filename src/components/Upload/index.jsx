@@ -1,11 +1,11 @@
-import React from 'react';
-import { Client } from 'giftless-client';
-import * as data from 'frictionless.js';
-import ProgressBar from '../ProgressBar';
-import { onFormatBytes, isValidURL } from '../../utils';
-import { Choose } from 'datapub-nocss';
-import toArray from 'stream-to-array';
-import './Upload.css';
+import React from "react";
+import { Client } from "giftless-client";
+import * as data from "frictionless.js";
+import ProgressBar from "../ProgressBar";
+import { onFormatBytes, isValidURL } from "../../utils";
+import Choose from "../Choose";
+import toArray from "stream-to-array";
+import "./Upload.css";
 class Upload extends React.Component {
   constructor(props) {
     super(props);
@@ -35,8 +35,8 @@ class Upload extends React.Component {
     let path = '';
     if (event.target.type == 'file' && event.target.files.length > 0) {
       selectedFile = event.target.files[0];
-      path = `data/${selectedFile.name}`;
-      this.setState({ uploadedFileType: 'file' });
+      path = `data/${selectedFile.name}`; //path property in data package resource
+      this.setState({ uploadedFileType: "file" });
     } else {
       selectedFile = event.target.value;
       if (!isValidURL(selectedFile)) {
@@ -57,7 +57,7 @@ class Upload extends React.Component {
       return;
     }
 
-    formattedSize = onFormatBytes(file.size);
+    formattedSize = onFormatBytes(file.size || 0);
 
     let self = this;
     const hash = await file.hash('sha256', (progress) => {
@@ -130,7 +130,8 @@ class Upload extends React.Component {
         if (fileExt != 'csv') {
           resolve({
             validFile: false,
-            errorMsg: 'File Type not supported! Please upload a CSV file',
+            errorMsg:
+              "File Type not supported! Please ensure specified url links to a CSV file",
             file: undefined,
           });
           return;
@@ -150,7 +151,7 @@ class Upload extends React.Component {
               console.log(error);
               resolve({
                 validFile: false,
-                errorMsg: 'An error occurred when trying to load the file!',
+                errorMsg: "An error occurred when trying to download the file!",
                 file,
               });
             }
@@ -159,7 +160,7 @@ class Upload extends React.Component {
             console.log(error);
             resolve({
               validFile: false,
-              errorMsg: 'An error occured when trying to load the file!',
+              errorMsg: "An error occured when trying to download the file!",
             });
           });
       } else {
@@ -303,7 +304,6 @@ class Upload extends React.Component {
         error: false,
         success: false,
       });
-
       client
         .upload(
           resource,
@@ -342,34 +342,38 @@ class Upload extends React.Component {
       success,
       fileExists,
       error,
-      timeRemaining,
       selectedFile,
       formattedSize,
       hashInProgress,
       uploadInProgress,
+      uploadedFileType,
     } = this.state;
     return (
       <div>
         <Choose
           onChangeHandler={this.onChangeHandler}
-          onChangeUrl={this.onChangeHandler}
         />
-
-        {hashInProgress && (
+        {uploadedFileType == "url" ? (
           <div>
-            <>
-              <div>
-                <p className='upload-file-name'>Computing file hash...</p>
-              </div>
-              <ProgressBar
-                progress={Math.round(this.state.hashLoaded)}
-                size={100}
-                strokeWidth={5}
-                circleOneStroke='#d9edfe'
-                circleTwoStroke={'#7ea9e1'}
-              />
-            </>
+            <p className="upload-file-name">Retrieving file from url...</p>
           </div>
+        ) : (
+          hashInProgress && (
+            <div>
+              <>
+                <div>
+                  <p className="upload-file-name">Computing file hash...</p>
+                </div>
+                <ProgressBar
+                  progress={Math.round(this.state.hashLoaded)}
+                  size={100}
+                  strokeWidth={5}
+                  circleOneStroke="#d9edfe"
+                  circleTwoStroke={"#7ea9e1"}
+                />
+              </>
+            </div>
+          )
         )}
         {uploadInProgress && (
           <div>

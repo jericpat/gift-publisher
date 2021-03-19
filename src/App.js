@@ -61,7 +61,7 @@ export default class DatasetEditor extends React.Component {
     resource["format"] = fileResource.format;
     resource["schema"] = fileResource.schema;
     resource["encoding"] = fileResource.encoding;
-    resource["mediatype"] = fileResource.type;
+    resource["mediatype"] = "text/csv"
     resource["name"] = fileResource.name;
     resource["dialect"] = fileResource.dialect;
     resource["path"] = fileResource.path;
@@ -78,7 +78,7 @@ export default class DatasetEditor extends React.Component {
   //set state of rich type field. If all rich type fields have been filled,
   // then activate the next button in the Table Schema screen
   handleRichTypeCount = (unfilledRichTypes) => {
-    if (unfilledRichTypes == 0) {
+    if (unfilledRichTypes <= 0) {
       this.setState({
         richTypeFilled: true,
       });
@@ -213,13 +213,6 @@ export default class DatasetEditor extends React.Component {
     if (status.success && !status.loading) {
       this.nextScreen();
     } else if (!status.success && status.error) {
-      // const dataset = { ...this.state.dataset };
-      // if ("resources" in dataset && dataset["resources"].length > 0) {
-      //   dataset.resources.pop();
-      // }
-      // console.log("Here", dataset);
-
-      // this.setState({ dataset });
       this.prevScreen();
     }
 
@@ -249,7 +242,6 @@ export default class DatasetEditor extends React.Component {
 
   handleSaveDataset = async () => {
     this.setState({ saveButtonText: "Saving..." });
-
     axios({
       method: "post",
       url: `/api/dataset/${this.state.dataset.name}`,
