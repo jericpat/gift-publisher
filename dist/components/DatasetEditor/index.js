@@ -27,6 +27,10 @@ var _ResourceList = _interopRequireDefault(require("../ResourceList"));
 
 var _Metadata = _interopRequireDefault(require("../Metadata"));
 
+var _InputFile = _interopRequireDefault(require("../InputFile"));
+
+var _Choose = _interopRequireDefault(require("../Choose"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -53,7 +57,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
@@ -72,7 +76,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
     _this = _super.call(this, props);
 
     _defineProperty(_assertThisInitialized(_this), "handleRichTypeCount", function (unfilledRichTypes) {
-      if (unfilledRichTypes == 0) {
+      if (unfilledRichTypes <= 0) {
         _this.setState({
           richTypeFilled: true
         });
@@ -248,12 +252,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       if (status.success && !status.loading) {
         _this.nextScreen();
       } else if (!status.success && status.error) {
-        // const dataset = { ...this.state.dataset };
-        // if ("resources" in dataset && dataset["resources"].length > 0) {
-        //   dataset.resources.pop();
-        // }
-        // console.log("Here", dataset);
-        // this.setState({ dataset });
         _this.prevScreen();
       } //clears error message after 6 seconds
 
@@ -400,7 +398,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       resource["format"] = fileResource.format;
       resource["schema"] = fileResource.schema;
       resource["encoding"] = fileResource.encoding;
-      resource["mediatype"] = fileResource.type;
+      resource["mediatype"] = "text/csv";
       resource["name"] = fileResource.name;
       resource["dialect"] = fileResource.dialect;
       resource["path"] = fileResource.path;

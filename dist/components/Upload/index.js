@@ -17,7 +17,7 @@ var _ProgressBar = _interopRequireDefault(require("../ProgressBar"));
 
 var _utils = require("../../utils");
 
-var _datapubNocss = require("datapub-nocss");
+var _Choose = _interopRequireDefault(require("../Choose"));
 
 var _streamToArray = _interopRequireDefault(require("stream-to-array"));
 
@@ -47,7 +47,7 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
@@ -82,10 +82,10 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 }
 
                 selectedFile = event.target.files[0];
-                path = "data/".concat(selectedFile.name);
+                path = "data/".concat(selectedFile.name); //path property in data package resource
 
                 _this.setState({
-                  uploadedFileType: 'file'
+                  uploadedFileType: "file"
                 });
 
                 _context.next = 14;
@@ -130,7 +130,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                 return _context.abrupt("return");
 
               case 23:
-                formattedSize = (0, _utils.onFormatBytes)(file.size);
+                formattedSize = (0, _utils.onFormatBytes)(file.size || 0);
                 self = _assertThisInitialized(_this);
                 _context.next = 27;
                 return file.hash('sha256', function (progress) {
@@ -249,7 +249,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
 
                   resolve({
                     validFile: false,
-                    errorMsg: 'File Type not supported! Please upload a CSV file',
+                    errorMsg: "File Type not supported! Please ensure specified url links to a CSV file",
                     file: undefined
                   });
                   return _context3.abrupt("return");
@@ -282,7 +282,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                               console.log(_context2.t0);
                               resolve({
                                 validFile: false,
-                                errorMsg: 'An error occurred when trying to load the file!',
+                                errorMsg: "An error occurred when trying to download the file!",
                                 file: file
                               });
 
@@ -301,7 +301,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                     console.log(error);
                     resolve({
                       validFile: false,
-                      errorMsg: 'An error occured when trying to load the file!'
+                      errorMsg: "An error occured when trying to download the file!"
                     });
                   });
                   _context3.next = 26;
@@ -557,22 +557,23 @@ var Upload = /*#__PURE__*/function (_React$Component) {
           success = _this$state3.success,
           fileExists = _this$state3.fileExists,
           error = _this$state3.error,
-          timeRemaining = _this$state3.timeRemaining,
           selectedFile = _this$state3.selectedFile,
           formattedSize = _this$state3.formattedSize,
           hashInProgress = _this$state3.hashInProgress,
-          uploadInProgress = _this$state3.uploadInProgress;
-      return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_datapubNocss.Choose, {
-        onChangeHandler: this.onChangeHandler,
-        onChangeUrl: this.onChangeHandler
-      }), hashInProgress && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
+          uploadInProgress = _this$state3.uploadInProgress,
+          uploadedFileType = _this$state3.uploadedFileType;
+      return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_Choose.default, {
+        onChangeHandler: this.onChangeHandler
+      }), uploadedFileType == "url" ? /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
+        className: "upload-file-name"
+      }, "Retrieving file from url...")) : hashInProgress && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
         className: "upload-file-name"
       }, "Computing file hash...")), /*#__PURE__*/_react.default.createElement(_ProgressBar.default, {
         progress: Math.round(this.state.hashLoaded),
         size: 100,
         strokeWidth: 5,
         circleOneStroke: "#d9edfe",
-        circleTwoStroke: '#7ea9e1'
+        circleTwoStroke: "#7ea9e1"
       }))), uploadInProgress && /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", {
         className: "upload-file-name"
       }, "Uploading ", selectedFile.name, "..."), /*#__PURE__*/_react.default.createElement("p", {

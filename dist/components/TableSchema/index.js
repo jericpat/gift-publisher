@@ -62,23 +62,13 @@ var TableSchema = function TableSchema(props) {
       setSchema = _useState2[1]; //add 2 to the length of the schema to take account of description and tittle field
 
 
-  var _useState3 = (0, _react.useState)(props.schema.fields.length + 2 - 1),
+  var _useState3 = (0, _react.useState)(props.schema.fields.length * 3),
       _useState4 = _slicedToArray(_useState3, 2),
       unfilledRichTypes = _useState4[0],
       setUnfilledRichTypes = _useState4[1];
 
-  var _useState5 = (0, _react.useState)(false),
-      _useState6 = _slicedToArray(_useState5, 2),
-      isDescription = _useState6[0],
-      setDescription = _useState6[1];
-
-  var _useState7 = (0, _react.useState)(false),
-      _useState8 = _slicedToArray(_useState7, 2),
-      isTitle = _useState8[0],
-      setTittle = _useState8[1];
-
   (0, _react.useEffect)(function () {
-    if (resourceHasRichType(props.dataset)) {
+    if (props.dataset.resources && props.dataset.resources.length > 1 && resourceHasRichType(props.dataset)) {
       props.handleRichType(0);
     }
   }, []); // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,34 +101,29 @@ var TableSchema = function TableSchema(props) {
   var handleChange = function handleChange(event, key, index) {
     var newSchema = _objectSpread({}, schema);
 
-    if (key == 'columnType') {
+    if (key == "columnType") {
       setUnfilledRichTypes(unfilledRichTypes - 1);
+      props.handleRichType(unfilledRichTypes - 1);
       newSchema.fields[index][key] = event.value;
       setSchema(newSchema);
-      props.handleRichType(unfilledRichTypes);
-    } else {
-      if (key === 'description' && !isDescription) {
-        setDescription(true);
-        setUnfilledRichTypes(unfilledRichTypes - 1);
-        props.handleRichType(unfilledRichTypes);
-      }
-
-      if (key === 'title' && !isTitle) {
-        setTittle(true);
-        setUnfilledRichTypes(unfilledRichTypes - 1);
-        props.handleRichType(unfilledRichTypes);
-      }
-
+    } else if (key == "description") {
+      setUnfilledRichTypes(unfilledRichTypes - 1);
+      props.handleRichType(unfilledRichTypes - 1);
+      newSchema.fields[index][key] = event.target.value;
+      setSchema(newSchema);
+    } else if (key == "title") {
+      setUnfilledRichTypes(unfilledRichTypes - 1);
+      props.handleRichType(unfilledRichTypes - 1);
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
   };
 
   var resourceHasRichType = function resourceHasRichType(dataset) {
-    if (Object.keys(dataset).includes('resources') && dataset.resources.length > 0) {
+    if (Object.keys(dataset).includes("resources") && dataset.resources.length > 0) {
       var fields = dataset.resources[0].schema.fields;
       var columnTypes = fields.filter(function (field) {
-        return Object.keys(field).includes('columnType');
+        return Object.keys(field).includes("columnType");
       });
       var hasRichTypes = columnTypes.length == fields.length ? true : false;
       return hasRichTypes;
@@ -154,7 +139,7 @@ var TableSchema = function TableSchema(props) {
   var ctypeKeys = Object.keys(_osTypes.default);
   var columnTypeOptions = ctypeKeys.map(function (key) {
     var value = key;
-    var label = value + ' ' + '➜' + ' ' + _osTypeDescriptions.default[key].description;
+    var label = value + " " + "➜" + " " + _osTypeDescriptions.default[key].description;
     return {
       label: label,
       value: value
@@ -162,7 +147,7 @@ var TableSchema = function TableSchema(props) {
   });
 
   var renderEditSchemaField = function renderEditSchemaField(key) {
-    if (key === 'type') {
+    if (key === "type") {
       return schema.fields.map(function (item, index) {
         return /*#__PURE__*/_react.default.createElement("td", {
           key: "schema-type-field-".concat(key, "-").concat(index)
@@ -186,13 +171,13 @@ var TableSchema = function TableSchema(props) {
       menu: function menu(provided, state) {
         return _objectSpread(_objectSpread({}, provided), {}, {
           width: state.selectProps.width,
-          borderBottom: '1px dotted pink',
+          borderBottom: "1px dotted pink",
           color: state.selectProps.menuColor
         });
       },
       singleValue: function singleValue(provided, state) {
         var opacity = state.isDisabled ? 0.5 : 1;
-        var transition = 'opacity 300ms';
+        var transition = "opacity 300ms";
         return _objectSpread(_objectSpread({}, provided), {}, {
           opacity: opacity,
           transition: transition
@@ -200,8 +185,8 @@ var TableSchema = function TableSchema(props) {
       }
     };
 
-    if (key === 'columnType') {
-      if (resourceHasRichType(props.dataset)) {
+    if (key === "columnType") {
+      if (props.dataset.resources && props.dataset.resources.length > 1 && resourceHasRichType(props.dataset)) {
         var existingRichTypes = props.dataset.resources[0].schema.fields.map(function (field) {
           return field.columnType;
         }); //The schema already exists, and we assume columns have the same richTypes. Prefill and set to uneditable
@@ -223,7 +208,7 @@ var TableSchema = function TableSchema(props) {
           }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
             styles: customStyles,
             options: columnTypeOptions,
-            width: "350px",
+            width: "200px",
             menuColor: "red",
             onChange: function onChange(event) {
               return handleChange(event, key, index);

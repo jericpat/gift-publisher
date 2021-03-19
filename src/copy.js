@@ -10,7 +10,7 @@ const fileToCopy = {
   TableSchema: "import './TableSchema.css';",
   Upload: 'import "./Upload.css";',
   Choose: 'import "./Choose.css";',
-  InputFile: '"./InputFile.css";',
+  InputFile: 'import "./InputFile.css";',
   ResourceList: undefined
 }
 
@@ -55,7 +55,7 @@ const stringIndex = ['import Upload from "./components/Upload";',
                     'import "./App.css";',
                     'import ReactLogo from "./progressBar.svg";',
                     '<img src={ReactLogo} width="50%" className="Img" />',
-                  'import upload from "../../assets/upload.png"'];
+                  'import upload from "../../assets/upload.png";'];
 
 const appComponents = [
   'import Upload from "../Upload";',

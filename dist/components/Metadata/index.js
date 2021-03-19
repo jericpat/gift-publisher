@@ -68,6 +68,21 @@ var Metadata = function Metadata(_ref) {
     className: "ast-important"
   }, "*"), " Description of the dataset")), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    className: "metadata-input__input",
+    type: "url",
+    name: "image",
+    id: "image",
+    placeholder: "https://mylogo.png",
+    value: dataset.image,
+    onChange: function onChange(e) {
+      handleChange(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("label", {
+    className: "metadata-label",
+    htmlFor: "title"
+  }, "Logo Url")), /*#__PURE__*/_react.default.createElement("div", {
+    className: "metadata-input"
   }, /*#__PURE__*/_react.default.createElement("textarea", {
     className: "metadata-input__textarea",
     type: "text",
