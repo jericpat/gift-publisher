@@ -22,12 +22,13 @@ const TableSchema = (props) => {
     props.schema.fields.length * 3
   );
 
+
   useEffect(() => {
     async function fetchTypes() {
-      let osTypes = await (await fetch(osTypesPath)).json();
-      let osTypeDesc = await (await fetch(osTypesDescPath)).json();
-      setUserOSTypes(osTypes);
-      setUserOSTypesDesc(osTypeDesc);
+      let uTypes = await (await fetch(osTypesPath)).json();
+      let uTypeDesc = await (await fetch(osTypesDescPath)).json();
+      setUserOSTypes(uTypes);
+      setUserOSTypesDesc(uTypeDesc);
     }
     fetchTypes();
   }, []);
@@ -104,8 +105,17 @@ const TableSchema = (props) => {
   //set column types search input box
   let ctypeKeys = Object.keys(userOSTypes);
   const columnTypeOptions = ctypeKeys.map((key) => {
+    let desc; 
+    let label;
     let value = key;
-    let label = value + " " + "➜" + " " + userOSTypesDesc[key].description;
+    if (userOSTypesDesc[key]){
+      desc = userOSTypesDesc[key]['description']
+      label = value + " " + "➜" + " " +  desc
+    }else{
+      desc = ""
+      label = value
+    }
+    
     return { label, value };
   });
 
