@@ -8,16 +8,36 @@ import osTypesDesc from '../../db/os-type-descriptions.json';
 
 import './TableSchema.css';
 
+const osTypesPath =
+  "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-types.json";
+const osTypesDescPath =
+  "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
+
+
+
 const TableSchema = (props) => {
+  const [userOSTypes, setUserOSTypes] = useState(osTypes); //set default value to local types in case of fetch issue
+  const [userOSTypesDesc, setUserOSTypesDesc] = useState(osTypesDesc); 
   const [schema, setSchema] = useState(props.schema);
-  //add 2 to the length of the schema to take account of description and tittle field
   const [unfilledRichTypes, setUnfilledRichTypes] = useState(
     props.schema.fields.length * 3
   );
 
+
+  useEffect(() => {
+    async function fetchTypes() {
+      let uTypes = await (await fetch(osTypesPath)).json();
+      let uTypeDesc = await (await fetch(osTypesDescPath)).json();
+      setUserOSTypes(uTypes);
+      setUserOSTypesDesc(uTypeDesc);
+    }
+    fetchTypes();
+  }, []);
+
   useEffect(() => {
     if (
-      props.dataset.resources && props.dataset.resources.length > 1 &&
+      props.dataset.resources &&
+      props.dataset.resources.length > 1 &&
       resourceHasRichType(props.dataset)
     ) {
       props.handleRichType(0);
@@ -84,10 +104,19 @@ const TableSchema = (props) => {
   }, [props.schema]);
 
   //set column types search input box
-  let ctypeKeys = Object.keys(osTypes);
+  let ctypeKeys = Object.keys(userOSTypes);
   const columnTypeOptions = ctypeKeys.map((key) => {
+    let desc; 
+    let label;
     let value = key;
-    let label = value + " " + "➜" + " " + osTypesDesc[key].description;
+    if (userOSTypesDesc[key]){
+      desc = userOSTypesDesc[key]['description']
+      label = value + " " + "➜" + " " +  desc
+    }else{
+      desc = ""
+      label = value
+    }
+    
     return { label, value };
   });
 
@@ -131,7 +160,8 @@ const TableSchema = (props) => {
 
     if (key === "columnType") {
       if (
-        props.dataset.resources && props.dataset.resources.length > 1 &&
+        props.dataset.resources &&
+        props.dataset.resources.length > 1 &&
         resourceHasRichType(props.dataset)
       ) {
         const existingRichTypes = props.dataset.resources[0].schema.fields.map(
