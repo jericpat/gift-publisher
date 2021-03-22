@@ -11,6 +11,7 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import upload from "../../assets/upload.png";
 var InputFile = function InputFile(_ref) {
   var onChangeHandler = _ref.onChangeHandler;
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -22,7 +23,7 @@ var InputFile = function InputFile(_ref) {
     onChange: onChangeHandler
   }), /*#__PURE__*/_react.default.createElement("img", {
     className: "upload-area__drop__icon",
-    src: upload,
+    src: "https://github.com/datopian/gift-publisher/raw/main/src/assets/upload.png",
     alt: "upload-icon"
   }), /*#__PURE__*/_react.default.createElement("span", {
     className: "upload-area__drop__text"

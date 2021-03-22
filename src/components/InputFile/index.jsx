@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./InputFile.css";
-import upload from "../../assets/upload.png";
+// import upload from "../../assets/upload.png";
+
 const InputFile = ({ onChangeHandler }) => {
 
       return (
@@ -14,7 +15,7 @@ const InputFile = ({ onChangeHandler }) => {
                 />
                 <img
                     className="upload-area__drop__icon"
-                    src={upload}
+                    src="https://github.com/datopian/gift-publisher/raw/main/src/assets/upload.png"
                     alt="upload-icon"
                 />
                 <span className="upload-area__drop__text">
