@@ -10,7 +10,7 @@ const fileToCopy = {
   TableSchema: "import './TableSchema.css';",
   Upload: 'import "./Upload.css";',
   Choose: 'import "./Choose.css";',
-  InputFile: 'import "./InputFile.css";',
+  InputFile: ['import "./InputFile.css";', 'import upload from "../../assets/upload.png";'],
   ResourceList: undefined
 }
 

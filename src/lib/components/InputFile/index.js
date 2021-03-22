@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import upload from "../../assets/upload.png";
 const InputFile = ({ onChangeHandler }) => {
 
       return (
