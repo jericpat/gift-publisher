@@ -9,8 +9,6 @@ var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _upload = _interopRequireDefault(require("../../assets/upload.png"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var InputFile = function InputFile(_ref) {
@@ -24,7 +22,7 @@ var InputFile = function InputFile(_ref) {
     onChange: onChangeHandler
   }), /*#__PURE__*/_react.default.createElement("img", {
     className: "upload-area__drop__icon",
-    src: _upload.default,
+    src: upload,
     alt: "upload-icon"
   }), /*#__PURE__*/_react.default.createElement("span", {
     className: "upload-area__drop__text"
