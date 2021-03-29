@@ -84,15 +84,10 @@ const Metadata = ({ dataset, handleChange }) => {
           }}
           rows={2}
         ></textarea>
-        <div className="tooltip">
-          <span class="tooltiptext">
-            Only letters are allowed: tags are single words separated by a comma
-          </span>
-          <label className="metadata-label" htmlFor="tags">
-            <span className="ast-important">*</span>
-            Tags
-          </label>
-        </div>
+        <label className="metadata-label" htmlFor="tags">
+          {" "}
+          Tags
+        </label>
       </div>
 
       <div className="metadata-form-grp3">
@@ -108,9 +103,10 @@ const Metadata = ({ dataset, handleChange }) => {
             required
           >
             <option value="">Select</option>
+            <option value="Municipal">Municipal</option>
             <option value="National">National</option>
-            <option value="Regional">Regional</option>
             <option value="Provincial">Provincial</option>
+            <option value="Regional">Regional</option>
             <option value="State-level">State-level</option>
           </select>
           <label className="metadata-label" htmlFor="govt_level">
