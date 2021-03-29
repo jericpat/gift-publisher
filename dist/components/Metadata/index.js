@@ -88,16 +88,23 @@ var Metadata = function Metadata(_ref) {
     type: "text",
     name: "tags",
     id: "tags",
+    required: true,
     placeholder: "Finance, Budget",
     value: dataset.tags || '',
     onChange: function onChange(e) {
       handleChange(e);
     },
     rows: 2
-  }), /*#__PURE__*/_react.default.createElement("label", {
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "tooltip"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    class: "tooltiptext"
+  }, "Only letters are allowed: tags are single words separated by a comma"), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "tags"
-  }, ' ', "Tags")), /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "ast-important"
+  }, "*"), "Tags"))), /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-form-grp3"
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "metadata-input"
@@ -113,12 +120,14 @@ var Metadata = function Metadata(_ref) {
   }, /*#__PURE__*/_react.default.createElement("option", {
     value: ""
   }, "Select"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Municipal"
+  }, "Municipal"), /*#__PURE__*/_react.default.createElement("option", {
     value: "National"
   }, "National"), /*#__PURE__*/_react.default.createElement("option", {
-    value: "Regional"
-  }, "Regional"), /*#__PURE__*/_react.default.createElement("option", {
     value: "Provincial"
   }, "Provincial"), /*#__PURE__*/_react.default.createElement("option", {
+    value: "Regional"
+  }, "Regional"), /*#__PURE__*/_react.default.createElement("option", {
     value: "State-level"
   }, "State-level")), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
@@ -129,7 +138,7 @@ var Metadata = function Metadata(_ref) {
     className: "metadata-input__input"
   }, /*#__PURE__*/_react.default.createElement("input", {
     type: "checkbox",
-    checked: isCheck('State own enterprises', 'disaggregation'),
+    checked: isCheck("State own enterprises", "disaggregation"),
     id: "dgg_state",
     name: "disaggregation",
     value: "State own enterprises",

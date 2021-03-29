@@ -61,10 +61,12 @@ const Metadata = ({ dataset, handleChange }) => {
           id="image"
           placeholder="https://mylogo.png"
           value={dataset.image}
-          onChange={(e) => { handleChange(e) }}
+          onChange={(e) => {
+            handleChange(e);
+          }}
         />
         <label className="metadata-label" htmlFor="title">
-         Logo Url
+          Logo Url
         </label>
       </div>
       <div className="metadata-input">
@@ -73,6 +75,7 @@ const Metadata = ({ dataset, handleChange }) => {
           type='text'
           name='tags'
           id='tags'
+          required
           placeholder='Finance, Budget'
           value={dataset.tags || ''}
           onChange={(e) => {
@@ -80,10 +83,15 @@ const Metadata = ({ dataset, handleChange }) => {
           }}
           rows={2}
         ></textarea>
-        <label className='metadata-label' htmlFor='tags'>
-          {' '}
-          Tags
-        </label>
+        <div className="tooltip">
+          <span class="tooltiptext">
+            Only letters are allowed: tags are single words separated by a comma
+          </span>
+          <label className="metadata-label" htmlFor="tags">
+            <span className="ast-important">*</span>
+            Tags
+          </label>
+        </div>
       </div>
 
       <div className='metadata-form-grp3'>
@@ -98,24 +106,25 @@ const Metadata = ({ dataset, handleChange }) => {
             }}
             required
           >
-            <option value=''>Select</option>
-            <option value='National'>National</option>
-            <option value='Regional'>Regional</option>
-            <option value='Provincial'>Provincial</option>
-            <option value='State-level'>State-level</option>
+            <option value="">Select</option>
+            <option value="Municipal">Municipal</option>
+            <option value="National">National</option>
+            <option value="Provincial">Provincial</option>
+            <option value="Regional">Regional</option>
+            <option value="State-level">State-level</option>
           </select>
-          <label className='metadata-label' htmlFor='govt_level'>
-            <span className='ast-important'>*</span> Level of government
+          <label className="metadata-label" htmlFor="govt_level">
+            <span className="ast-important">*</span> Level of government
           </label>
         </div>
         <div>
-          <div className='metadata-input__input'>
+          <div className="metadata-input__input">
             <input
-              type='checkbox'
-              checked={isCheck('State own enterprises', 'disaggregation')}
-              id='dgg_state'
-              name='disaggregation'
-              value='State own enterprises'
+              type="checkbox"
+              checked={isCheck("State own enterprises", "disaggregation")}
+              id="dgg_state"
+              name="disaggregation"
+              value="State own enterprises"
               onChange={(e) => {
                 handleChange(e);
               }}

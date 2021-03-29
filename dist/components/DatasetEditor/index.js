@@ -92,9 +92,10 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
 
       if (["tags", "years_included"].includes(name)) {
         var vals = value.split(",");
-        dataset[name] = vals.map(function (val) {
+        var values = vals.map(function (val) {
           return val.trim();
         });
+        dataset[name] = Array.from(new Set(values));
       } else if (["disaggregation", "budget_stage"].includes(name)) {
         var currentVals = dataset[name] || [];
 
