@@ -84,10 +84,15 @@ const Metadata = ({ dataset, handleChange }) => {
           }}
           rows={2}
         ></textarea>
-        <label className="metadata-label" htmlFor="tags">
-          {" "}
-          Tags
-        </label>
+        <div className="tooltip">
+          <span class="tooltiptext">
+            Only letters are allowed: tags are single words separated by a comma
+          </span>
+          <label className="metadata-label" htmlFor="tags">
+            <span className="ast-important">*</span>
+            Tags
+          </label>
+        </div>
       </div>
 
       <div className="metadata-form-grp3">
