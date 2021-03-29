@@ -43,6 +43,10 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.it
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -55,18 +59,76 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+var osTypesPath = "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-types.json";
+var osTypesDescPath = "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
+
 var TableSchema = function TableSchema(props) {
-  var _useState = (0, _react.useState)(props.schema),
+  var _useState = (0, _react.useState)(_osTypes.default),
       _useState2 = _slicedToArray(_useState, 2),
-      schema = _useState2[0],
-      setSchema = _useState2[1]; //add 2 to the length of the schema to take account of description and tittle field
+      userOSTypes = _useState2[0],
+      setUserOSTypes = _useState2[1]; //set default value to local types in case of fetch issue
 
 
-  var _useState3 = (0, _react.useState)(props.schema.fields.length * 3),
+  var _useState3 = (0, _react.useState)(_osTypeDescriptions.default),
       _useState4 = _slicedToArray(_useState3, 2),
-      unfilledRichTypes = _useState4[0],
-      setUnfilledRichTypes = _useState4[1];
+      userOSTypesDesc = _useState4[0],
+      setUserOSTypesDesc = _useState4[1];
 
+  var _useState5 = (0, _react.useState)(props.schema),
+      _useState6 = _slicedToArray(_useState5, 2),
+      schema = _useState6[0],
+      setSchema = _useState6[1];
+
+  var _useState7 = (0, _react.useState)(props.schema.fields.length),
+      _useState8 = _slicedToArray(_useState7, 2),
+      unfilledRichTypes = _useState8[0],
+      setUnfilledRichTypes = _useState8[1];
+
+  (0, _react.useEffect)(function () {
+    function fetchTypes() {
+      return _fetchTypes.apply(this, arguments);
+    }
+
+    function _fetchTypes() {
+      _fetchTypes = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var uTypes, uTypeDesc;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return fetch(osTypesPath);
+
+              case 2:
+                _context.next = 4;
+                return _context.sent.json();
+
+              case 4:
+                uTypes = _context.sent;
+                _context.next = 7;
+                return fetch(osTypesDescPath);
+
+              case 7:
+                _context.next = 9;
+                return _context.sent.json();
+
+              case 9:
+                uTypeDesc = _context.sent;
+                setUserOSTypes(uTypes);
+                setUserOSTypesDesc(uTypeDesc);
+
+              case 12:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+      return _fetchTypes.apply(this, arguments);
+    }
+
+    fetchTypes();
+  }, []);
   (0, _react.useEffect)(function () {
     if (props.dataset.resources && props.dataset.resources.length > 1 && resourceHasRichType(props.dataset)) {
       props.handleRichType(0);
@@ -106,14 +168,7 @@ var TableSchema = function TableSchema(props) {
       props.handleRichType(unfilledRichTypes - 1);
       newSchema.fields[index][key] = event.value;
       setSchema(newSchema);
-    } else if (key == "description") {
-      setUnfilledRichTypes(unfilledRichTypes - 1);
-      props.handleRichType(unfilledRichTypes - 1);
-      newSchema.fields[index][key] = event.target.value;
-      setSchema(newSchema);
-    } else if (key == "title") {
-      setUnfilledRichTypes(unfilledRichTypes - 1);
-      props.handleRichType(unfilledRichTypes - 1);
+    } else {
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
@@ -136,10 +191,20 @@ var TableSchema = function TableSchema(props) {
     setSchema(props.schema);
   }, [props.schema]); //set column types search input box
 
-  var ctypeKeys = Object.keys(_osTypes.default);
+  var ctypeKeys = Object.keys(userOSTypes);
   var columnTypeOptions = ctypeKeys.map(function (key) {
+    var desc;
+    var label;
     var value = key;
-    var label = value + " " + "➜" + " " + _osTypeDescriptions.default[key].description;
+
+    if (userOSTypesDesc[key]) {
+      desc = userOSTypesDesc[key]["description"];
+      label = value + " " + "➜" + " " + desc;
+    } else {
+      desc = "";
+      label = value;
+    }
+
     return {
       label: label,
       value: value
