@@ -72,21 +72,27 @@ const Metadata = ({ dataset, handleChange }) => {
       </div>
       <div className="metadata-input">
         <textarea
-          className="metadata-input__textarea"
           type="text"
           name="tags"
           id="tags"
+          className="metadata-input-textarea"
           placeholder="Finance, Budget"
+          required
           value={dataset.tags || ""}
           onChange={(e) => {
             handleChange(e);
           }}
           rows={2}
         ></textarea>
-        <label className="metadata-label" htmlFor="tags">
-          {" "}
-          Tags
-        </label>
+        <div className="tooltip">
+          <span class="tooltiptext">
+            Only letters are allowed: tags are single words separated by a comma
+          </span>
+          <label className="metadata-label" htmlFor="tags">
+            <span className="ast-important">*</span>
+            Tags
+          </label>
+        </div>
       </div>
 
       <div className="metadata-form-grp3">

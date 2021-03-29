@@ -94,7 +94,8 @@ export class DatasetEditor extends React.Component {
 
     if (["tags", "years_included"].includes(name)) {
       const vals = value.split(",");
-      dataset[name] = vals.map((val) => val.trim());
+      const values = vals.map((val) => val.trim());
+      dataset[name] = Array.from(new Set(values));
     } else if (["disaggregation", "budget_stage"].includes(name)) {
       let currentVals = dataset[name] || [];
       if (!target.checked) {
