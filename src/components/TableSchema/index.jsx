@@ -13,16 +13,13 @@ const osTypesPath =
 const osTypesDescPath =
   "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
 
-
-
 const TableSchema = (props) => {
   const [userOSTypes, setUserOSTypes] = useState(osTypes); //set default value to local types in case of fetch issue
-  const [userOSTypesDesc, setUserOSTypesDesc] = useState(osTypesDesc); 
+  const [userOSTypesDesc, setUserOSTypesDesc] = useState(osTypesDesc);
   const [schema, setSchema] = useState(props.schema);
   const [unfilledRichTypes, setUnfilledRichTypes] = useState(
-    props.schema.fields.length * 3
+    props.schema.fields.length
   );
-
 
   useEffect(() => {
     async function fetchTypes() {
@@ -69,14 +66,7 @@ const TableSchema = (props) => {
       props.handleRichType(unfilledRichTypes - 1);
       newSchema.fields[index][key] = event.value;
       setSchema(newSchema);
-    } else if (key == "description") {
-      setUnfilledRichTypes(unfilledRichTypes - 1);
-      props.handleRichType(unfilledRichTypes - 1);
-      newSchema.fields[index][key] = event.target.value;
-      setSchema(newSchema);
-    } else if (key == "title") {
-      setUnfilledRichTypes(unfilledRichTypes - 1);
-      props.handleRichType(unfilledRichTypes - 1);
+    } else {
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
@@ -106,17 +96,17 @@ const TableSchema = (props) => {
   //set column types search input box
   let ctypeKeys = Object.keys(userOSTypes);
   const columnTypeOptions = ctypeKeys.map((key) => {
-    let desc; 
+    let desc;
     let label;
     let value = key;
-    if (userOSTypesDesc[key]){
-      desc = userOSTypesDesc[key]['description']
-      label = value + " " + "➜" + " " +  desc
-    }else{
-      desc = ""
-      label = value
+    if (userOSTypesDesc[key]) {
+      desc = userOSTypesDesc[key]["description"];
+      label = value + " " + "➜" + " " + desc;
+    } else {
+      desc = "";
+      label = value;
     }
-    
+
     return { label, value };
   });
 
