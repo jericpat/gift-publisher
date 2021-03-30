@@ -258,16 +258,6 @@ export default class DatasetEditor extends React.Component {
       console.log(error);
       alert("An Error occurred when uploading the dataset!");
     })
-      .then((response) => {
-        this.setState({ saveButtonText: "Save" });
-        this.setState({ currentStep: 0 });
-        alert("Uploaded Sucessfully");
-        
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Error on upload dataset!");
-      });
   };
 
   render() {

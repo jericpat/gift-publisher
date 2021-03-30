@@ -324,19 +324,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
               }).catch(function (error) {
                 console.log(error);
                 alert("An Error occurred when uploading the dataset!");
-              }).then(function (response) {
-                _this.setState({
-                  saveButtonText: "Save"
-                });
-
-                _this.setState({
-                  currentStep: 0
-                });
-
-                alert("Uploaded Sucessfully");
-              }).catch(function (error) {
-                console.log(error);
-                alert("Error on upload dataset!");
               });
 
             case 2:
