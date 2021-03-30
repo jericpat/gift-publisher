@@ -261,8 +261,9 @@ export default class DatasetEditor extends React.Component {
     })
       .then((response) => {
         this.setState({ saveButtonText: "Save" });
-        alert("Uploaded Sucessfully");
         this.setState({ currentStep: 0 });
+        alert("Uploaded Sucessfully");
+        
       })
       .catch((error) => {
         console.log(error);

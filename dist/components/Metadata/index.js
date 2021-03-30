@@ -98,7 +98,7 @@ var Metadata = function Metadata(_ref) {
   }), /*#__PURE__*/_react.default.createElement("div", {
     className: "tooltip"
   }, /*#__PURE__*/_react.default.createElement("span", {
-    class: "tooltiptext"
+    className: "tooltiptext"
   }, "Only letters are allowed: tags are single words separated by a comma"), /*#__PURE__*/_react.default.createElement("label", {
     className: "metadata-label",
     htmlFor: "tags"
