@@ -85,7 +85,7 @@ const Metadata = ({ dataset, handleChange }) => {
           rows={2}
         ></textarea>
         <div className="tooltip">
-          <span class="tooltiptext">
+          <span className="tooltiptext">
             Only letters are allowed: tags are single words separated by a comma
           </span>
           <label className="metadata-label" htmlFor="tags">
