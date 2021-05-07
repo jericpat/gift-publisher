@@ -13,6 +13,8 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _InputFile = _interopRequireDefault(require("../InputFile"));
 
+var _InputUrl = _interopRequireDefault(require("../InputUrl"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
@@ -32,7 +34,8 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var Choose = function Choose(_ref) {
-  var onChangeHandler = _ref.onChangeHandler;
+  var onChangeUrl = _ref.onChangeUrl,
+      onChangeHandler = _ref.onChangeHandler;
 
   var _useState = (0, _react.useState)(false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -43,15 +46,25 @@ var Choose = function Choose(_ref) {
     className: "upload-choose"
   }, uploadOption ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, uploadOption === "file" && /*#__PURE__*/_react.default.createElement(_InputFile.default, {
     onChangeHandler: onChangeHandler
+  }), uploadOption === "url" && /*#__PURE__*/_react.default.createElement(_InputUrl.default, {
+    onChangeUrl: onChangeUrl
   })) : /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("button", {
     className: "choose-btn",
     onClick: function onClick() {
       return setUploadOption("file");
     }
-  }, "Choose a file to Upload ")));
+  }, "Choose a file to Upload "), /*#__PURE__*/_react.default.createElement("p", {
+    className: "choose-text"
+  }, "OR"), /*#__PURE__*/_react.default.createElement("button", {
+    className: "choose-btn",
+    onClick: function onClick() {
+      return setUploadOption("url");
+    }
+  }, "Link a file already online")));
 };
 
 Choose.propTypes = {
+  onChangeUrl: _propTypes.default.func.isRequired,
   onChangeHandler: _propTypes.default.func.isRequired
 };
 var _default = Choose;

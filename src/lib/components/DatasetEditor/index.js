@@ -9,6 +9,7 @@ import TableSchema from "../TableSchema";
 import ResourceList from "../ResourceList"
 import Metadata from "../Metadata";
 import InputFile from "../InputFile";
+import InputUrl from "../InputUrl";
 import Choose from "../Choose";
 
 export default class DatasetEditor extends React.Component {
@@ -128,6 +129,7 @@ export default class DatasetEditor extends React.Component {
       resource.model = model;
     } else {
       //first resource, generate schema and model
+      const sample = resource.sample.slice(1, 3)
       resource.schema.fields.forEach((f) => {
         f.type = f.columnType;
         delete f.columnType; //os-types requires type to be of rich type and will not accept the property columnType
@@ -218,10 +220,10 @@ export default class DatasetEditor extends React.Component {
       this.prevScreen();
     }
 
-    //clears error message after 6 seconds
+    //clears error message after 15 seconds
     setTimeout(() => {
       this.setState({ ui: { ...this.state.ui, errorMsg: "" } });
-    }, 10000);
+    }, 15000);
   };
 
   onChangeResourceId = (resourceId) => {

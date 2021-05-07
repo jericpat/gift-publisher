@@ -11,6 +11,7 @@ const fileToCopy = {
   Upload: 'import "./Upload.css";',
   Choose: 'import "./Choose.css";',
   InputFile: ['import "./InputFile.css";', 'import upload from "../../assets/upload.png";'],
+  InputUrl: 'import "./InputUrl.css";',
   ResourceList: undefined
 }
 
@@ -64,6 +65,7 @@ const appComponents = [
   'import ResourceList from "../ResourceList"',
   'import Metadata from "../Metadata";',
   'import InputFile from "../InputFile";',
+  'import InputUrl from "../InputUrl";',
   'import Choose from "../Choose";'
 ];
 
