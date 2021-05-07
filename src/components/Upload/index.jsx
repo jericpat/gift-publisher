@@ -47,95 +47,97 @@ class Upload extends React.Component {
       path = selectedFile;
     }
 
-    const { validFile, errorMsg, file } = await this.validFileSelected(
-      selectedFile,
-      event.target.type
-    );
+    this.validFileSelected(selectedFile, event.target.type).then(async (resp) => {
+      const { validFile, errorMsg, file } = resp
 
-    if (!validFile) {
-      this.setErrorState(errorMsg);
-      return;
-    }
+      if (!validFile) {
+        this.setErrorState(errorMsg);
+        return;
+      }
 
-    formattedSize = onFormatBytes(file.size || 0);
+      formattedSize = onFormatBytes(file.size || 0);
 
-    let self = this;
-    const hash = await file.hash('sha256', (progress) => {
-      self.onHashProgress(progress);
-    });
-
-    Object.assign(file.descriptor, { hash });
-
-    //check if file has the same schema
-    if (!this.hasSameSchema(file._descriptor)) {
-      this.setErrorState(
-        'Schema of uploaded resource does not match existing one!'
-      );
-      return;
-    }
-
-    //check if file already exists in resource
-    if (this.hasSameHash(file._descriptor)) {
-      this.setErrorState('Possible duplicate, the resource already exists!');
-      return;
-    }
-
-    //get sample
-    let sample_stream = await file.rows({ size: 460 });
-    let sample = (await toArray(sample_stream)).slice(0, 30);
-    //get column names for table
-    const column_names = sample[0]; //first row is the column names
-    const tablePreviewColumns = column_names.map((item) => {
-      return {
-        Header: item,
-        accessor: item,
-      };
-    });
-
-    //prepare sample for use in table preview component
-    let tablePreviewSample = [];
-    sample.slice(1, 11).forEach((item) => {
-      let temp_obj = {};
-      item.forEach((field, i) => {
-        temp_obj[column_names[i]] = field;
+      let self = this;
+      const hash = await file.hash('sha256', (progress) => {
+        self.onHashProgress(progress);
       });
-      tablePreviewSample.push(temp_obj);
-    });
 
-    this.props.metadataHandler(
-      Object.assign(file.descriptor, {
-        sample,
-        tablePreviewSample,
-        tablePreviewColumns,
-        path,
-      })
-    );
+      Object.assign(file.descriptor, { hash });
 
-    this.setState({
-      selectedFile,
-      loaded: 0,
-      success: false,
-      fileExists: false,
-      error: false,
-      formattedSize,
-    });
+      //check if file has the same schema
+      if (!this.hasSameSchema(file._descriptor)) {
+        this.setErrorState(
+          'Schema of uploaded resource does not match existing one!'
+        );
+        return;
+      }
 
-    await this.onClickHandler();
+      //check if file already exists in resource
+      if (this.hasSameHash(file._descriptor)) {
+        this.setErrorState('Possible duplicate, the resource already exists!');
+        return;
+      }
+
+      //get sample
+      let sample_stream = await file.rows({ size: 460 });
+      let sample = (await toArray(sample_stream)).slice(0, 30);
+      //get column names for table
+      const column_names = sample[0]; //first row is the column names
+      const tablePreviewColumns = column_names.map((item) => {
+        return {
+          Header: item,
+          accessor: item,
+        };
+      });
+
+      //prepare sample for use in table preview component
+      let tablePreviewSample = [];
+      sample.slice(1, 11).forEach((item) => {
+        let temp_obj = {};
+        item.forEach((field, i) => {
+          temp_obj[column_names[i]] = field;
+        });
+        tablePreviewSample.push(temp_obj);
+      });
+
+      this.props.metadataHandler(
+        Object.assign(file.descriptor, {
+          sample,
+          tablePreviewSample,
+          tablePreviewColumns,
+          path,
+        })
+      );
+
+      this.setState({
+        selectedFile,
+        loaded: 0,
+        success: false,
+        fileExists: false,
+        error: false,
+        formattedSize,
+      });
+
+      await this.uploadToFileStorageHandler();
+    }).catch((error) => {
+      const { errorMsg } = error
+      this.setErrorState(errorMsg);
+    })
   };
 
   validFileSelected = (selectedFile, fileType) => {
     return new Promise(async (resolve, reject) => {
-      if (fileType == 'url') {
-        const fileExt = selectedFile.split('.').pop();
-        if (fileExt != 'csv') {
-          resolve({
+      if (fileType == "url") {
+        const fileExt = selectedFile.split(".").pop();
+        if (fileExt != "csv") {
+          reject({
             validFile: false,
             errorMsg:
               "File Type not supported! Please ensure specified url links to a CSV file",
-            file: undefined,
           });
           return;
         }
+
         fetch(selectedFile)
           .then(async (resp) => {
             let file;
@@ -148,38 +150,33 @@ class Upload extends React.Component {
                 file,
               });
             } catch (error) {
-              console.log(error);
-              resolve({
+              reject({
                 validFile: false,
                 errorMsg: "An error occurred when trying to download the file!",
-                file,
               });
             }
           })
           .catch((error) => {
-            console.log(error);
-            resolve({
+            reject({
               validFile: false,
-              errorMsg: "An error occured when trying to download the file!",
+              errorMsg: `An error occured when trying to download the file!
+               This can happen because CORS is disabled on the server or if the file does not exist.`,
             });
           });
       } else {
-        const fileExt = selectedFile.type.split('/').pop();
-
-        if (fileExt != 'csv') {
-          resolve({
+        const fileExt = selectedFile.type.split("/").pop();
+        if (fileExt != "csv") {
+          reject({
             validFile: false,
-            errorMsg: 'File Type not supported! Please upload a CSV file',
-            file: {},
+            errorMsg: "File Type not supported! Please upload a CSV file",
           });
           return;
         }
         if (selectedFile.size == 0) {
-          resolve({
+          reject({
             validFile: false,
             errorMsg:
-              'CSV file is empty! Please upload a CSV file with contents',
-            file: {},
+              "CSV file is empty! Please upload a CSV file with contents",
           });
           return;
         }
@@ -190,10 +187,9 @@ class Upload extends React.Component {
           resolve({ validFile: true, errorMsg: '', file });
         } catch (error) {
           console.log(error);
-          resolve({
+          reject({
             validFile: false,
-            errorMsg: 'An error occurred when trying to load the file!',
-            file: {},
+            errorMsg: "An error occurred when trying to load the file!",
           });
         }
       }
@@ -274,7 +270,7 @@ class Upload extends React.Component {
     }
   }
 
-  onClickHandler = async () => {
+  uploadToFileStorageHandler = async () => {
     const { selectedFile, uploadedFileType } = this.state;
     if (uploadedFileType == 'url') {
       this.setState({
@@ -351,6 +347,7 @@ class Upload extends React.Component {
     return (
       <div>
         <Choose
+          onChangeUrl={this.onChangeHandler}
           onChangeHandler={this.onChangeHandler}
         />
         {uploadedFileType == "url" ? (
@@ -388,9 +385,9 @@ class Upload extends React.Component {
                 progress={this.state.loaded}
                 size={100}
                 strokeWidth={5}
-                circleOneStroke='#d9edfe'
-                circleTwoStroke={'#7ea9e1'}
-                // timeRemaining={timeRemaining}
+                circleOneStroke="#d9edfe"
+                circleTwoStroke={"#7ea9e1"}
+              // timeRemaining={timeRemaining}
               />
               <h2>
                 {success &&
