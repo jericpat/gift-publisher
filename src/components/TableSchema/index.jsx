@@ -12,6 +12,9 @@ const osTypesPath =
 const osTypesDescPath =
   "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
 
+//create your forceUpdate hook
+
+
 const TableSchema = (props) => {
   const [userOSTypes, setUserOSTypes] = useState(osTypes); //set default value to local types in case of fetch issue
   const [userOSTypesDesc, setUserOSTypesDesc] = useState(osTypesDesc);
@@ -19,6 +22,8 @@ const TableSchema = (props) => {
   const [unfilledRichTypes, setUnfilledRichTypes] = useState(
     props.schema.fields.length
   );
+  const _selectInputs = props.schema.fields.map((_) => undefined)
+  const [selectFieldInputs, setSelectFieldInputs] = useState(_selectInputs);
 
 
   useEffect(() => {
@@ -59,20 +64,39 @@ const TableSchema = (props) => {
     prepareRow,
   } = useTable({ columns, data });
 
+
   const handleChange = (event, key, index) => {
+    const value = event.value
+    const newFInputs = [...selectFieldInputs,]
+    newFInputs[index] = undefined
+    setSelectFieldInputs(newFInputs)
+
     const newSchema = { ...schema };
     if (key == "columnType") {
+
       const type = newSchema.fields[index]["type"]
-      const selectedRichType = osTypes[event.value]['dataType']
+      const selectedRichType = userOSTypes[value]['dataType']
       //do validation here
       if (type == selectedRichType) {
+        const value = event.value
+        newSchema.fields[index][key] = value;
+        setSchema(newSchema);
         setUnfilledRichTypes(unfilledRichTypes - 1);
         props.handleRichType(unfilledRichTypes - 1);
-        newSchema.fields[index][key] = event.value;
-        setSchema(newSchema);
+
+        const newFInputs = [...selectFieldInputs,]
+        newFInputs[index] = value
+        setSelectFieldInputs(newFInputs)
+
       } else {
+        const newFInputs = [...selectFieldInputs,]
+        newFInputs[index] = undefined
+        setSelectFieldInputs(newFInputs)
+        newSchema.fields[index][key] = ""
+        setSchema(newSchema);
         alert(`Invalid richtype for type ${type}`)
       }
+
     } else {
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
@@ -185,8 +209,12 @@ const TableSchema = (props) => {
               styles={customStyles}
               options={columnTypeOptions}
               width="200px"
+              value={selectFieldInputs[index]}
+              inputValue={selectFieldInputs[index]}
               menuColor="red"
-              onChange={(event) => handleChange(event, key, index)}
+              onChange={(event) => {
+                handleChange(event, key, index)
+              }}
             />
           </td>
         ));
