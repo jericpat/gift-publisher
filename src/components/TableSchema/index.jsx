@@ -20,6 +20,7 @@ const TableSchema = (props) => {
     props.schema.fields.length
   );
 
+
   useEffect(() => {
     async function fetchTypes() {
       let uTypes = await (await fetch(osTypesPath)).json();
@@ -61,15 +62,22 @@ const TableSchema = (props) => {
   const handleChange = (event, key, index) => {
     const newSchema = { ...schema };
     if (key == "columnType") {
-      setUnfilledRichTypes(unfilledRichTypes - 1);
-      props.handleRichType(unfilledRichTypes - 1);
-      newSchema.fields[index][key] = event.value;
-      setSchema(newSchema);
+      const type = newSchema.fields[index]["type"]
+      const selectedRichType = osTypes[event.value]['dataType']
+      //do validation here
+      if (type == selectedRichType) {
+        setUnfilledRichTypes(unfilledRichTypes - 1);
+        props.handleRichType(unfilledRichTypes - 1);
+        newSchema.fields[index][key] = event.value;
+        setSchema(newSchema);
+      } else {
+        alert(`Invalid richtype for type ${type}`)
+      }
     } else {
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
     }
-  };
+  }
 
   const resourceHasRichType = (dataset) => {
     if (
@@ -173,6 +181,7 @@ const TableSchema = (props) => {
         return schema.fields.map((item, index) => (
           <td key={`schema-type-field-${key}-${index}`}>
             <Select
+              key={`select#${index}`}
               styles={customStyles}
               options={columnTypeOptions}
               width="200px"
