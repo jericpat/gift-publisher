@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
 import { useTable } from "react-table";
@@ -12,8 +12,6 @@ const osTypesPath =
 const osTypesDescPath =
   "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
 
-//create your forceUpdate hook
-
 
 const TableSchema = (props) => {
   const [userOSTypes, setUserOSTypes] = useState(osTypes); //set default value to local types in case of fetch issue
@@ -25,6 +23,13 @@ const TableSchema = (props) => {
   const _selectInputs = props.schema.fields.map((_) => undefined)
   const [selectFieldInputs, setSelectFieldInputs] = useState(_selectInputs);
 
+  //Refs used in updated select field style. 
+  // This is used to notify the user which rich type has incorrect value.
+  let selectRefs = useRef([]);
+  selectRefs = props.schema.fields.map(
+    (_, index) => selectRefs.current[index] = React.createRef()
+  )
+  const [selectRefsState, _] = useState(selectRefs);
 
   useEffect(() => {
     async function fetchTypes() {
@@ -45,7 +50,7 @@ const TableSchema = (props) => {
       props.handleRichType(0);
     }
   }, []);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const data = React.useMemo(() => [...props.data], [schema]);
 
   const columnsSchema = schema.fields.map((item, index) => {
@@ -54,8 +59,9 @@ const TableSchema = (props) => {
       accessor: item.name ? item.name : `column_${index + 1}`,
     };
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const columns = React.useMemo(() => [...columnsSchema], [schema]);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -64,36 +70,29 @@ const TableSchema = (props) => {
     prepareRow,
   } = useTable({ columns, data });
 
-
   const handleChange = (event, key, index) => {
     const value = event.value
-    const newFInputs = [...selectFieldInputs,]
-    newFInputs[index] = undefined
-    setSelectFieldInputs(newFInputs)
-
     const newSchema = { ...schema };
     if (key == "columnType") {
-
       const type = newSchema.fields[index]["type"]
       const selectedRichType = userOSTypes[value]['dataType']
-      //do validation here
-      if (type == selectedRichType) {
+      if (type == selectedRichType) { //do richtype validation here
+        selectRefsState[index].current.style.background = "white";
         const value = event.value
+        const newFInputs = [...selectFieldInputs,]
+        newFInputs[index] = value
+        setSelectFieldInputs(newFInputs)
+
         newSchema.fields[index][key] = value;
         setSchema(newSchema);
         setUnfilledRichTypes(unfilledRichTypes - 1);
         props.handleRichType(unfilledRichTypes - 1);
 
-        const newFInputs = [...selectFieldInputs,]
-        newFInputs[index] = value
-        setSelectFieldInputs(newFInputs)
-
       } else {
         const newFInputs = [...selectFieldInputs,]
         newFInputs[index] = undefined
         setSelectFieldInputs(newFInputs)
-        newSchema.fields[index][key] = ""
-        setSchema(newSchema);
+        selectRefsState[index].current.style.background = "red";
         alert(`Invalid richtype for type ${type}`)
       }
 
@@ -203,7 +202,9 @@ const TableSchema = (props) => {
         ));
       } else {
         return schema.fields.map((item, index) => (
-          <td key={`schema-type-field-${key}-${index}`}>
+          <td key={`schema-type-field-${key}-${index}`}
+            ref={selectRefsState[index]}
+          >
             <Select
               key={`select#${index}`}
               styles={customStyles}
