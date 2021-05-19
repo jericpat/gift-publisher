@@ -128,7 +128,6 @@ export class DatasetEditor extends React.Component {
       resource.model = model;
     } else {
       //first resource, generate schema and model
-      const sample = resource.sample.slice(1, 3)
       resource.schema.fields.forEach((f) => {
         f.type = f.columnType;
         delete f.columnType; //os-types requires type to be of rich type and will not accept the property columnType
