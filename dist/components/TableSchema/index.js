@@ -84,6 +84,27 @@ var TableSchema = function TableSchema(props) {
       unfilledRichTypes = _useState8[0],
       setUnfilledRichTypes = _useState8[1];
 
+  var _selectInputs = props.schema.fields.map(function (_) {
+    return undefined;
+  });
+
+  var _useState9 = (0, _react.useState)(_selectInputs),
+      _useState10 = _slicedToArray(_useState9, 2),
+      selectFieldInputs = _useState10[0],
+      setSelectFieldInputs = _useState10[1]; //Refs used in updated select field style. 
+  // This is used to notify the user which rich type has incorrect value.
+
+
+  var selectRefs = (0, _react.useRef)([]);
+  selectRefs = props.schema.fields.map(function (_, index) {
+    return selectRefs.current[index] = /*#__PURE__*/_react.default.createRef();
+  });
+
+  var _useState11 = (0, _react.useState)(selectRefs),
+      _useState12 = _slicedToArray(_useState11, 2),
+      selectRefsState = _useState12[0],
+      _ = _useState12[1];
+
   (0, _react.useEffect)(function () {
     function fetchTypes() {
       return _fetchTypes.apply(this, arguments);
@@ -133,7 +154,7 @@ var TableSchema = function TableSchema(props) {
     if (props.dataset.resources && props.dataset.resources.length > 1 && resourceHasRichType(props.dataset)) {
       props.handleRichType(0);
     }
-  }, []); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   var data = _react.default.useMemo(function () {
     return _toConsumableArray(props.data);
@@ -144,7 +165,7 @@ var TableSchema = function TableSchema(props) {
       Header: item.name ? item.name : "column_".concat(index + 1),
       accessor: item.name ? item.name : "column_".concat(index + 1)
     };
-  }); // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
 
   var columns = _react.default.useMemo(function () {
     return _toConsumableArray(columnsSchema);
@@ -161,13 +182,35 @@ var TableSchema = function TableSchema(props) {
       prepareRow = _useTable.prepareRow;
 
   var handleChange = function handleChange(event, key, index) {
+    var value = event.value;
+
     var newSchema = _objectSpread({}, schema);
 
     if (key == "columnType") {
-      setUnfilledRichTypes(unfilledRichTypes - 1);
-      props.handleRichType(unfilledRichTypes - 1);
-      newSchema.fields[index][key] = event.value;
-      setSchema(newSchema);
+      var type = newSchema.fields[index]["type"];
+      var selectedRichType = userOSTypes[value]['dataType'];
+
+      if (type == selectedRichType) {
+        //do richtype validation here
+        selectRefsState[index].current.style.background = "white";
+        var _value = event.value;
+
+        var newFInputs = _toConsumableArray(selectFieldInputs);
+
+        newFInputs[index] = _value;
+        setSelectFieldInputs(newFInputs);
+        newSchema.fields[index][key] = _value;
+        setSchema(newSchema);
+        setUnfilledRichTypes(unfilledRichTypes - 1);
+        props.handleRichType(unfilledRichTypes - 1);
+      } else {
+        var _newFInputs = _toConsumableArray(selectFieldInputs);
+
+        _newFInputs[index] = undefined;
+        setSelectFieldInputs(_newFInputs);
+        selectRefsState[index].current.style.background = "red";
+        alert("Invalid richtype for type ".concat(type));
+      }
     } else {
       newSchema.fields[index][key] = event.target.value;
       setSchema(newSchema);
@@ -269,14 +312,18 @@ var TableSchema = function TableSchema(props) {
       } else {
         return schema.fields.map(function (item, index) {
           return /*#__PURE__*/_react.default.createElement("td", {
-            key: "schema-type-field-".concat(key, "-").concat(index)
+            key: "schema-type-field-".concat(key, "-").concat(index),
+            ref: selectRefsState[index]
           }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
+            key: "select#".concat(index),
             styles: customStyles,
             options: columnTypeOptions,
             width: "200px",
+            value: selectFieldInputs[index],
+            inputValue: selectFieldInputs[index],
             menuColor: "red",
             onChange: function onChange(event) {
-              return handleChange(event, key, index);
+              handleChange(event, key, index);
             }
           }));
         });

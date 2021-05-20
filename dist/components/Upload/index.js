@@ -468,12 +468,6 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                   loading: true
                 });
 
-                _this.props.handleUploadStatus({
-                  loading: true,
-                  error: false,
-                  success: false
-                });
-
                 client.upload(resource, organizationId, _this.state.datasetId, _this.onUploadProgress).then(function (response) {
                   _this.setState({
                     success: true,
@@ -487,7 +481,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                     success: true
                   });
                 }).catch(function (error) {
-                  console.error('Upload failed with error: ' + error);
+                  console.error("Upload failed with error: " + error);
 
                   _this.setState({
                     error: true,

@@ -137,7 +137,6 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         resource.model = model;
       } else {
         //first resource, generate schema and model
-        var sample = resource.sample.slice(1, 3);
         resource.schema.fields.forEach(function (f) {
           f.type = f.columnType;
           delete f.columnType; //os-types requires type to be of rich type and will not accept the property columnType
