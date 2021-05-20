@@ -295,11 +295,6 @@ class Upload extends React.Component {
         loading: true,
       });
 
-      this.props.handleUploadStatus({
-        loading: true,
-        error: false,
-        success: false,
-      });
       client
         .upload(
           resource,
@@ -321,7 +316,7 @@ class Upload extends React.Component {
           });
         })
         .catch((error) => {
-          console.error('Upload failed with error: ' + error);
+          console.error("Upload failed with error: " + error);
           this.setState({ error: true, loading: false });
           this.props.handleUploadStatus({
             loading: false,
