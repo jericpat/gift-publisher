@@ -8,9 +8,9 @@ import osTypesDesc from "../../db/os-type-descriptions.json";
 import "./TableSchema.css";
 
 const osTypesPath =
-  "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-types.json";
+  "https://raw.githubusercontent.com/gift-data/gift-os-types/main/os-types.json";
 const osTypesDescPath =
-  "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
+  "https://raw.githubusercontent.com/gift-data/gift-os-types/main/os-type-descriptions.json";
 
 
 const TableSchema = (props) => {
