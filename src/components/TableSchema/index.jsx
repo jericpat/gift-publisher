@@ -9,9 +9,9 @@ import osTypesDesc from '../../db/os-type-descriptions.json';
 import './TableSchema.css';
 
 const osTypesPath =
-  "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-types.json";
+  "https://raw.githubusercontent.com/gift-data/gift-os-types/main/os-types.json";
 const osTypesDescPath =
-  "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
+  "https://raw.githubusercontent.com/gift-data/gift-os-types/main/os-type-descriptions.json";
 
 
 const TableSchema = (props) => {
@@ -143,26 +143,49 @@ const TableSchema = (props) => {
 
   const renderEditSchemaField = (key) => {
     if (key === "type") {
-      return schema.fields.map((item, index) => (
-        <td key={`schema-type-field-${key}-${index}`}>
-          <select
-            className='table-tbody-select'
-            value={item[key] || ''}
-            onChange={(event) => handleChange(event, key, index)}
-          >
-            {types.type.map((item, index) => {
-              return (
-                <option
-                  key={`schema-type-field-option-${item}-${index}`}
-                  value={item}
-                >
-                  {item}
-                </option>
-              );
-            })}
-          </select>
-        </td>
-      ));
+      if (
+        props.dataset.resources &&
+        props.dataset.resources.length > 1 &&
+        resourceHasRichType(props.dataset)
+      ) {
+        const existingTypes = props.dataset.resources[0].schema.fields.map(
+          (field) => {
+            return field.type;
+          }
+        );
+        //The schema already exists. Prefill and set to uneditable
+        return existingTypes.map((item, index) => (
+          <td key={`schema-type-field-${key}-${index}`}>
+            <input
+              className="table-tbody-input"
+              type="text"
+              value={item}
+              disabled
+            />
+          </td>
+        ));
+      } else {
+        return schema.fields.map((item, index) => (
+          <td key={`schema-type-field-${key}-${index}`}>
+            <select
+              className="table-tbody-select"
+              value={item[key] || ""}
+              onChange={(event) => handleChange(event, key, index)}
+            >
+              {types.type.map((item, index) => {
+                return (
+                  <option
+                    key={`schema-type-field-option-${item}-${index}`}
+                    value={item}
+                  >
+                    {item}
+                  </option>
+                );
+              })}
+            </select>
+          </td>
+        ));
+      }
     }
     //style for column rich type select field
     const customStyles = {
