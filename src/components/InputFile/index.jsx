@@ -4,31 +4,31 @@ import './InputFile.css'
 import upload from "../../assets/upload.png"
 const InputFile = ({ onChangeHandler }) => {
 
-      return (
-            <div className="upload-area__drop">
-                <input
-                    className="upload-area__drop__input"
-                    type="file"
-                    name="file"
-                    onChange={onChangeHandler}
-                />
-                <img
-                    className="upload-area__drop__icon"
-                    src={upload}
-                    alt="upload-icon"
-                />
-                <span className="upload-area__drop__text">
-                    Drag and drop your files
+    return (
+        <div className="upload-area__drop">
+            <input
+                className="upload-area__drop__input"
+                type="file"
+                name="file"
+                onChange={onChangeHandler}
+            />
+            <img
+                className="upload-area__drop__icon"
+                src={upload}
+                alt="upload-icon"
+            />
+            <span className="upload-area__drop__text">
+                Drag and drop your files
                     <br />
                     or <br />
                     click to select
                 </span>
-            </div>
-      )
-  }
+        </div>
+    )
+}
 
 InputFile.propTypes = {
-  onChangeHandler: PropTypes.func.isRequired
+    onChangeHandler: PropTypes.func.isRequired
 };
 
 export default InputFile;
