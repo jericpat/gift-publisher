@@ -24,12 +24,12 @@ const InputFile = ({ onChangeHandler }) => {
                     or <br />
                     click to select
                 </span>
-            </div>
-      )
-  }
+        </div>
+    )
+}
 
 InputFile.propTypes = {
-  onChangeHandler: PropTypes.func.isRequired
+    onChangeHandler: PropTypes.func.isRequired
 };
 
 export default InputFile;

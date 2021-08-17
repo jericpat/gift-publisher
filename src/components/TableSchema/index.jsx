@@ -77,12 +77,11 @@ const TableSchema = (props) => {
     if (key == "columnType") {
       const type = newSchema.fields[index]["type"]
       const selectedRichType = userOSTypes[value]['dataType']
+      
       if (type == selectedRichType) { //do richtype validation here
         selectRefsState[index].current.style.background = "white";
         const value = event.value
-        const newFInputs = [...selectFieldInputs,]
-        newFInputs[index] = value
-        setSelectFieldInputs(newFInputs)
+        
 
         newSchema.fields[index][key] = value;
         setSchema(newSchema);
