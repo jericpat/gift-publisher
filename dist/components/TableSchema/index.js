@@ -59,8 +59,8 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var osTypesPath = "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-types.json";
-var osTypesDescPath = "https://raw.githubusercontent.com/datopian/gift-os-types/main/os-type-descriptions.json";
+var osTypesPath = "https://raw.githubusercontent.com/gift-data/gift-os-types/main/os-types.json";
+var osTypesDescPath = "https://raw.githubusercontent.com/gift-data/gift-os-types/main/os-type-descriptions.json";
 
 var TableSchema = function TableSchema(props) {
   var _useState = (0, _react.useState)(_osTypes.default),
@@ -194,20 +194,15 @@ var TableSchema = function TableSchema(props) {
         //do richtype validation here
         selectRefsState[index].current.style.background = "white";
         var _value = event.value;
-
-        var newFInputs = _toConsumableArray(selectFieldInputs);
-
-        newFInputs[index] = _value;
-        setSelectFieldInputs(newFInputs);
         newSchema.fields[index][key] = _value;
         setSchema(newSchema);
         setUnfilledRichTypes(unfilledRichTypes - 1);
         props.handleRichType(unfilledRichTypes - 1);
       } else {
-        var _newFInputs = _toConsumableArray(selectFieldInputs);
+        var newFInputs = _toConsumableArray(selectFieldInputs);
 
-        _newFInputs[index] = undefined;
-        setSelectFieldInputs(_newFInputs);
+        newFInputs[index] = undefined;
+        setSelectFieldInputs(newFInputs);
         selectRefsState[index].current.style.background = "red";
         alert("Invalid richtype for type ".concat(type));
       }
@@ -256,22 +251,39 @@ var TableSchema = function TableSchema(props) {
 
   var renderEditSchemaField = function renderEditSchemaField(key) {
     if (key === "type") {
-      return schema.fields.map(function (item, index) {
-        return /*#__PURE__*/_react.default.createElement("td", {
-          key: "schema-type-field-".concat(key, "-").concat(index)
-        }, /*#__PURE__*/_react.default.createElement("select", {
-          className: "table-tbody-select",
-          value: item[key] || '',
-          onChange: function onChange(event) {
-            return handleChange(event, key, index);
-          }
-        }, _types.default.type.map(function (item, index) {
-          return /*#__PURE__*/_react.default.createElement("option", {
-            key: "schema-type-field-option-".concat(item, "-").concat(index),
-            value: item
-          }, item);
-        })));
-      });
+      if (props.dataset.resources && props.dataset.resources.length > 1 && resourceHasRichType(props.dataset)) {
+        var existingTypes = props.dataset.resources[0].schema.fields.map(function (field) {
+          return field.type;
+        }); //The schema already exists. Prefill and set to uneditable
+
+        return existingTypes.map(function (item, index) {
+          return /*#__PURE__*/_react.default.createElement("td", {
+            key: "schema-type-field-".concat(key, "-").concat(index)
+          }, /*#__PURE__*/_react.default.createElement("input", {
+            className: "table-tbody-input",
+            type: "text",
+            value: item,
+            disabled: true
+          }));
+        });
+      } else {
+        return schema.fields.map(function (item, index) {
+          return /*#__PURE__*/_react.default.createElement("td", {
+            key: "schema-type-field-".concat(key, "-").concat(index)
+          }, /*#__PURE__*/_react.default.createElement("select", {
+            className: "table-tbody-select",
+            value: item[key] || "",
+            onChange: function onChange(event) {
+              return handleChange(event, key, index);
+            }
+          }, _types.default.type.map(function (item, index) {
+            return /*#__PURE__*/_react.default.createElement("option", {
+              key: "schema-type-field-option-".concat(item, "-").concat(index),
+              value: item
+            }, item);
+          })));
+        });
+      }
     } //style for column rich type select field
 
 
