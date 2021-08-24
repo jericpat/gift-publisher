@@ -204,11 +204,46 @@ var TableSchema = function TableSchema(props) {
         newFInputs[index] = undefined;
         setSelectFieldInputs(newFInputs);
         selectRefsState[index].current.style.background = "red";
+
+        if (unfilledRichTypes >= 0) {
+          setUnfilledRichTypes(unfilledRichTypes + 1);
+          props.handleRichType(unfilledRichTypes + 1);
+        }
+
         alert("Invalid richtype for type ".concat(type));
       }
     } else {
-      newSchema.fields[index][key] = event.target.value;
-      setSchema(newSchema);
+      var columnValue = newSchema.fields[index]['columnType'];
+      var columnType = columnValue ? userOSTypes[columnValue]['dataType'] : undefined;
+      var typeValue = event.target.value;
+
+      if (columnValue) {
+        if (columnType != typeValue) {
+          var _newFInputs = _toConsumableArray(selectFieldInputs);
+
+          _newFInputs[index] = undefined;
+          setSelectFieldInputs(_newFInputs);
+          selectRefsState[index].current.style.background = "red";
+
+          if (unfilledRichTypes >= 0) {
+            setUnfilledRichTypes(unfilledRichTypes + 1);
+            props.handleRichType(unfilledRichTypes + 1);
+          }
+
+          newSchema.fields[index][key] = typeValue;
+          setSchema(newSchema);
+          alert("Invalid richtype for type ".concat(typeValue));
+        } else {
+          selectRefsState[index].current.style.background = "white";
+          newSchema.fields[index][key] = typeValue;
+          setSchema(newSchema);
+          setUnfilledRichTypes(unfilledRichTypes - 1);
+          props.handleRichType(unfilledRichTypes - 1);
+        }
+      } else {
+        newSchema.fields[index][key] = event.target.value;
+        setSchema(newSchema);
+      }
     }
   };
 

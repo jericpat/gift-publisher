@@ -82,6 +82,10 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
         _this.setState({
           richTypeFilled: true
         });
+      } else {
+        _this.setState({
+          richTypeFilled: false
+        });
       }
     });
 
