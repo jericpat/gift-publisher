@@ -82,6 +82,10 @@ export default class DatasetEditor extends React.Component {
       this.setState({
         richTypeFilled: true,
       });
+    } else {
+      this.setState({
+        richTypeFilled: false,
+      });
     }
   };
 

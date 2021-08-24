@@ -77,7 +77,6 @@ const TableSchema = (props) => {
     if (key == "columnType") {
       const type = newSchema.fields[index]["type"]
       const selectedRichType = userOSTypes[value]['dataType']
-      
       if (type == selectedRichType) { //do richtype validation here
         selectRefsState[index].current.style.background = "white";
         const value = event.value
@@ -93,12 +92,45 @@ const TableSchema = (props) => {
         newFInputs[index] = undefined
         setSelectFieldInputs(newFInputs)
         selectRefsState[index].current.style.background = "red";
+        
+        if (unfilledRichTypes >= 0) {
+          setUnfilledRichTypes(unfilledRichTypes + 1);
+          props.handleRichType(unfilledRichTypes + 1);
+        }
         alert(`Invalid richtype for type ${type}`)
       }
 
     } else {
-      newSchema.fields[index][key] = event.target.value;
-      setSchema(newSchema);
+      const columnValue = newSchema.fields[index]['columnType']
+      const columnType = columnValue ? userOSTypes[columnValue]['dataType'] : undefined
+      const typeValue = event.target.value
+      if (columnValue) {
+        if (columnType != typeValue) {
+          const newFInputs = [...selectFieldInputs,]
+          newFInputs[index] = undefined
+          setSelectFieldInputs(newFInputs)
+          selectRefsState[index].current.style.background = "red";
+          
+          if (unfilledRichTypes >= 0) {
+            setUnfilledRichTypes(unfilledRichTypes + 1);
+            props.handleRichType(unfilledRichTypes + 1);
+          }
+          newSchema.fields[index][key] = typeValue;
+          setSchema(newSchema);
+          alert(`Invalid richtype for type ${typeValue}`)
+        } else {
+          selectRefsState[index].current.style.background = "white";
+          newSchema.fields[index][key] = typeValue;
+          setSchema(newSchema);
+          setUnfilledRichTypes(unfilledRichTypes - 1);
+          props.handleRichType(unfilledRichTypes - 1);
+        }
+        
+      } else {
+        newSchema.fields[index][key] = event.target.value;
+        setSchema(newSchema);
+      }
+      
     }
   }
 
