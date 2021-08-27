@@ -325,7 +325,6 @@ var TableSchema = function TableSchema(props) {
     var customStyles = {
       menu: function menu(provided, state) {
         return _objectSpread(_objectSpread({}, provided), {}, {
-          width: state.selectProps.width,
           borderBottom: "1px dotted pink",
           color: state.selectProps.menuColor
         });
@@ -365,10 +364,9 @@ var TableSchema = function TableSchema(props) {
             key: "select#".concat(index),
             styles: customStyles,
             options: columnTypeOptions,
-            width: "200px",
             value: selectFieldInputs[index],
             inputValue: selectFieldInputs[index],
-            menuColor: "red",
+            menuColor: "black",
             onChange: function onChange(event) {
               handleChange(event, key, index);
             }
