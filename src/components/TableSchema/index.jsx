@@ -222,7 +222,6 @@ const TableSchema = (props) => {
     const customStyles = {
       menu: (provided, state) => ({
         ...provided,
-        width: state.selectProps.width,
         borderBottom: "1px dotted pink",
         color: state.selectProps.menuColor,
       }),
@@ -264,10 +263,9 @@ const TableSchema = (props) => {
               key={`select#${index}`}
               styles={customStyles}
               options={columnTypeOptions}
-              width="200px"
               value={selectFieldInputs[index]}
               inputValue={selectFieldInputs[index]}
-              menuColor="red"
+              menuColor="black"
               onChange={(event) => {
                 handleChange(event, key, index)
               }}
