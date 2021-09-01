@@ -91,7 +91,19 @@ var TableSchema = function TableSchema(props) {
   var _useState9 = (0, _react.useState)(_selectInputs),
       _useState10 = _slicedToArray(_useState9, 2),
       selectFieldInputs = _useState10[0],
-      setSelectFieldInputs = _useState10[1]; //Refs used in updated select field style. 
+      setSelectFieldInputs = _useState10[1];
+
+  var totalSchemaLength = props.schema.fields.length;
+
+  var _useState11 = (0, _react.useState)(null),
+      _useState12 = _slicedToArray(_useState11, 2),
+      schemaPrevIndex = _useState12[0],
+      setSchIndex = _useState12[1];
+
+  var _useState13 = (0, _react.useState)(null),
+      _useState14 = _slicedToArray(_useState13, 2),
+      richTypePrevIndex = _useState14[0],
+      setRichIndex = _useState14[1]; //Refs used in updated select field style. 
   // This is used to notify the user which rich type has incorrect value.
 
 
@@ -100,10 +112,10 @@ var TableSchema = function TableSchema(props) {
     return selectRefs.current[index] = /*#__PURE__*/_react.default.createRef();
   });
 
-  var _useState11 = (0, _react.useState)(selectRefs),
-      _useState12 = _slicedToArray(_useState11, 2),
-      selectRefsState = _useState12[0],
-      _ = _useState12[1];
+  var _useState15 = (0, _react.useState)(selectRefs),
+      _useState16 = _slicedToArray(_useState15, 2),
+      selectRefsState = _useState16[0],
+      _ = _useState16[1];
 
   (0, _react.useEffect)(function () {
     function fetchTypes() {
@@ -205,15 +217,17 @@ var TableSchema = function TableSchema(props) {
         setSelectFieldInputs(newFInputs);
         selectRefsState[index].current.style.background = "red";
 
-        if (unfilledRichTypes >= 0) {
+        if (unfilledRichTypes < totalSchemaLength && index != richTypePrevIndex) {
           setUnfilledRichTypes(unfilledRichTypes + 1);
           props.handleRichType(unfilledRichTypes + 1);
+          setRichIndex(index);
         }
 
         alert("Invalid richtype for type ".concat(type));
       }
     } else {
-      var columnValue = newSchema.fields[index]['columnType'];
+      var columnValue = selectRefsState[index].current.textContent.split('➜')[0].trim();
+      columnValue = columnValue === "Select..." ? undefined : columnValue;
       var columnType = columnValue ? userOSTypes[columnValue]['dataType'] : undefined;
       var typeValue = event.target.value;
 
@@ -225,9 +239,10 @@ var TableSchema = function TableSchema(props) {
           setSelectFieldInputs(_newFInputs);
           selectRefsState[index].current.style.background = "red";
 
-          if (unfilledRichTypes >= 0) {
+          if (unfilledRichTypes < totalSchemaLength && index != schemaPrevIndex) {
             setUnfilledRichTypes(unfilledRichTypes + 1);
             props.handleRichType(unfilledRichTypes + 1);
+            setSchIndex(index);
           }
 
           newSchema.fields[index][key] = typeValue;

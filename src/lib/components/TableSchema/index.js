@@ -22,6 +22,9 @@ const TableSchema = (props) => {
   );
   const _selectInputs = props.schema.fields.map((_) => undefined)
   const [selectFieldInputs, setSelectFieldInputs] = useState(_selectInputs);
+  const totalSchemaLength = props.schema.fields.length;
+  const [schemaPrevIndex, setSchIndex] = useState(null);
+  const [richTypePrevIndex, setRichIndex] = useState(null);
 
   //Refs used in updated select field style. 
   // This is used to notify the user which rich type has incorrect value.
@@ -79,7 +82,6 @@ const TableSchema = (props) => {
       if (type == selectedRichType) { //do richtype validation here
         selectRefsState[index].current.style.background = "white";
         const value = event.value
-        
 
         newSchema.fields[index][key] = value;
         setSchema(newSchema);
@@ -92,15 +94,17 @@ const TableSchema = (props) => {
         setSelectFieldInputs(newFInputs)
         selectRefsState[index].current.style.background = "red";
         
-        if (unfilledRichTypes >= 0) {
+        if (unfilledRichTypes < totalSchemaLength && index != richTypePrevIndex) {
           setUnfilledRichTypes(unfilledRichTypes + 1);
           props.handleRichType(unfilledRichTypes + 1);
+          setRichIndex(index)
         }
         alert(`Invalid richtype for type ${type}`)
       }
 
     } else {
-      const columnValue = newSchema.fields[index]['columnType']
+      let columnValue = selectRefsState[index].current.textContent.split('➜')[0].trim()
+      columnValue = columnValue === "Select..." ? undefined : columnValue
       const columnType = columnValue ? userOSTypes[columnValue]['dataType'] : undefined
       const typeValue = event.target.value
       if (columnValue) {
@@ -110,9 +114,10 @@ const TableSchema = (props) => {
           setSelectFieldInputs(newFInputs)
           selectRefsState[index].current.style.background = "red";
           
-          if (unfilledRichTypes >= 0) {
+          if (unfilledRichTypes < totalSchemaLength && index != schemaPrevIndex) {
             setUnfilledRichTypes(unfilledRichTypes + 1);
             props.handleRichType(unfilledRichTypes + 1);
+            setSchIndex(index)
           }
           newSchema.fields[index][key] = typeValue;
           setSchema(newSchema);
