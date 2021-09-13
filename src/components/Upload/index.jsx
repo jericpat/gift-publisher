@@ -33,7 +33,10 @@ class Upload extends React.Component {
   onChangeHandler = async (event) => {
     let { formattedSize, selectedFile } = this.state;
     let path = "";
+    let storeFile;
+    let dataFile, hashCopy;
     if (event.target.type == "file" && event.target.files.length > 0) {
+      storeFile = event.target.files[0]
       selectedFile = event.target.files[0];
       path = `data/${selectedFile.name}`; //path property in data package resource
       this.setState({ uploadedFileType: "file" });
@@ -81,6 +84,21 @@ class Upload extends React.Component {
       //get sample
       let sample_stream = await file.rows({ size: 460 });
       let sample = (await toArray(sample_stream)).slice(0, 30);
+
+      if (storeFile) {
+        let removeHeader = storeFile.slice(sample[0].length*2,)
+        dataFile = new File([removeHeader], selectedFile.name, {
+          type: "text/csv",
+        });
+
+        let copyFile = data.open(dataFile)
+
+        hashCopy = await copyFile.hash("sha256", (progress) => {
+          self.onHashProgress(progress);
+        });
+        Object.assign(copyFile.descriptor, { hashCopy });
+      }
+      
       //get column names for table
       const column_names = sample[0]; //first row is the column names
       const tablePreviewColumns = column_names.map((item) => {
@@ -100,14 +118,26 @@ class Upload extends React.Component {
         tablePreviewSample.push(temp_obj);
       });
 
-      this.props.metadataHandler(
-        Object.assign(file.descriptor, {
-          sample,
-          tablePreviewSample,
-          tablePreviewColumns,
-          path,
-        })
-      );
+      if (storeFile) {
+        this.props.metadataHandler(
+          Object.assign(file.descriptor, {
+            sample,
+            tablePreviewSample,
+            tablePreviewColumns,
+            path,
+            hashCopy
+          })
+        );
+      } else {
+          this.props.metadataHandler(
+          Object.assign(file.descriptor, {
+            sample,
+            tablePreviewSample,
+            tablePreviewColumns,
+            path,
+          })
+        );
+      }
 
       this.setState({
         selectedFile,
@@ -119,6 +149,15 @@ class Upload extends React.Component {
       });
 
       await this.uploadToFileStorageHandler();
+
+      if (storeFile) {
+        await this.uploadToFileCopyStorageHandler(dataFile)
+      } else {
+        this.props.handleUploadStatus({
+          loading: false,
+          success: true,
+        });
+      }
     }).catch((error) => {
       const { errorMsg } = error
       this.setErrorState(errorMsg);
@@ -310,10 +349,10 @@ class Upload extends React.Component {
             loaded: 100,
           });
 
-          this.props.handleUploadStatus({
-            loading: false,
-            success: true,
-          });
+          // this.props.handleUploadStatus({
+          //   loading: false,
+          //   success: true,
+          // });
         })
         .catch((error) => {
           console.error("Upload failed with error: " + error);
@@ -326,6 +365,52 @@ class Upload extends React.Component {
           });
         });
     }
+  };
+
+  uploadToFileCopyStorageHandler = async (copySelectedFile) => {
+    
+    const start = new Date().getTime();
+    const { organizationId, lfsServerUrl } = this.props;
+    const client = new Client(lfsServerUrl);
+
+    const resource = data.open(copySelectedFile);
+    this.setState({
+      fileSize: resource.size,
+      start,
+      loading: true,
+    });
+
+    client
+      .upload(
+        resource,
+        organizationId,
+        "copy",
+        this.onUploadProgress
+      )
+      .then((response) => {
+        this.setState({
+          success: true,
+          loading: false,
+          fileExists: !response,
+          loaded: 100,
+        });
+
+        this.props.handleUploadStatus({
+          loading: false,
+          success: true,
+        });
+      })
+      .catch((error) => {
+        console.error("Upload failed with error: " + error);
+        this.setState({ error: true, loading: false });
+        this.props.handleUploadStatus({
+          loading: false,
+          success: false,
+          error: true,
+          errorMsg: `Upload failed with error: ${error.message}`,
+        });
+      });
+    
   };
 
   render() {
