@@ -396,6 +396,7 @@ var DatasetEditor = /*#__PURE__*/function (_React$Component) {
       resource["name"] = fileResource.name;
       resource["dialect"] = fileResource.dialect;
       resource["path"] = fileResource.path;
+      resource["hashcopy"] = fileResource.hashCopy;
 
       if (Object.keys(dataset).includes("resources")) {
         dataset.resources.push(resource);
