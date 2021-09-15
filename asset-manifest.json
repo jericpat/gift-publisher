@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/gift-publisher/static/css/main.a58fb6ce.chunk.css",
+    "main.js": "/gift-publisher/static/js/main.855fce8d.chunk.js",
+    "main.js.map": "/gift-publisher/static/js/main.855fce8d.chunk.js.map",
+    "runtime-main.js": "/gift-publisher/static/js/runtime-main.c008a891.js",
+    "runtime-main.js.map": "/gift-publisher/static/js/runtime-main.c008a891.js.map",
+    "static/css/2.64185a40.chunk.css": "/gift-publisher/static/css/2.64185a40.chunk.css",
+    "static/js/2.56dbd8b5.chunk.js": "/gift-publisher/static/js/2.56dbd8b5.chunk.js",
+    "static/js/2.56dbd8b5.chunk.js.map": "/gift-publisher/static/js/2.56dbd8b5.chunk.js.map",
+    "index.html": "/gift-publisher/index.html",
+    "static/css/2.64185a40.chunk.css.map": "/gift-publisher/static/css/2.64185a40.chunk.css.map",
+    "static/css/main.a58fb6ce.chunk.css.map": "/gift-publisher/static/css/main.a58fb6ce.chunk.css.map",
+    "static/js/2.56dbd8b5.chunk.js.LICENSE.txt": "/gift-publisher/static/js/2.56dbd8b5.chunk.js.LICENSE.txt",
+    "static/media/computing-cloud.svg": "/gift-publisher/static/media/computing-cloud.c7390705.svg",
+    "static/media/progressBar.36729dc1.svg": "/gift-publisher/static/media/progressBar.36729dc1.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c008a891.js",
+    "static/css/2.64185a40.chunk.css",
+    "static/js/2.56dbd8b5.chunk.js",
+    "static/css/main.a58fb6ce.chunk.css",
+    "static/js/main.855fce8d.chunk.js"
+  ]
+}
