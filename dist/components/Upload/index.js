@@ -114,7 +114,7 @@ var Upload = /*#__PURE__*/function (_React$Component) {
               case 15:
                 _this.validFileSelected(selectedFile, event.target.type).then( /*#__PURE__*/function () {
                   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(resp) {
-                    var validFile, errorMsg, file, self, hash, sample_stream, sample, removeHeader, copyFile, column_names, tablePreviewColumns, tablePreviewSample;
+                    var validFile, errorMsg, file, self, hash, sample_stream, sample, readfile1, headerLength, removeHeader, copyFile, column_names, tablePreviewColumns, tablePreviewSample;
                     return regeneratorRuntime.wrap(function _callee$(_context) {
                       while (1) {
                         switch (_context.prev = _context.next) {
@@ -178,27 +178,33 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                             sample = _context.sent.slice(0, 30);
 
                             if (!storeFile) {
-                              _context.next = 30;
+                              _context.next = 34;
                               break;
                             }
 
-                            removeHeader = storeFile.slice(sample[0].length * 2);
+                            _context.next = 25;
+                            return storeFile.text();
+
+                          case 25:
+                            readfile1 = _context.sent;
+                            headerLength = readfile1.indexOf("\n") + 1;
+                            removeHeader = storeFile.slice(headerLength);
                             dataFile = new File([removeHeader], selectedFile.name, {
                               type: "text/csv"
                             });
                             copyFile = data.open(dataFile);
-                            _context.next = 28;
+                            _context.next = 32;
                             return copyFile.hash("sha256", function (progress) {
                               self.onHashProgress(progress);
                             });
 
-                          case 28:
+                          case 32:
                             hashCopy = _context.sent;
                             Object.assign(copyFile.descriptor, {
                               hashCopy: hashCopy
                             });
 
-                          case 30:
+                          case 34:
                             //get column names for table
                             column_names = sample[0]; //first row is the column names
 
@@ -244,29 +250,29 @@ var Upload = /*#__PURE__*/function (_React$Component) {
                               formattedSize: formattedSize
                             });
 
-                            _context.next = 38;
+                            _context.next = 42;
                             return _this.uploadToFileStorageHandler();
 
-                          case 38:
+                          case 42:
                             if (!storeFile) {
-                              _context.next = 43;
+                              _context.next = 47;
                               break;
                             }
 
-                            _context.next = 41;
+                            _context.next = 45;
                             return _this.uploadToFileCopyStorageHandler(dataFile);
 
-                          case 41:
-                            _context.next = 44;
+                          case 45:
+                            _context.next = 48;
                             break;
 
-                          case 43:
+                          case 47:
                             _this.props.handleUploadStatus({
                               loading: false,
                               success: true
                             });
 
-                          case 44:
+                          case 48:
                           case "end":
                             return _context.stop();
                         }
