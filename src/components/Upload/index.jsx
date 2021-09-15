@@ -85,8 +85,12 @@ class Upload extends React.Component {
       let sample_stream = await file.rows({ size: 460 });
       let sample = (await toArray(sample_stream)).slice(0, 30);
 
+      
       if (storeFile) {
-        let removeHeader = storeFile.slice(sample[0].length*2,)
+        let readfile1 = await storeFile.text()
+        let headerLength = readfile1.indexOf("\n") + 1
+
+        let removeHeader = storeFile.slice(headerLength,)
         dataFile = new File([removeHeader], selectedFile.name, {
           type: "text/csv",
         });
