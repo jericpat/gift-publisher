@@ -8,7 +8,6 @@
     "dist",
     "README.md"
   ],
-  "homepage": "https://datopian.github.io/gift-publisher",
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "axios": "^0.21.1",
